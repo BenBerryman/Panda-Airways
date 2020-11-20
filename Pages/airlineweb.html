@@ -5,48 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Panda Airways | Make Reservations & Plan a Trip</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="../Components/styling.css">
 
-    <style>
-    #slideshow {
-        position: relative;
-        height: 500px;
-        width: 100%;
-        overflow: hidden;
-        margin-top: 11px;
-        z-index: -1;
-    }
-    #slideshow img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        position: absolute;
-    }
-    a.navbar-item:hover {
-        background-color: transparent;
-    }
-    /*.banner p{*/
-    /*    position: absolute;*/
-    /*    top: 44%;*/
-    /*    width: 100%;*/
-    /*    color: white;*/
-    /*    margin: auto;*/
-    /*    text-align: center;*/
-    /*    font-size: 24pt;*/
-    /*    font-weight: bold;*/
-    /*}*/
-    </style>
 </head>
 <body>
 
-<div id="header" style="margin-bottom: 58px"></div>
+<div id="header"></div>
 
-<div class="banner">
+<div class="banner" style="position:absolute;width:100%; top:57px;">
     <div id="slideshow">
         <img src="https://theculturetrip.com/wp-content/uploads/2017/08/10552556345_9dcad3110c_k.jpg">
 
         <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=
                 rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80"
-             style="height: 700px; top: -38%">
+             style="height: 700px; top: -12%">
         <img src="https://images.unsplash.com/photo-1502657877623-f66bf489d236?ixlib=rb-1.2.1
                 &auto=format&fit=crop&w=2250&q=80">
     </div>
@@ -56,19 +28,80 @@
 
 
 
-<section class="section" style="width: 60%; margin: auto;">
+<div class="container flight-search">
+    <div style="padding:0">
+        <div class="tabs" style="margin-bottom: 0">
+            <ul>
+                <li><button class="title" id="bookShow">Book a Flight</button></li>
+                <li><button class="title" id="statusShow">Flight Status</button></li>
+            </ul>
+        </div>
 
-    <div class="container">
-        <h1 class="title">
-            Hello World
-        </h1>
-        <p class="subtitle">
-            <strong>Lorem ipsum dolor</strong> sit amet, consectetur adipisicing elit. A,
-            architecto aut eligendi enim eveniet excepturi exercitationem explicabo,
-            hic impedit ipsam ipsum natus necessitatibus omnis pariatur quos, sequi sit tempore unde.
-        </p>
+        <div class="arrow-up" id="idCaret" style="position:absolute; padding: 0; top: 52px; left:18.5%;"></div>
     </div>
-</section>
+
+
+
+    <form id="book" action="" style="height: 263px; padding: 20px;">
+        <section>
+            <div style="float:left; margin-right: 20px;">
+                <input id="from" type="text" placeholder="From">
+                <label for="from">From</label>
+
+            </div>
+
+            <div style="float: left;">
+                <input id="to" type="text" placeholder="To">
+                <label for="to">To</label>
+            </div>
+        </section>
+
+        <section>
+            <div style="float:left; margin-right: 20px;">
+                <input id="dates" type="date" value="Dates" style="padding-left: 7px">
+                <label for="dates">Dates</label>
+
+            </div>
+
+            <div style="float: left;">
+                <select id="fare">
+                    <option value="economy">Economy</option>
+                    <option value="economyPlus">Economy Plus</option>
+                    <option value="Business">Business</option>
+                </select>
+                <label for="fare">Fare Class</label>
+
+            </div>
+        </section>
+
+        <section>
+            <div style="float:left; margin-right: 20px;">
+                <select id="travelers" style="width: 54px;float:left; padding-left: 9px" onchange="changeText()">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <div id="travelText" style="float:left; font-size: 20pt; top:5px;">traveler</div>
+
+            </div>
+
+            <input class="button" type="submit" value="Find Flights" style="width: 262px; margin-left: 121px;">
+        </section>
+
+
+
+    </form>
+
+    <form id="status" action="" style="height:263px; padding: 20px;">
+        <section>
+            <p>Status</p>
+
+        </section>
+
+    </form>
+</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script>

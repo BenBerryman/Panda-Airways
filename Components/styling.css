@@ -1,0 +1,185 @@
+* {
+    color: #363636
+}
+#slideshow {
+    position: relative;
+    height: 615px;
+    width: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+#slideshow img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+}
+a.navbar-item:hover {
+    background-color: transparent;
+}
+/*.banner p{*/
+/*    position: absolute;*/
+/*    top: 44%;*/
+/*    width: 100%;*/
+/*    color: white;*/
+/*    margin: auto;*/
+/*    text-align: center;*/
+/*    font-size: 24pt;*/
+/*    font-weight: bold;*/
+/*}*/
+
+.container.flight-search {
+    width: 37%;
+    margin: 12% auto;
+    background-color: white;
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.flight-search > * > div {
+    padding: 13px 10px 13px 26px;
+}
+
+#bookShow,#statusShow {
+    margin-bottom: 0;
+    background-color: #363636;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+#bookShow:hover,#statusShow:hover {
+    color: #3273dc;
+}
+#statusShow {
+    margin-left: 7px;
+}
+
+.flight-search .tabs {
+    background-color: #363636;
+}
+.flight-search .tabs ul {
+    border-bottom-style: none;
+}
+
+#header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 57px;
+    background-color: white;
+    z-index: 50;
+}
+.arrow-up {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid white;
+    transition: 0.3s;
+}
+
+.arrow-down {
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+
+    border-top: 20px solid #f00;
+}
+
+.arrow-right {
+    width: 0;
+    height: 0;
+    border-top: 60px solid transparent;
+    border-bottom: 60px solid transparent;
+
+    border-left: 60px solid green;
+}
+
+.arrow-left {
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+
+    border-right:10px solid blue;
+}
+
+input, label {
+    display: block;
+}
+
+form * {
+    padding: 0 0 0 5px;
+}
+form input, form select {
+    border-bottom-style: solid;
+    position: relative;
+    z-index: 1;
+    color: currentColor;
+    border-right: none;
+    border-left: none;
+    border-top: none;
+    outline: none;
+    width: 262px;
+    height: 50px;
+    font-size: 20pt;
+    transition: 0.3s;
+}
+form input {
+    padding-left:10px;
+}
+form input::placeholder {
+    transition: 0.3s;
+}
+form input:hover, form select:hover {
+    border-bottom-color: currentColor;
+}
+form input:focus, form select:focus {
+    border-bottom-color: currentColor;
+}
+form label {
+    position: absolute;
+    z-index: 2;
+    top: -25%;
+    transition: 0.3s;
+    color: transparent;
+}
+
+form input:focus::placeholder {
+    color: transparent;
+}
+form input:hover::placeholder {
+    color:transparent;
+}
+
+form input:focus ~ label {
+    color: currentColor;
+}
+form input:hover ~ label {
+    color: currentColor;
+}
+form select:focus ~ label {
+    color: currentColor;
+}
+form select:hover ~ label {
+    color: currentColor;
+}
+section {
+    height: 78px;
+}
+section div {
+    position: relative;
+}
+form select {
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position: 100%;
+
+}
+form select option {
+    font-size: 10pt;
+}
