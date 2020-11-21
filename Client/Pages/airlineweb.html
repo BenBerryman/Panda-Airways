@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Panda Airways | Make Reservations & Plan a Trip</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="../Components/styling.css">
+</head>
+<body>
+
+<div id="header"></div>
+
+<div class="banner" style="position:absolute;width:100%; top:57px;">
+    <div id="slideshow">
+        <img src="https://theculturetrip.com/wp-content/uploads/2017/08/10552556345_9dcad3110c_k.jpg">
+
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=
+                rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80"
+             style="height: 700px; top: -12%">
+        <img src="https://images.unsplash.com/photo-1502657877623-f66bf489d236?ixlib=rb-1.2.1
+                &auto=format&fit=crop&w=2250&q=80">
+    </div>
+<!--    <p>It's a great big world.</p>-->
+
+</div>
+
+
+
+<div class="container flight-search">
+    <div style="padding:0">
+        <div class="tabs" style="margin-bottom: 0; height: 62px;">
+            <ul>
+                <li><button class="title" id="bookShow">Book a Flight</button></li>
+                <li><button class="title" id="statusShow">Flight Status</button></li>
+            </ul>
+        </div>
+
+        <div class="arrow-up" id="idCaret" style="position:absolute; padding: 0; top: 52px; left:18.5%;"></div>
+    </div>
+
+
+
+    <form id="book" autocomplete="off" action="./flightsAvailable.html" method="get" style="height: 263px; padding: 20px;">
+        <section>
+            <div style="float:left; margin-right: 20px;">
+                <input id="from"type="text" placeholder="From" required
+                       oninvalid="this.setCustomValidity('Please enter a valid location.')" onchange="this.setCustomValidity('')">
+                <input id="fromHidden" type="hidden" name="from">
+                <label for="from">From</label>
+
+            </div>
+
+            <div style="float: left;">
+                <input id="to" type="text" placeholder="To" required
+                       oninvalid="this.setCustomValidity('Please enter a valid location.')" onchange="this.setCustomValidity('')">
+                <input id="toHidden" type="hidden" name="to">
+                <label for="to">To</label>
+            </div>
+        </section>
+
+        <section>
+            <div style="float:left; margin-right: 20px;">
+                <input id="dates" type="text" placeholder="Dates" style="padding-left: 7px" required
+                       oninvalid="this.setCustomValidity('This field is required.')" onchange="this.setCustomValidity('')">
+                <input id="alt-date" name="dates" type="hidden">
+                <label for="dates">Dates</label>
+
+            </div>
+
+            <div style="float: left;">
+                <select id="fare" name="fare">
+                    <option value="economy">Economy</option>
+                    <option value="economyPlus">Economy Plus</option>
+                    <option value="Business">Business</option>
+                </select>
+                <label for="fare">Fare Class</label>
+
+            </div>
+        </section>
+
+        <section>
+            <div style="float:left; margin-right: 20px; width: 262px;">
+                <select id="travelers" name="travelers" style="width: 54px;float:left; padding-left: 9px" onchange="changeText()">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <div id="travelText" style="float:left; font-size: 20pt; top:11px;">traveler</div>
+
+            </div>
+
+            <input class="button" type="submit" value="Find Flights" style="width: 262px; margin-left: 9px; background-color: #ECECEC">
+        </section>
+    </form>
+
+    <form id="status" action="" style="height:263px; padding: 20px;">
+        <section>
+            <div style="float:left; margin-right: 20px;">
+                <input id="fromStatus" type="text" placeholder="From" required
+                       oninvalid="this.setCustomValidity('Please enter a valid location.')" onchange="this.setCustomValidity('')">
+                <label for="from">From</label>
+
+            </div>
+
+            <div style="float: left;">
+                <input id="toStatus" type="text" placeholder="To" required
+                       oninvalid="this.setCustomValidity('Please enter a valid location.')" onchange="this.setCustomValidity('')">
+                <label for="to">To</label>
+            </div>
+        </section>
+
+        <section>
+            <div style="float:left; margin-right: 20px;">
+                <input id="datesStatus" type="text" placeholder="Dates" style="padding-left: 7px" required
+                       oninvalid="this.setCustomValidity('This field is required.')" onchange="this.setCustomValidity('')">
+                <input id="alt-date-status" name="dates" type="hidden">
+                <label for="dates">Date</label>
+
+            </div>
+
+            <div style="float: left;">
+                <input id="flightNum" type="text" placeholder="Flight Number">
+                <label for="flightNum">(Optional) Flight Number</label>
+
+            </div>
+        </section>
+        <section style="text-align: center;">
+            <input class="button" type="submit" value="Find Flights" style="width: 262px; margin: 0 auto; background-color: #ECECEC">
+        </section>
+
+    </form>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script>
+    $(function(){
+        $('#header').load('../Components/header.html');
+    });
+</script>
+<script src="airlineweb.js"></script>
+<script>
+    $(document).ready(function() {
+
+        $(function() {
+            $( "#dates" ).datepicker();
+            $( "#datesStatus").datepicker();
+        });
+    })
+    autocomplete(document.getElementById("from"), cities);
+    autocomplete(document.getElementById("to"), cities);
+</script>
+
+</body>
+</html>
