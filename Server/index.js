@@ -48,13 +48,13 @@ app.get('/findFlights', async(req, res)=>{
     try{
         const args = [req.query.from, req.query.to, req.query.dates.toString(), req.query.fare, req.query.travelers];
 
-        const allFlights = await pool.query(`SELECT departing.flight_id, scheduled_departure, departing.airport_code AS depart, arriving.airport_code AS arrive
+        const allFlights = await pool.query(`SELECT departing.flight_id, scheduled_departure, scheduled_arrival, departing.city AS depart_city, departing.airport_code AS depart, arriving.city AS arrive_city, arriving.airport_code AS arrive
                                             FROM
-                                                (SELECT flight_id,scheduled_departure, airport_code
+                                                (SELECT flight_id,scheduled_departure, scheduled_arrival, city, airport_code
                                                 FROM flights JOIN airport
                                                 ON flights.departure_airport=airport.airport_code) departing
                                             JOIN
-                                                (SELECT flight_id,airport_code
+                                                (SELECT flight_id, city, airport_code
                                                 FROM flights JOIN airport
                                                 ON flights.arrival_airport=airport.airport_code) arriving
                                             ON departing.flight_id=arriving.flight_id

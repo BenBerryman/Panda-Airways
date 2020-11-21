@@ -42,7 +42,7 @@
 
 
 
-    <form id="book" autocomplete="off" action="./flightsAvailable.html" method="get" style="height: 263px; padding: 20px;">
+    <form id="book" autocomplete="off" action="booking/flightsAvailable.html" method="get" style="height: 263px; padding: 20px;">
         <section>
             <div style="float:left; margin-right: 20px;">
                 <input id="from"type="text" placeholder="From" required
@@ -102,14 +102,16 @@
             <div style="float:left; margin-right: 20px;">
                 <input id="fromStatus" type="text" placeholder="From" required
                        oninvalid="this.setCustomValidity('Please enter a valid location.')" onchange="this.setCustomValidity('')">
-                <label for="from">From</label>
+                <input id="fromStatusHidden" type="hidden" name="from">
+                <label for="fromStatus">From</label>
 
             </div>
 
             <div style="float: left;">
                 <input id="toStatus" type="text" placeholder="To" required
                        oninvalid="this.setCustomValidity('Please enter a valid location.')" onchange="this.setCustomValidity('')">
-                <label for="to">To</label>
+                <input id="toStatusHidden" type="hidden" name="to">
+                <label for="toStatus">To</label>
             </div>
         </section>
 
@@ -139,7 +141,7 @@
 <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 <script>
     $(function(){
-        $('#header').load('../Components/header.html');
+        $('#header').load('/hw4/Client/Components/header.html');
     });
 </script>
 <script src="airlineweb.js"></script>
@@ -153,6 +155,8 @@
     })
     autocomplete(document.getElementById("from"), cities);
     autocomplete(document.getElementById("to"), cities);
+    autocomplete(document.getElementById("fromStatus"), cities);
+    autocomplete(document.getElementById("toStatus"), cities);
 </script>
 
 </body>

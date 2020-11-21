@@ -48,6 +48,7 @@ function autocomplete(inp, arr) {
                 b.addEventListener("click", function(e) {
                     /*insert the value for the autocomplete text field:*/
                     inp.value = this.getElementsByTagName("input")[0].value;
+                    inp.nextElementSibling.value = inp.value.substr(inp.value.search("-")+2);
                     /*close the list of autocompleted values,
                     (or any other open lists of autocompleted values:*/
                     closeAllLists();
@@ -73,6 +74,10 @@ function autocomplete(inp, arr) {
             currentFocus--;
             /*and and make the current item more visible:*/
             addActive(x);
+        } else if (e.keyCode == 9) {
+            /*If the TAB key is pressed,  pick the top selection.*/
+            selectTopOption();
+            closeAllLists();
         } else if (e.keyCode == 13) {
             /*If the ENTER key is pressed, prevent the form from being submitted,*/
             e.preventDefault();
@@ -132,6 +137,7 @@ async function getCities() {
         console.log(err.message);
     }
 }
+
 var cities = [];
 //WHEN DOM IS LOADED
 $(document).ready(function() {
@@ -158,8 +164,6 @@ $(document).ready(function() {
         altField: "#alt-date-status"
 
     });
-    // document.getElementById("dates").setAttribute('min', today);
-    // document.getElementById("dates").setAttribute('max', max);
 
     $('#bookShow').click(function() {
         $('#status').hide();

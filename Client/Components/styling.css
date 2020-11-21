@@ -198,7 +198,7 @@ form select option {
 }
 .ui-datepicker {
     width: 15em;
-    height: 197px;
+    height: 209px;
     padding: 0;
 }
 .ui-widget-header {
@@ -252,4 +252,51 @@ body {
     /*when navigating through the items using the arrow keys:*/
     background-color: #e9e9e9 !important;
     color: #929292;
+}
+.container {
+    width: 48%;
+}
+
+.container:nth-of-type(2) {
+    margin-top: 100px;
+}
+
+table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+table th {
+    vertical-align: middle;
+}
+table th, table td {
+    padding: 20px;
+    text-align: center !important;
+}
+table thead {
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
+
+}
+th#ecoCol {
+    border-top-left-radius: 10px;
+}
+th#businessCol {
+    border-top-right-radius: 10px;
+}
+
+#ecoCol {
+    background-color: #eee;
+}
+#ecoPlusCol {
+    background-color: #c9cbec;
+}
+#businessCol {
+    background-color: #adb1e6;
+}
+#flightResultsHead {
+    font-size:32pt;
+    margin-bottom: 30px;
+    margin-left:27%;
+    width:500px;
 }
