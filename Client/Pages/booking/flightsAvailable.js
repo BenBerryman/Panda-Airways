@@ -30,9 +30,9 @@ async function findFlights() {
         console.log(err.message);
     }
 }
-function convertTime(departTime) {
-    var hour = departTime.getHours();
-    var min = departTime.getMinutes();
+function convertTime(time) {
+    var hour = time.getHours();
+    var min = time.getMinutes();
     var AmOrPm = hour >= 12 ? 'PM' : 'AM';
     hour = hour % 12;
     if(hour===0)
@@ -48,7 +48,6 @@ function insertInfo(row, data) {
     var departing = row.insertCell();
     var departTime = new Date(data.scheduled_departure);
     departing.innerHTML = convertTime(departTime);
-    console.log(departing);
     //Arrive time
     var arriving = row.insertCell();
     var arriveTime  = new Date(data.scheduled_arrival);
@@ -65,19 +64,38 @@ function insertInfo(row, data) {
     //Fare pricing, for now hardcode values, maybe calculate later TODO determine fare prices
     var economy = row.insertCell();
     economy.setAttribute("id", "ecoCol");
-    economy.innerHTML = "$200";
+    var linkEcon = document.createElement("a");
+    linkEcon.href = "./price.html";
+    linkEcon.onclick = function() {pickFlight(data, "Economy");}
+    linkEcon.innerHTML = "$200";
+    economy.appendChild(linkEcon);
+
     var economyPlus = row.insertCell();
     economyPlus.setAttribute("id","ecoPlusCol");
-    economyPlus.innerHTML = "$500";
+    var linkEconPlus = document.createElement("a");
+    linkEconPlus.href = "./price.html";
+    linkEconPlus.onclick = function() {pickFlight(data, "Economy Plus")};
+    linkEconPlus.innerHTML = "$500";
+    economyPlus.appendChild(linkEconPlus);
+
     var business = row.insertCell();
     business.setAttribute("id","businessCol");
-    business.innerHTML = "$800";
+    var linkBusiness = document.createElement("a");
+    linkBusiness.href = "./price.html";
+    linkBusiness.onclick = function() {pickFlight(data, "Business")};
+    linkBusiness.innerHTML = "$800";
+    business.appendChild(linkBusiness);
 
 
 }
 
 function noFlights() {
     console.log("No flights");
+}
+
+function pickFlight(flight, fare) {
+    var flight_picked = {"flight":flight, "fare":fare, "travelers": travelers};
+    localStorage.setItem("flight", JSON.stringify(flight_picked));
 }
 
 function showFlights() {

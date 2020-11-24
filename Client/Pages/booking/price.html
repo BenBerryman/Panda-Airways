@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="/hw4/Client/Components/styling.css">
+    <script src="https://kit.fontawesome.com/44362617d9.js" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <div id="header"></div>
+
+    <div class="container">
+        <div id="flightResultsHead" class="border-bottom" style="height: 87px; margin-bottom: 0;">
+            <div style="float: left;">
+                <div class="title">Price Details</div>
+            </div>
+            <div id="stepProgressBar"></div>
+        </div>
+
+
+        <div>
+            <div id="flight" style="display: flex;">
+                <div class="flight-info">
+                    <span id="date"></span>
+                    <div class="flight-with-time">
+                        <div class="airport-with-time">
+                            <div class="airport-code-bold"></div>
+                            <div class="flight-time"></div>
+                        </div>
+                        <i class="fas fa-arrow-right"></i>
+                        <div class="airport-with-time">
+                            <div class="airport-code-bold"></div>
+                            <div class="flight-time"></div>
+                        </div>
+                    </div>
+                    <span id="flightTime"></span>
+                    <span class="connections border-left">Nonstop</span>
+
+                    <span id="fare"></span>
+                </div>
+                <div class="price-info">
+                    <div class="price-per-pass">
+                        <span>Price per Passenger</span>
+                        <span>$200.00</span>
+                    </div>
+                    <div class="taxes-per-pass">
+                        <span>Taxes and Fees per Passenger</span>
+                        <span>$14.60</span>
+                    </div>
+                    <div class="total-per-pas">
+                        <span>Total per Passenger</span>
+                        <span>$214.60</span>
+
+                    </div>
+                    <div class="passengers">
+                        <span>Passengers</span>
+                        <span>x1</span>
+                    </div>
+                    <div class="flight-total">
+                        <span>Flight Total</span>
+                        <span>$214.60</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="returnFlight" style="height: 200px;">
+                <span>Return Flight Info (if applicable)</span>
+            </div>
+
+            <div class="price-summary">
+                <div class="extra-info-highlight">
+                    <i class="fas fa-arrows-alt-h"></i>
+                    <span>For your safety, middle seats will stay open through January 21, 2021 to promote physical distancing onboard.</span></div>
+                <div id="priceTotals">
+                    <div id="bagFee">
+                        <span>BAG FEE</span>
+                        <span>$0.00</span>
+                    </div>
+                    <div id="subtotal">
+                        <span>SUBTOTAL</span>
+                        <span>$200.00</span>
+                    </div>
+                    <div id="taxes-fees">
+                        <span>TAXES & FEES</span>
+                        <span>$14.60</span>
+                    </div>
+                    <div id="total">
+                        <span>TRIP TOTAL</span>
+                        <span>$214.60</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div id="nextPageHolder">
+            <a id="nextPage" href="./payment.html">Continue</a>
+        </div>
+    </div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+    $(function(){
+        $('#header').load('/hw4/Client/Components/header.html');
+        $('#stepProgressBar').load('/hw4/Client/Components/stepProgressBar.html', function() {
+                var step = 1;
+                var bullets = document.getElementsByClassName("bullet");
+                for(i=0; i < step-1; i++)
+                {
+                    bullets[i].classList.add('completed');
+
+                }
+                bullets[step-1].classList.add('current');
+            });
+    });
+</script>
+<script src="./price.js"></script>
+</body>
+</html>

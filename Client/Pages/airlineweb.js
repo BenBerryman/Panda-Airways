@@ -114,8 +114,11 @@ function autocomplete(inp, arr) {
         }
     }
     function selectTopOption() {
-        inp.value = document.getElementById(inp.id+"autocomplete-list").firstChild.lastChild.value;
-        inp.nextElementSibling.value = inp.value.substr(inp.value.search("-")+2);
+        if(document.getElementById(inp.id+"autocomplete-list") !== null)
+        {
+            inp.value = document.getElementById(inp.id+"autocomplete-list").firstChild.lastChild.value;
+            inp.nextElementSibling.value = inp.value.substr(inp.value.search("-")+2);
+        }
     }
     /*execute a function when someone clicks in the document:*/
     document.addEventListener("click", function (e) {
