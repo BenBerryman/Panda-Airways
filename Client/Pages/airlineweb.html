@@ -44,7 +44,7 @@
 
     <form id="book" autocomplete="off" action="booking/flightsAvailable.html" method="get" style="height: 263px; padding: 20px;">
         <section>
-            <div style="float:left; margin-right: 20px;">
+            <div class="input-field" style="margin-right: 20px;">
                 <input id="from"type="text" placeholder="From" required
                        oninvalid="this.setCustomValidity('Please enter a valid location.')" onchange="this.setCustomValidity('')">
                 <input id="fromHidden" type="hidden" name="from">
@@ -52,7 +52,7 @@
 
             </div>
 
-            <div style="float: left;">
+            <div class="input-field">
                 <input id="to" type="text" placeholder="To" required
                        oninvalid="this.setCustomValidity('Please enter a valid location.')" onchange="this.setCustomValidity('')">
                 <input id="toHidden" type="hidden" name="to">
@@ -61,7 +61,7 @@
         </section>
 
         <section>
-            <div style="float:left; margin-right: 20px;">
+            <div class="input-field" style="margin-right: 20px;">
                 <input id="dates" type="text" placeholder="Dates" style="padding-left: 7px" required
                        oninvalid="this.setCustomValidity('This field is required.')" onchange="this.setCustomValidity('')">
                 <input id="alt-date" name="dates" type="hidden">
@@ -69,7 +69,7 @@
 
             </div>
 
-            <div style="float: left;">
+            <div class="input-field">
                 <select id="fare" name="fare">
                     <option value="economy">Economy</option>
                     <option value="economyPlus">Economy Plus</option>
@@ -89,7 +89,7 @@
                     <option value="4">4</option>
                     <option value="5">5</option>
                 </select>
-                <div id="travelText" style="float:left; font-size: 20pt; top:11px;">traveler</div>
+                <div id="travelText" style="float:left; font-size: 20pt; top:11px; position: relative;">traveler</div>
 
             </div>
 
@@ -99,7 +99,7 @@
 
     <form id="status" action="" style="height:263px; padding: 20px;">
         <section>
-            <div style="float:left; margin-right: 20px;">
+            <div class="input-field" style="margin-right: 20px;">
                 <input id="fromStatus" type="text" placeholder="From" required
                        oninvalid="this.setCustomValidity('Please enter a valid location.')" onchange="this.setCustomValidity('')">
                 <input id="fromStatusHidden" type="hidden" name="from">
@@ -107,7 +107,7 @@
 
             </div>
 
-            <div style="float: left;">
+            <div class="input-field">
                 <input id="toStatus" type="text" placeholder="To" required
                        oninvalid="this.setCustomValidity('Please enter a valid location.')" onchange="this.setCustomValidity('')">
                 <input id="toStatusHidden" type="hidden" name="to">
@@ -116,7 +116,7 @@
         </section>
 
         <section>
-            <div style="float:left; margin-right: 20px;">
+            <div class="input-field" style="margin-right: 20px;">
                 <input id="datesStatus" type="text" placeholder="Dates" style="padding-left: 7px" required
                        oninvalid="this.setCustomValidity('This field is required.')" onchange="this.setCustomValidity('')">
                 <input id="alt-date-status" name="dates" type="hidden">
@@ -124,7 +124,7 @@
 
             </div>
 
-            <div style="float: left;">
+            <div class="input-field">
                 <input id="flightNum" type="text" placeholder="Flight Number">
                 <label for="flightNum">(Optional) Flight Number</label>
 

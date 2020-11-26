@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const pool = require('./db');
+const calculations = require('./calculations');
 
 // middleware
 app.use(cors());
@@ -48,7 +49,7 @@ app.get('/findFlights', async(req, res)=>{
     try{
         const args = [req.query.from, req.query.to, req.query.dates.toString(), req.query.fare, req.query.travelers];
 
-        const allFlights = await pool.query(`SELECT departing.flight_id, scheduled_departure, scheduled_arrival, departing.city AS depart_city, departing.airport_code AS depart, arriving.city AS arrive_city, arriving.airport_code AS arrive
+        const directFlights = await pool.query(`SELECT departing.flight_id, scheduled_departure, scheduled_arrival, departing.city AS depart_city, departing.airport_code AS depart, arriving.city AS arrive_city, arriving.airport_code AS arrive
                                             FROM
                                                 (SELECT flight_id,scheduled_departure, scheduled_arrival, city, airport_code
                                                 FROM flights JOIN airport
@@ -61,7 +62,44 @@ app.get('/findFlights', async(req, res)=>{
                                             WHERE departing.airport_code LIKE $1 AND arriving.airport_code LIKE $2
                                             AND scheduled_departure::text LIKE $3`,
             [args[0],args[1],args[2]+' %']);
-        res.json(allFlights.rows);
+
+        const oneStopFlights = await pool.query(`SELECT departing.flight_id, departing.scheduled_departure AS scheduled_departure,
+                                                    departing.scheduled_arrival AS initial_scheduled_arrival, departing.city AS depart_city,
+                                                     departing.airport_code AS depart, connection1Departing.scheduled_departure
+                                                      AS conn1_scheduled_departure, connection1Departing.scheduled_arrival
+                                                       AS scheduled_arrival, connection1.city AS conn1_city, connection1.airport_code
+                                                        AS conn1,arriving.flight_id AS arrive_flightid, arriving.city AS arrive_city,
+                                                         arriving.airport_code AS arrive
+                                            FROM
+                                                (SELECT flight_id,scheduled_departure, scheduled_arrival, city, airport_code
+                                                 FROM flights JOIN airport
+                                                                   ON flights.departure_airport=airport.airport_code) departing
+                                                    JOIN
+                                                (SELECT flight_id, city, airport_code
+                                                 FROM flights JOIN airport
+                                                                   ON flights.arrival_airport=airport.airport_code) connection1
+                                                ON departing.flight_id=connection1.flight_id
+                                                    JOIN
+                                                ((SELECT flight_id, scheduled_departure, scheduled_arrival, city, airport_code
+                                                 FROM flights JOIN airport
+                                                                   ON flights.departure_airport=airport.airport_code) connection1Departing
+                                                    JOIN
+                                                (SELECT flight_id, city, airport_code
+                                                 FROM flights JOIN airport
+                                                                   ON flights.arrival_airport=airport.airport_code) arriving
+                                                ON connection1Departing.flight_id=arriving.flight_id)
+                                                ON connection1.airport_code=connection1Departing.airport_code
+                                            WHERE connection1Departing.scheduled_departure > departing.scheduled_arrival AND departing.airport_code LIKE $1 AND arriving.airport_code LIKE $2 AND departing.scheduled_departure::text LIKE $3 ;`,
+            [args[0],args[1],args[2]+' %']);
+
+        const allFlights = [directFlights.rows, oneStopFlights.rows];
+        allFlights.forEach(function(type) {
+            type.forEach(function(flight) {
+                calculations.calculateDuration(flight);
+                calculations.calculateFarePrice(flight);
+            });
+        });
+        res.json(allFlights);
     }
     catch(err){
         console.log(err.message);

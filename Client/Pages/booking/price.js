@@ -24,7 +24,6 @@ weekday[3]="Wed";
 weekday[4]="Thur";
 weekday[5]="Fri";
 weekday[6]="Sat";
-console.log(weekday[dateDepart.getDay()]);
 var month = dateDepart.getMonth()+1;
 var dayOfMonth = dateDepart.getDate();
 
@@ -43,7 +42,14 @@ times[1].innerHTML = arriveTime;
 var res = Math.abs(dateArrive - dateDepart) / 1000;
 var hoursBetween = Math.floor(res / 3600) % 24;
 var minutesBetween = Math.floor(res / 60) % 60;
-document.getElementById("flightTime").innerHTML = hoursBetween.toString()+"h "+minutesBetween+"min";
+document.getElementById("flightTime").innerHTML = flight.flight.duration;
+
+var connection = document.getElementsByClassName("connection")[0];
+if(flight.flight.conn1 === undefined)
+    connection.innerHTML = "Nonstop";
+else
+    connection.innerHTML = "1 stop";
+
 
 
 document.getElementById("fare").innerHTML = flight.fare;

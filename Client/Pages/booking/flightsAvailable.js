@@ -20,7 +20,7 @@ async function findFlights() {
         }));
         let resp = await response.json();
         flights = resp;
-        if(flights.length === 0) {
+        if(flights[0].length === 0 && flights[1].length === 0) {
             noFlights();
             return;
         }
@@ -40,10 +40,7 @@ function convertTime(time) {
     return hour.toString() + ":" + min.toString() + AmOrPm;
 }
 
-function insertInfo(row, data) {
-    //Flight Number
-    var flightNum = row.insertCell();
-    flightNum.innerHTML = data.flight_id.toString();
+function insertInfo(row, data, directFlight) {
     //Depart time
     var departing = row.insertCell();
     var departTime = new Date(data.scheduled_departure);
@@ -52,22 +49,22 @@ function insertInfo(row, data) {
     var arriving = row.insertCell();
     var arriveTime  = new Date(data.scheduled_arrival);
     arriving.innerHTML = convertTime(arriveTime);
-    //Stops. For now, just insert nonstop TODO implement layovers
     var stops = row.insertCell();
-    stops.innerHTML = "Nonstop";
+    if(directFlight)
+        stops.innerHTML = "Nonstop";
+    else
+        stops.innerHTML = "1 stop";
     //Flight time
-    var res = Math.abs(arriveTime - departTime) / 1000;
-    var hoursBetween = Math.floor(res / 3600) % 24;
-    var minutesBetween = Math.floor(res / 60) % 60;
+
     var flightLength = row.insertCell();
-    flightLength.innerHTML = hoursBetween.toString()+"h "+minutesBetween+"m";
-    //Fare pricing, for now hardcode values, maybe calculate later TODO determine fare prices
+    flightLength.innerHTML = data.duration;
+    //Fare pricing
     var economy = row.insertCell();
     economy.setAttribute("id", "ecoCol");
     var linkEcon = document.createElement("a");
     linkEcon.href = "./price.html";
     linkEcon.onclick = function() {pickFlight(data, "Economy");}
-    linkEcon.innerHTML = "$200";
+    linkEcon.innerHTML = "$"+data.econPrice.toFixed(0);
     economy.appendChild(linkEcon);
 
     var economyPlus = row.insertCell();
@@ -75,7 +72,7 @@ function insertInfo(row, data) {
     var linkEconPlus = document.createElement("a");
     linkEconPlus.href = "./price.html";
     linkEconPlus.onclick = function() {pickFlight(data, "Economy Plus")};
-    linkEconPlus.innerHTML = "$500";
+    linkEconPlus.innerHTML = "$"+data.econPlusPrice.toFixed(0);
     economyPlus.appendChild(linkEconPlus);
 
     var business = row.insertCell();
@@ -83,7 +80,7 @@ function insertInfo(row, data) {
     var linkBusiness = document.createElement("a");
     linkBusiness.href = "./price.html";
     linkBusiness.onclick = function() {pickFlight(data, "Business")};
-    linkBusiness.innerHTML = "$800";
+    linkBusiness.innerHTML = "$"+data.businessPrice.toFixed(0);
     business.appendChild(linkBusiness);
 
 
@@ -101,12 +98,26 @@ function pickFlight(flight, fare) {
 function showFlights() {
     document.getElementById("depart").innerHTML = from;
     document.getElementById("arrive").innerHTML = to;
-    document.getElementById("departCity").innerHTML = flights[0].depart_city.trim();
-    document.getElementById("arriveCity").innerHTML = flights[0].arrive_city.trim();
-    var table = document.getElementById("flightsTable").getElementsByTagName('tbody')[0];
-    for(i=0; i < flights.length; i++)
+
+    if(flights[0].length > 0)
     {
-        var row = table.insertRow();
-        insertInfo(row, flights[i]);
+        document.getElementById("departCity").innerHTML = flights[0][0].depart_city.trim();
+        document.getElementById("arriveCity").innerHTML = flights[0][0].arrive_city.trim();
     }
+    else if(flights[1].length > 0)
+    {
+        document.getElementById("departCity").innerHTML = flights[1][0].depart_city.trim();
+        document.getElementById("arriveCity").innerHTML = flights[1][0].arrive_city.trim();
+    }
+
+    var table = document.getElementById("flightsTable").getElementsByTagName('tbody')[0];
+    flights.forEach(function(type, i) {
+        type.forEach(function(flight) {
+            var row = table.insertRow();
+            if(i===0) //Direct Flight
+                insertInfo(row, flight, true);
+            else
+                insertInfo(row, flight, false);
+        });
+    });
 }

@@ -4,6 +4,12 @@
 .container {
     width: 1000px;
 }
+.tag {
+    background-color: inherit !important;
+    font-size: 8pt !important;
+    position: absolute;
+    top: -5%;
+}
 #slideshow {
     position: relative;
     height: 615px;
@@ -23,6 +29,12 @@ a.navbar-item:hover {
 .title {
     margin-left: 75px;
     font-size:32pt;
+}
+.title-2 {
+    margin-left: 75px;
+    font-size: 20pt;
+    font-weight: 600;
+    line-height: 1.125;
 }
 
 .container.flight-search {
@@ -107,16 +119,71 @@ a.navbar-item:hover {
     border-right:10px solid blue;
 }
 
-input, label {
+input, label, select {
     display: block;
+    background-color: inherit;
+}
+.input-field {
+    float: left;
+    position: relative;
+    width: 262px;
+}
+.input-field.small input, .input-field.small select {
+    width: inherit;
+    height: 34px;
+    font-size: 12pt;
+}
+.input-field.small input:hover::placeholder, .input-field.small input:focus::placeholder {
+    color: currentColor;
+}
+.input-field.small label {
+    font-size: 10pt;
+    top:-46%;
+    position: relative;
+    width: inherit;
+}
+.block-section label {
+    color: currentColor;
+}
+.MDY-container {
+    float: left;
+    position: relative;
+    width: 235px;
+}
+.MDY-container div, .MY-container div {
+    margin-right:0 !important;
+    margin-bottom: 0 !important;
+}
+.MDY-container div:first-of-type {
+    width: 111px;
+    margin-left: 0;
+}
+.MDY-container div:nth-of-type(2) {
+    width: 45px;
+    margin-left: 10px;
+}
+.MDY-container div:last-of-type, .MY-container div:last-of-type {
+    width: 59px;
+    margin-left: 10px;
+}
+.MY-container {
+    float: left;
+    position: relative;
+    width: 199px;
+}
+.MY-container div:first-of-type {
+    width: 130px;
+    margin-left: 0;
+}
+.email-container {
+    width: 367px;
 }
 
 form * {
     padding: 0 0 0 5px;
 }
-form input, form select {
-    border-bottom-style: solid;
-    border-bottom-color: #ccc;
+input, select {
+    border-bottom: #ccc solid 2px;
     position: relative;
     z-index: 1;
     color: currentColor;
@@ -124,27 +191,28 @@ form input, form select {
     border-left: none;
     border-top: none;
     outline: none;
-    width: 262px;
+    width: inherit;
     height: 50px;
     font-size: 20pt;
     transition: 0.3s;
 }
-form input {
+input {
     padding-left:10px;
 }
-form input:required {
+input:required {
     box-shadow: none;
 }
-form input::placeholder {
+
+input::placeholder {
     transition: 0.3s;
 }
-form input:hover, form select:hover {
+input:hover, select:hover {
     border-bottom-color: currentColor;
 }
-form input:focus, form select:focus {
+input:focus, select:focus {
     border-bottom-color: currentColor;
 }
-form label {
+label {
     position: absolute;
     z-index: 2;
     top: -25%;
@@ -152,32 +220,29 @@ form label {
     color: transparent;
 }
 
-form input:focus::placeholder {
+input:focus::placeholder {
     color: transparent;
 }
-form input:hover::placeholder {
+input:hover::placeholder {
     color:transparent;
 }
 
-form input:focus ~ label {
+input:focus ~ label {
     color: currentColor;
 }
-form input:hover ~ label {
+input:hover ~ label {
     color: currentColor;
 }
-form select:focus ~ label {
+select:focus ~ label {
     color: currentColor;
 }
-form select:hover ~ label {
+select:hover ~ label {
     color: currentColor;
 }
 section {
     height: 78px;
 }
-section div {
-    position: relative;
-}
-form select {
+select {
     -webkit-appearance: none;
     -webkit-border-radius: 0;
     background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
@@ -186,8 +251,9 @@ form select {
     cursor: pointer;
 
 }
-form select option {
+select option {
     font-size: 10pt;
+    -webkit-appearance: none;
 }
 .ui-widget {
     font-family: "Avenir Next";
@@ -270,6 +336,16 @@ table th, table td {
     text-align: center !important;
     vertical-align: middle;
 }
+td#ecoCol a, td#ecoPlusCol a, td#businessCol a {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
 table thead {
     border-bottom-style: solid;
     border-bottom-width: 2px;
@@ -289,6 +365,7 @@ table tbody tr:last-of-type  #ecoCol {
 td#ecoCol, td#ecoPlusCol, td#businessCol {
     font-weight: bold;
     transition: 0.3s;
+    position: relative;
 }
 td#ecoCol:hover, td#ecoPlusCol:hover, td#businessCol:hover {
     filter: brightness(85%);
@@ -366,21 +443,30 @@ table tbody tr:last-of-type #businessCol {
     width: 69px;
     background-color: #363636;
 }
-#flight  {
-    margin-bottom: 50px;
+.flight-container  {
+    margin-bottom: 1.5rem;
+    display: flex;
+}
+.all-flights  {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    flex-grow: 1;
 }
 .flight-info {
-    float: left;
     width: 70%;
     justify-content: space-around;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    background-color: #f2f2f2;
+    position: relative;
 }
-.flight-info > div, .flight-info > span, .price-summary > div, .price-summary > span {
+.flight > div, .flight > span, .price-summary > div, .price-summary > span {
     flex-grow:1;
     display: flex;
     justify-content: center;
 }
-.flight-info, .price-info, .price-summary {
+.price-info, .price-summary {
     display: flex;
 }
 .price-info, #priceTotals {
@@ -397,6 +483,7 @@ table tbody tr:last-of-type #businessCol {
 }
 .airport-with-time {
     margin: 0 14px 0 14px;
+    position: relative;
 }
 .airport-code-bold {
     font-size: 23pt;
@@ -500,13 +587,59 @@ table tbody tr:last-of-type #businessCol {
     margin-bottom: 200px;
     font-size: 9pt;
 }
-.section-title {
-    position: absolute;
-    margin-left: 41px;
-    justify-content: left !important;
-    top: 11%;
+.block {
+    background: #0b1b40;
+}
+.subtitle {
+    font-weight: bold;
+    padding: 20px 0 0 20px;
+}
+.block-title {
+    position: relative;
+    width: 100%;
+    margin: 10px 25px;
     font-size: 19pt;
     font-weight: bold;
+    display: inline-block;
+}
+.block-title + span {
+    margin: 0 0 10px 25px;
+    display: block;
+    font-size: 10pt;
+}
+.block-section {
+    background: #f1f1f1;
+    padding: 20px 0 0 20px;
+    overflow: auto;
+    margin-left: 2px;
+    position: relative;
+}
+.block-section:not(:last-of-type):after {
+    display: block;
+    content: '';
+    margin: auto;
+    border-bottom: #c1c1c1 solid 2px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 97%;
+
+}
+.block-section div {
+    margin: 0 20px 33px 20px;
+}
+
+.block-title:not(.flights), .block-title + span{
+    color: white;
+}
+.block-title.flights {
+    position: absolute;
+    top: 0%;
+}
+.flight {
+    display: flex;
+    align-items: center;
 }
 
 

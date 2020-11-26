@@ -21,24 +21,30 @@
 
 
         <div>
-            <div id="flight" style="display: flex;">
+            <div class="flight-container">
                 <div class="flight-info">
-                    <span id="date"></span>
-                    <div class="flight-with-time">
-                        <div class="airport-with-time">
-                            <div class="airport-code-bold"></div>
-                            <div class="flight-time"></div>
-                        </div>
-                        <i class="fas fa-arrow-right"></i>
-                        <div class="airport-with-time">
-                            <div class="airport-code-bold"></div>
-                            <div class="flight-time"></div>
-                        </div>
-                    </div>
-                    <span id="flightTime"></span>
-                    <span class="connections border-left">Nonstop</span>
+                    <div class="all-flights">
+                        <div class="flight">
+                            <span id="date"></span>
+                            <div class="flight-with-time">
+                                <div class="airport-with-time">
+                                    <div class="airport-code-bold"></div>
+                                    <div class="flight-time"></div>
+                                </div>
+                                <i class="fas fa-arrow-right"></i>
+                                <div class="airport-with-time">
+                                    <div class="airport-code-bold"></div>
+                                    <div class="flight-time"></div>
+                                </div>
+                            </div>
+                            <span id="flightTime"></span>
+                            <span class="connection border-left"></span>
 
-                    <span id="fare"></span>
+                            <span id="fare"></span>
+                        </div>
+
+                    </div>
+
                 </div>
                 <div class="price-info">
                     <div class="price-per-pass">
@@ -63,10 +69,6 @@
                         <span>$214.60</span>
                     </div>
                 </div>
-            </div>
-
-            <div id="returnFlight" style="height: 200px;">
-                <span>Return Flight Info (if applicable)</span>
             </div>
 
             <div class="price-summary">

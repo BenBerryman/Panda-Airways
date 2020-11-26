@@ -18,25 +18,31 @@
         <div id="stepProgressBar"></div>
     </div>
 
-    <div id="flight" style="display: flex;">
+    <div class="flight-container">
         <div class="flight-info">
-            <div class="section-title" style="width: 700px;">Flight Info</div>
-            <span id="date"></span>
-            <div class="flight-with-time">
-                <div class="airport-with-time">
-                    <div class="airport-code-bold"></div>
-                    <div class="flight-time"></div>
-                </div>
-                <i class="fas fa-arrow-right"></i>
-                <div class="airport-with-time">
-                    <div class="airport-code-bold"></div>
-                    <div class="flight-time"></div>
-                </div>
-            </div>
-            <span id="flightTime"></span>
-            <span class="connections border-left">Nonstop</span>
+            <div class="block-title flights">Flight Info</div>
+            <div class="all-flights">
+                <div class="flight">
+                    <span id="date"></span>
+                    <div class="flight-with-time">
+                        <div class="airport-with-time">
+                            <div class="airport-code-bold"></div>
+                            <div class="flight-time"></div>
+                        </div>
+                        <i class="fas fa-arrow-right"></i>
+                        <div class="airport-with-time">
+                            <div class="airport-code-bold"></div>
+                            <div class="flight-time"></div>
+                        </div>
+                    </div>
+                    <span id="flightTime"></span>
+                    <span class="connection border-left"></span>
+                    <span id="fare"></span>
 
-            <span id="fare"></span>
+                </div>
+
+            </div>
+
         </div>
         <div class="price-info">
             <div class="price-per-pass">
@@ -63,12 +69,118 @@
         </div>
     </div>
 
+    <div class="passenger-info block">
+
+        <span class="block-title">Passenger Information</span>
+        <span>Please make sure names match government-issued IDs. </span>
+    </div>
+
+    <div class="contact-info block">
+        <span class="block-title">Contact Information</span>
+        <div class="block-section">
+            <div class="input-field small email-container">
+                <label>EMAIL ADDRESS<span style="color: red;"> *</span>
+                    <input class="email" type="email" required>
+                </label>
+            </div>
+            <div class="input-field small">
+
+                <label>PHONE NUMBER<span style="color: red;"> *</span><span class="tag">Numbers only</span>
+                    <input class="phoneNumber" type="tel" maxlength="10" required>
+                </label>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="coupons-info block">
+        <span class="block-title">Coupon Codes</span>
+        <div class="block-section">
+            <div class="input-field small">
+                <label>CODE
+                    <input name="coupCode" type="text">
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="payment-info block">
+        <span class="block-title">Credit Card Information</span>
+        <div class="block-section">
+            <div class="input-field small">
+                <label>CREDIT/DEBIT CARD #<span style="color: red;"> *</span><span class="tag">Numbers only</span>
+                    <input name="cardNum" type="text" required>
+                </label>
+            </div>
+            <div class="MY-container">
+                <div class="input-field small">
+                    <label>EXPIRATION DATE<span style="color: red;"> *</span>
+                        <select name="cardExpiryMonth" class="cardExpiryMonth" required>
+                            <option value="" disabled selected>Month</option>
+                            <option value="01">January</option>
+                            <option value="02">February</option>
+                            <option value="03">March</option>
+                            <option value="04">April</option>
+                            <option value="05">May</option>
+                            <option value="06">June</option>
+                            <option value="07">July</option>
+                            <option value="08">August</option>
+                            <option value="09">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="input-field small">
+                    <label>&nbsp;
+                        <input name="cardExpiryYear" type="text" placeholder="YYYY" required>
+                    </label>
+                </div>
+            </div>
+
+            <div class="input-field small" style="width:122px;">
+                <label>SECURITY CODE<span style="color: red;"> *</span>
+                    <input name="secCode" type="text" maxlength="3" required>
+                </label>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="price-summary">
+        <div class="extra-info-highlight">
+            <i class="fas fa-arrows-alt-h"></i>
+            <span>For your safety, middle seats will stay open through January 21, 2021 to promote physical distancing onboard.</span></div>
+        <div id="priceTotals">
+            <div id="bagFee">
+                <span>BAG FEE</span>
+                <span>$0.00</span>
+            </div>
+            <div id="subtotal">
+                <span>SUBTOTAL</span>
+                <span>$200.00</span>
+            </div>
+            <div id="taxes-fees">
+                <span>TAXES & FEES</span>
+                <span>$14.60</span>
+            </div>
+            <div id="total">
+                <span>TRIP TOTAL</span>
+                <span>$214.60</span>
+            </div>
+        </div>
+    </div>
+
     <div id="nextPageHolder" style="margin: 77px 0 0 0;">
         <div id="policy-agreement">
             <div><strong>Transportation of hazardous materials</strong></div>
             <div>Federal law forbids the carriage of hazardous materials such as aerosols, fireworks, lithium batteries, and flammable liquids aboard the aircraft in your checked or carryon baggage.
                 E-cigarettes are not permitted in checked baggage and must be transported in carryon baggage only. By clicking 'Purchase', you acknowledge that you understand the hazardous materials restrictions and penalties. View more on hazardous materials.
-                By clicking 'Purchase', I agree to the Terms and Conditions below, the privacy policy, fare rules, and the contract of carriage</div>
+                </div>
+            <div style="width: 100%;">
+                By clicking 'Purchase', I agree to the Terms and Conditions below, the privacy policy, fare rules, and the contract of carriage.
+            </div>
 
 
         </div>
