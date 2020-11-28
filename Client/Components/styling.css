@@ -4,11 +4,25 @@
 .container {
     width: 1000px;
 }
+sup {
+    font-size: 62%;
+}
 .tag {
     background-color: inherit !important;
     font-size: 8pt !important;
     position: absolute;
     top: -5%;
+}
+.vouchers-info button {
+    width: 75px;
+    height: 39px;
+    position: absolute;
+    top: 30%;
+    font-size: 12pt;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #6a6a6a;
 }
 #slideshow {
     position: relative;
@@ -385,6 +399,16 @@ table tbody tr:last-of-type #businessCol {
     width:100%;
     height: 90px;
 }
+.no-flights {
+    text-align: center;
+    margin-top: 115px;
+    display: none;
+}
+.no-flights p:first-of-type {
+    font-size: 20pt;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
 
 .border-bottom {
     border-bottom: #d1d1d1 solid 2px;
@@ -495,6 +519,8 @@ table tbody tr:last-of-type #businessCol {
 }
 .flight-time {
     position: absolute;
+    text-align: center;
+    width: 100%;
 }
 .connections {
     padding-left:10px;
@@ -626,7 +652,7 @@ table tbody tr:last-of-type #businessCol {
     width: 97%;
 
 }
-.block-section div {
+.block-section div, .block-section button {
     margin: 0 20px 33px 20px;
 }
 

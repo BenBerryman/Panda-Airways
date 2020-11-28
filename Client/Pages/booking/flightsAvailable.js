@@ -40,7 +40,7 @@ function convertTime(time) {
     return hour.toString() + ":" + min.toString() + AmOrPm;
 }
 
-function insertInfo(row, data, directFlight) {
+function insertInfo(row, data) {
     //Depart time
     var departing = row.insertCell();
     var departTime = new Date(data.scheduled_departure);
@@ -50,7 +50,7 @@ function insertInfo(row, data, directFlight) {
     var arriveTime  = new Date(data.scheduled_arrival);
     arriving.innerHTML = convertTime(arriveTime);
     var stops = row.insertCell();
-    if(directFlight)
+    if(data.conn1 === undefined)
         stops.innerHTML = "Nonstop";
     else
         stops.innerHTML = "1 stop";
@@ -87,11 +87,14 @@ function insertInfo(row, data, directFlight) {
 }
 
 function noFlights() {
-    console.log("No flights");
+    document.getElementsByClassName("container")[0].style.display = "none";
+    document.getElementsByClassName("no-flights")[0].style.display = "block";
 }
 
 function pickFlight(flight, fare) {
-    var flight_picked = {"flight":flight, "fare":fare, "travelers": travelers};
+    var flight_picked = {"flight":flight.flight_id, "fare":fare, "travelers": travelers};
+    if(flight.conn1_flight_id !== undefined)
+        flight_picked.flight2 = flight.conn1_flight_id;
     localStorage.setItem("flight", JSON.stringify(flight_picked));
 }
 
@@ -114,10 +117,7 @@ function showFlights() {
     flights.forEach(function(type, i) {
         type.forEach(function(flight) {
             var row = table.insertRow();
-            if(i===0) //Direct Flight
-                insertInfo(row, flight, true);
-            else
-                insertInfo(row, flight, false);
+            insertInfo(row, flight);
         });
     });
 }

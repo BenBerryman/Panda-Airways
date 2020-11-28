@@ -31,5 +31,48 @@ const calculateDuration = (flight) => {
     flight.duration = hoursBetween.toString()+"h "+minutesBetween+"m";
     return arriveTime-departTime;
 }
-module.exports = {calculateFarePrice, calculateDuration};
+const directFlights = () => {
+    return `SELECT departing.flight_id, scheduled_departure, scheduled_arrival, departing.city AS depart_city,
+       departing.airport_code AS depart, arriving.city AS arrive_city, arriving.airport_code AS arrive
+            FROM
+                (SELECT flight_id,scheduled_departure, scheduled_arrival, city, airport_code
+                FROM flights JOIN airport
+                ON flights.departure_airport=airport.airport_code) departing
+            JOIN
+                (SELECT flight_id, city, airport_code
+                FROM flights JOIN airport
+                ON flights.arrival_airport=airport.airport_code) arriving
+            ON departing.flight_id=arriving.flight_id`;
+}
+
+const connectionFlights = ()  => {
+    return `SELECT departing.flight_id, departing.scheduled_departure AS scheduled_departure,
+                departing.scheduled_arrival AS initial_scheduled_arrival, departing.city AS depart_city,
+                 departing.airport_code AS depart, connection1Departing.scheduled_departure
+                  AS conn1_scheduled_departure, connection1Departing.scheduled_arrival
+                   AS scheduled_arrival, connection1.city AS conn1_city, connection1.airport_code
+                    AS conn1,connection1Departing.flight_id AS conn1_flight_id, arriving.city AS arrive_city,
+                     arriving.airport_code AS arrive
+            FROM
+                (SELECT flight_id,scheduled_departure, scheduled_arrival, city, airport_code
+                 FROM flights JOIN airport
+                                   ON flights.departure_airport=airport.airport_code) departing
+                    JOIN
+                (SELECT flight_id, city, airport_code
+                 FROM flights JOIN airport
+                                   ON flights.arrival_airport=airport.airport_code) connection1
+                ON departing.flight_id=connection1.flight_id
+                    JOIN
+                ((SELECT flight_id, scheduled_departure, scheduled_arrival, city, airport_code
+                 FROM flights JOIN airport
+                                   ON flights.departure_airport=airport.airport_code) connection1Departing
+                    JOIN
+                (SELECT flight_id, city, airport_code
+                 FROM flights JOIN airport
+                                   ON flights.arrival_airport=airport.airport_code) arriving
+                ON connection1Departing.flight_id=arriving.flight_id)
+                ON connection1.airport_code=connection1Departing.airport_code`;
+}
+
+module.exports = {calculateFarePrice, calculateDuration, directFlights, connectionFlights};
 

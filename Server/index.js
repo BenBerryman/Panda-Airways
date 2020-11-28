@@ -10,21 +10,6 @@ app.use(express.json());      //req.body
 
 //ROUTES
 
-//insert a todo
-app.post('/todos', async(req, res)=>{
-    try{
-
-        const {description} = req.body;
-        const newTodo = await pool.query(`INSERT INTO todo (description) VALUES($1) RETURNING *`,
-            [description]);
-
-        res.json(newTodo);
-
-    } catch(err){
-        console.log(err.message);
-    }
-});
-
 //get all todo
 app.get('/todos', async(req, res)=>{
     try{
@@ -49,47 +34,15 @@ app.get('/findFlights', async(req, res)=>{
     try{
         const args = [req.query.from, req.query.to, req.query.dates.toString(), req.query.fare, req.query.travelers];
 
-        const directFlights = await pool.query(`SELECT departing.flight_id, scheduled_departure, scheduled_arrival, departing.city AS depart_city, departing.airport_code AS depart, arriving.city AS arrive_city, arriving.airport_code AS arrive
-                                            FROM
-                                                (SELECT flight_id,scheduled_departure, scheduled_arrival, city, airport_code
-                                                FROM flights JOIN airport
-                                                ON flights.departure_airport=airport.airport_code) departing
-                                            JOIN
-                                                (SELECT flight_id, city, airport_code
-                                                FROM flights JOIN airport
-                                                ON flights.arrival_airport=airport.airport_code) arriving
-                                            ON departing.flight_id=arriving.flight_id
+        const directFlights = await pool.query(`${calculations.directFlights()}
                                             WHERE departing.airport_code LIKE $1 AND arriving.airport_code LIKE $2
                                             AND scheduled_departure::text LIKE $3`,
             [args[0],args[1],args[2]+' %']);
 
-        const oneStopFlights = await pool.query(`SELECT departing.flight_id, departing.scheduled_departure AS scheduled_departure,
-                                                    departing.scheduled_arrival AS initial_scheduled_arrival, departing.city AS depart_city,
-                                                     departing.airport_code AS depart, connection1Departing.scheduled_departure
-                                                      AS conn1_scheduled_departure, connection1Departing.scheduled_arrival
-                                                       AS scheduled_arrival, connection1.city AS conn1_city, connection1.airport_code
-                                                        AS conn1,arriving.flight_id AS arrive_flightid, arriving.city AS arrive_city,
-                                                         arriving.airport_code AS arrive
-                                            FROM
-                                                (SELECT flight_id,scheduled_departure, scheduled_arrival, city, airport_code
-                                                 FROM flights JOIN airport
-                                                                   ON flights.departure_airport=airport.airport_code) departing
-                                                    JOIN
-                                                (SELECT flight_id, city, airport_code
-                                                 FROM flights JOIN airport
-                                                                   ON flights.arrival_airport=airport.airport_code) connection1
-                                                ON departing.flight_id=connection1.flight_id
-                                                    JOIN
-                                                ((SELECT flight_id, scheduled_departure, scheduled_arrival, city, airport_code
-                                                 FROM flights JOIN airport
-                                                                   ON flights.departure_airport=airport.airport_code) connection1Departing
-                                                    JOIN
-                                                (SELECT flight_id, city, airport_code
-                                                 FROM flights JOIN airport
-                                                                   ON flights.arrival_airport=airport.airport_code) arriving
-                                                ON connection1Departing.flight_id=arriving.flight_id)
-                                                ON connection1.airport_code=connection1Departing.airport_code
-                                            WHERE connection1Departing.scheduled_departure > departing.scheduled_arrival AND departing.airport_code LIKE $1 AND arriving.airport_code LIKE $2 AND departing.scheduled_departure::text LIKE $3 ;`,
+        const oneStopFlights = await pool.query(`${calculations.connectionFlights()}
+                                            WHERE connection1Departing.scheduled_departure > departing.scheduled_arrival
+                                             AND departing.airport_code LIKE $1 AND arriving.airport_code LIKE $2
+                                              AND departing.scheduled_departure::text LIKE $3 ;`,
             [args[0],args[1],args[2]+' %']);
 
         const allFlights = [directFlights.rows, oneStopFlights.rows];
@@ -102,6 +55,56 @@ app.get('/findFlights', async(req, res)=>{
         res.json(allFlights);
     }
     catch(err){
+        console.log(err.message);
+    }
+});
+
+app.get('/getFlight', async(req, res)=> {
+    try
+    {
+        const flightID = req.query.id;
+        const flightID2 = req.query.id2;
+        let flight;
+        if(flightID2 === undefined)
+            flight = await pool.query(`${calculations.directFlights()}
+                                            WHERE departing.flight_id=$1;`, [flightID]);
+        else
+            flight = await pool.query(`${calculations.connectionFlights()}
+                                            WHERE departing.flight_id=$1 AND connection1Departing.flight_id=$2`, [flightID, flightID2]);
+
+        calculations.calculateDuration(flight.rows[0]);
+        calculations.calculateFarePrice(flight.rows[0]);
+        res.json(flight.rows);
+
+    }
+    catch(err){
+        console.log(err.message);
+    }
+});
+
+app.post('/purchase', async(req, res)=>{
+    try
+    {
+        console.log(req.body);
+
+
+    } catch(err) {
+        console.log(err.message);
+    }
+
+});
+
+//insert a todo
+app.post('/todos', async(req, res)=>{
+    try{
+
+        const {description} = req.body;
+        const newTodo = await pool.query(`INSERT INTO todo (description) VALUES($1) RETURNING *`,
+            [description]);
+
+        res.json(newTodo);
+
+    } catch(err){
         console.log(err.message);
     }
 });
