@@ -15,8 +15,15 @@ getCities(from)
     .then((value)=>document.getElementById("departCity").innerHTML = value);
 getCities(to)
     .then((value)=>document.getElementById("arriveCity").innerHTML = value);
-document.getElementById("alt-date").value = date;
+initialDateInsert();
 findFlights();
+
+function initialDateInsert() {
+    var year = date.substr(0,4);
+    var month = date.substr(5,2);
+    var day = date.substr(8);
+    document.getElementById("date").value = `${month}/${day}/${year}`;
+}
 
 function changeDate() {
     date = document.getElementById("alt-date").value;
@@ -121,7 +128,6 @@ function pickFlight(flight, fare) {
     var flight_picked = {"flight":flight.id, "fare":fare, "travelers": travelers};
     if(flight.conn1_id !== undefined)
         flight_picked.flight2 = flight.conn1_id;
-    localStorage.removeItem("date");
     localStorage.setItem("flight", JSON.stringify(flight_picked));
 }
 
