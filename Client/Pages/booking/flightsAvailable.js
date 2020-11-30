@@ -3,19 +3,43 @@ const query = window.location.search;
 const urlParams = new URLSearchParams(query);
 var from = urlParams.get('from');
 var to = urlParams.get('to');
-var dates = urlParams.get('dates');
+var date = localStorage.getItem("date");
 var fare = urlParams.get('fare');
 var travelers = urlParams.get('travelers');
 let flights = [];
+let table = document.getElementById("flightsTable").getElementsByTagName('tbody')[0];
+
+document.getElementById("depart").innerHTML = from;
+document.getElementById("arrive").innerHTML = to;
+getCities(from)
+    .then((value)=>document.getElementById("departCity").innerHTML = value);
+getCities(to)
+    .then((value)=>document.getElementById("arriveCity").innerHTML = value);
+document.getElementById("alt-date").value = date;
 findFlights();
 
+function changeDate() {
+    date = document.getElementById("alt-date").value;
+    while (table.childNodes.length > 2) {
+        table.removeChild(table.lastChild);
+    }
+    findFlights();
+}
+
+async function getCities(airportCode) {
+    try {
+        const response = await fetch(`http://localhost:5000/city?airport_code=${airportCode}`);
+        return await response.json();
+    } catch(err) {
+        console.log(err.message);
+    }
+}
 async function findFlights() {
     try {
         const response = await fetch("http://localhost:5000/findFlights/?"+$.param({
             from: from,
             to: to,
-            dates: dates,
-            fare: fare,
+            date: date,
             travelers: travelers
         }));
         let resp = await response.json();
@@ -32,12 +56,14 @@ async function findFlights() {
 }
 function convertTime(time) {
     var hour = time.getHours();
-    var min = time.getMinutes();
+    var min = time.getMinutes().toString();
     var AmOrPm = hour >= 12 ? 'PM' : 'AM';
     hour = hour % 12;
     if(hour===0)
         hour = 12;
-    return hour.toString() + ":" + min.toString() + AmOrPm;
+    if(min.length<2)
+        min = "0"+min;
+    return hour.toString() + ":" + min + AmOrPm;
 }
 
 function insertInfo(row, data) {
@@ -87,33 +113,21 @@ function insertInfo(row, data) {
 }
 
 function noFlights() {
-    document.getElementsByClassName("container")[0].style.display = "none";
+    document.getElementsByClassName("container")[1].style.display = "none";
     document.getElementsByClassName("no-flights")[0].style.display = "block";
 }
 
 function pickFlight(flight, fare) {
-    var flight_picked = {"flight":flight.flight_id, "fare":fare, "travelers": travelers};
-    if(flight.conn1_flight_id !== undefined)
-        flight_picked.flight2 = flight.conn1_flight_id;
+    var flight_picked = {"flight":flight.id, "fare":fare, "travelers": travelers};
+    if(flight.conn1_id !== undefined)
+        flight_picked.flight2 = flight.conn1_id;
+    localStorage.removeItem("date");
     localStorage.setItem("flight", JSON.stringify(flight_picked));
 }
 
 function showFlights() {
-    document.getElementById("depart").innerHTML = from;
-    document.getElementById("arrive").innerHTML = to;
-
-    if(flights[0].length > 0)
-    {
-        document.getElementById("departCity").innerHTML = flights[0][0].depart_city.trim();
-        document.getElementById("arriveCity").innerHTML = flights[0][0].arrive_city.trim();
-    }
-    else if(flights[1].length > 0)
-    {
-        document.getElementById("departCity").innerHTML = flights[1][0].depart_city.trim();
-        document.getElementById("arriveCity").innerHTML = flights[1][0].arrive_city.trim();
-    }
-
-    var table = document.getElementById("flightsTable").getElementsByTagName('tbody')[0];
+    document.getElementsByClassName("container")[1].style.display = "block";
+    document.getElementsByClassName("no-flights")[0].style.display = "none";
     flights.forEach(function(type, i) {
         type.forEach(function(flight) {
             var row = table.insertRow();
@@ -121,3 +135,15 @@ function showFlights() {
         });
     });
 }
+
+$(document).ready(()=>{
+    var today = new Date();
+    var max = new Date();
+    max.setDate(max.getDate()+61);
+    $('#date').datepicker({
+    dateFormat: "mm/dd/yy",
+    minDate: today,
+    maxDate: max,
+    altFormat: "yy-mm-dd",
+    altField: "#alt-date"
+})});

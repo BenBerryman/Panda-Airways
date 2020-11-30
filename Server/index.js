@@ -20,6 +20,17 @@ app.get('/todos', async(req, res)=>{
     }
 });
 
+app.get('/city', async(req, res)=>{
+    try {
+        const code = req.query.airport_code;
+        const city = await pool.query('SELECT city FROM airport WHERE airport_code LIKE $1',
+            [code]);
+        res.json(city.rows[0].city);
+    } catch(err) {
+        console.log(err.message);
+    }
+});
+
 app.get('/cities', async(req, res)=>{
     try {
         const allCities = await pool.query('SELECT DISTINCT city, airport_code FROM airport');
@@ -32,7 +43,7 @@ app.get('/cities', async(req, res)=>{
 
 app.get('/findFlights', async(req, res)=>{
     try{
-        const args = [req.query.from, req.query.to, req.query.dates.toString(), req.query.fare, req.query.travelers];
+        const args = [req.query.from, req.query.to, req.query.date.toString(), req.query.travelers];
 
         const directFlights = await pool.query(`${calculations.directFlights()}
                                             WHERE departing.airport_code LIKE $1 AND arriving.airport_code LIKE $2
@@ -42,10 +53,12 @@ app.get('/findFlights', async(req, res)=>{
         const oneStopFlights = await pool.query(`${calculations.connectionFlights()}
                                             WHERE connection1Departing.scheduled_departure > departing.scheduled_arrival
                                              AND departing.airport_code LIKE $1 AND arriving.airport_code LIKE $2
-                                              AND departing.scheduled_departure::text LIKE $3 ;`,
+                                              AND departing.scheduled_departure::text LIKE $3
+                                               AND connection1Departing.scheduled_departure::text LIKE $3;`,
             [args[0],args[1],args[2]+' %']);
 
         const allFlights = [directFlights.rows, oneStopFlights.rows];
+
         allFlights.forEach(function(type) {
             type.forEach(function(flight) {
                 calculations.calculateDuration(flight);
@@ -67,10 +80,10 @@ app.get('/getFlight', async(req, res)=> {
         let flight;
         if(flightID2 === undefined)
             flight = await pool.query(`${calculations.directFlights()}
-                                            WHERE departing.flight_id=$1;`, [flightID]);
+                                            WHERE departing.id=$1;`, [flightID]);
         else
             flight = await pool.query(`${calculations.connectionFlights()}
-                                            WHERE departing.flight_id=$1 AND connection1Departing.flight_id=$2`, [flightID, flightID2]);
+                                            WHERE departing.id=$1 AND connection1Departing.id=$2`, [flightID, flightID2]);
 
         calculations.calculateDuration(flight.rows[0]);
         calculations.calculateFarePrice(flight.rows[0]);

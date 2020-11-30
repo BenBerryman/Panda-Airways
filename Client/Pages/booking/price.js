@@ -15,12 +15,14 @@ async function getFlight(flight) {
 
 function convertTime(time) {
     var hour = time.getHours();
-    var min = time.getMinutes();
+    var min = time.getMinutes().toString();
     var AmOrPm = hour >= 12 ? 'PM' : 'AM';
     hour = hour % 12;
     if(hour===0)
         hour = 12;
-    return hour.toString() + ":" + min.toString() + AmOrPm;
+    if(min.length<2)
+        min = "0"+min;
+    return hour.toString() + ":" + min + AmOrPm;
 }
 function insertInfo(selection) {
     var dateDepart = new Date(selection.flight.scheduled_departure);
@@ -72,7 +74,7 @@ function insertInfo(selection) {
         price = flight.flight.businessPrice;
     document.getElementsByClassName("price-per-pass")[0].lastElementChild.innerHTML = "$"+(price-(0.0825*price)).toFixed(2);
     document.getElementsByClassName("taxes-per-pass")[0].lastElementChild.innerHTML = "$"+(0.0825*price).toFixed(2);
-    document.getElementsByClassName("total-per-pass")[0].lastElementChild.innerHTML = "$"+price;
+    document.getElementsByClassName("total-per-pass")[0].lastElementChild.innerHTML = "$"+price.toFixed(2);
     document.getElementsByClassName("passengers")[0].lastElementChild.innerHTML = "x"+flight.travelers;
     document.getElementsByClassName("flight-total")[0].lastElementChild.innerHTML = "<sup>$</sup>"+(price*flight.travelers).toFixed(2);
 

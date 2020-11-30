@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS passenger CASCADE;
 DROP TABLE IF EXISTS credit_card CASCADE;
-DROP TABLE IF EXISTS transactions CASCADE;
+DROP TABLE IF EXISTS transaction CASCADE;
 DROP TABLE IF EXISTS airport CASCADE;
 DROP TABLE IF EXISTS ticket CASCADE;
 DROP TABLE IF EXISTS aircraft CASCADE;
@@ -20,7 +20,7 @@ CREATE TABLE credit_card(
   expiration_year INTEGER NOT NULL
 );
 
-CREATE TABLE transactions(
+CREATE TABLE transaction(
   id SERIAL PRIMARY KEY,
   card_number NUMERIC(16,0) REFERENCES credit_card(card_number) NOT NULL,
   voucher VARCHAR,
@@ -71,7 +71,7 @@ CREATE TABLE flight(
 
 CREATE TABLE ticket(
   id SERIAL PRIMARY KEY,
-  transaction_id SERIAL REFERENCES transactions(id) NOT NULL,
+  transaction_id SERIAL REFERENCES transaction(id) NOT NULL,
   flight_id SERIAL REFERENCES flight(id) NOT NULL,
   standby_flight_id SERIAL REFERENCES flight(id),
   passenger_id SERIAL REFERENCES passenger(id) NOT NULL,
@@ -921,13 +921,13 @@ INSERT INTO flight
 VALUES (
 '1028',
 '310',
-'2020-12-10 09:00:00',
+'2020-12-10 11:00:00',
 'LAS',
 77,
-'2020-12-10 10:00:00',
+'2020-12-10 12:00:00',
 'DEN',
 23,
-'2020-12-10 13:00:00',
+'2020-12-10 16:00:00',
 'Scheduled',
 0,
 100,
@@ -4348,13 +4348,13 @@ INSERT INTO flight
 VALUES (
 '1177',
 '321',
-'2020-12-11 09:00:00',
+'2020-12-11 13:00:00',
 'LAS',
 25,
-'2020-12-11 10:00:00',
+'2020-12-11 14:00:00',
 'DEN',
 72,
-'2020-12-11 13:00:00',
+'2020-12-11 17:00:00',
 'Scheduled',
 0,
 50,
@@ -11772,4 +11772,24 @@ TRUE,
 TRUE
 );
 
-
+INSERT INTO flight
+VALUES (
+'1500',
+'321',
+'2020-12-10 14:00:00',
+'DEN',
+61,
+'2020-12-10 15:00:00',
+'JFK',
+22,
+'2020-12-10 18:00:00',
+'Scheduled',
+0,
+50,
+0,
+50,
+0,
+50,
+FALSE,
+FALSE
+);

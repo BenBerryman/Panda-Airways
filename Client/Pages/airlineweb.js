@@ -127,6 +127,11 @@ function autocomplete(inp, arr) {
     });
 }
 
+function insertDate()
+{
+    localStorage.setItem("date", document.getElementById("alt-date").value);
+}
+
 async function getCities() {
     try {
         const response = await fetch('http://localhost:5000/cities');
@@ -150,8 +155,10 @@ $(document).ready(function() {
 
     var today = new Date();
     var max = new Date();
+    var min = new Date();
+    min.setMonth(today.getMonth()-2);
     max.setDate(max.getDate()+61);
-    $('#dates').datepicker({
+    $('#date').datepicker({
         dateFormat: "mm/dd/yy",
         minDate: today,
         maxDate: max,
@@ -159,9 +166,9 @@ $(document).ready(function() {
         altField: "#alt-date"
 
     });
-    $('#datesStatus').datepicker({
+    $('#dateStatus').datepicker({
         dateFormat: "mm/dd/yy",
-        minDate: today,
+        minDate: min,
         maxDate: max,
         altFormat: "yy-mm-dd",
         altField: "#alt-date-status"

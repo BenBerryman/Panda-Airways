@@ -6,7 +6,7 @@
     <title>Panda Airways | Make Reservations & Plan a Trip</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
     <link href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="/hw4/Client/Components/styling.css">
+    <link rel="stylesheet" href="../Components/styling.css">
 </head>
 <body>
 
@@ -22,7 +22,6 @@
         <img src="https://images.unsplash.com/photo-1502657877623-f66bf489d236?ixlib=rb-1.2.1
                 &auto=format&fit=crop&w=2250&q=80">
     </div>
-<!--    <p>It's a great big world.</p>-->
 
 </div>
 
@@ -45,7 +44,7 @@
     <form id="book" autocomplete="off" action="booking/flightsAvailable.html" method="get" style="height: 263px; padding: 20px;">
         <section>
             <div class="input-field" style="margin-right: 20px;">
-                <input id="from"type="text" placeholder="From" required
+                <input id="from" type="text" placeholder="From" required
                        oninvalid="this.setCustomValidity('Please enter a valid location.')" onchange="this.setCustomValidity('')">
                 <input id="fromHidden" type="hidden" name="from">
                 <label for="from">From</label>
@@ -62,38 +61,31 @@
 
         <section>
             <div class="input-field" style="margin-right: 20px;">
-                <input id="dates" type="text" placeholder="Dates" style="padding-left: 7px" required
+                <input id="date" type="text" placeholder="Date" style="padding-left: 7px" required
                        oninvalid="this.setCustomValidity('This field is required.')" onchange="this.setCustomValidity('')">
-                <input id="alt-date" name="dates" type="hidden">
-                <label for="dates">Dates</label>
+                <input id="alt-date" type="hidden">
+                <label for="date">Date</label>
 
             </div>
 
             <div class="input-field">
-                <select id="fare" name="fare">
-                    <option value="economy">Economy</option>
-                    <option value="economyPlus">Economy Plus</option>
-                    <option value="Business">Business</option>
-                </select>
-                <label for="fare">Fare Class</label>
+                <div style="float:left; margin-right: 20px; width: 262px; padding: 0;">
+                    <select id="travelers" name="travelers" style="width: 54px;float:left; padding-left: 9px" onchange="changeText()">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                    <div id="travelText" style="float:left; font-size: 20pt; top:11px; position: relative;">traveler</div>
+
+                </div>
 
             </div>
         </section>
 
-        <section>
-            <div style="float:left; margin-right: 20px; width: 262px;">
-                <select id="travelers" name="travelers" style="width: 54px;float:left; padding-left: 9px" onchange="changeText()">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                </select>
-                <div id="travelText" style="float:left; font-size: 20pt; top:11px; position: relative;">traveler</div>
-
-            </div>
-
-            <input class="button" type="submit" value="Find Flights" style="width: 262px; margin-left: 9px; background-color: #ECECEC">
+        <section style="text-align: center">
+            <input class="button" type="submit" onclick="insertDate()" value="Find Flights" style="width: 262px; background-color: #ECECEC">
         </section>
     </form>
 
@@ -117,10 +109,10 @@
 
         <section>
             <div class="input-field" style="margin-right: 20px;">
-                <input id="datesStatus" type="text" placeholder="Dates" style="padding-left: 7px" required
+                <input id="dateStatus" type="text" placeholder="Date" style="padding-left: 7px" required
                        oninvalid="this.setCustomValidity('This field is required.')" onchange="this.setCustomValidity('')">
-                <input id="alt-date-status" name="dates" type="hidden">
-                <label for="dates">Date</label>
+                <input id="alt-date-status" name="date" type="hidden">
+                <label for="dateStatus">Date</label>
 
             </div>
 
@@ -131,7 +123,7 @@
             </div>
         </section>
         <section style="text-align: center;">
-            <input class="button" type="submit" value="Find Flights" style="width: 262px; margin: 0 auto; background-color: #ECECEC">
+            <input class="button" type="submit" value="Check Status" style="width: 262px; margin: 0 auto; background-color: #ECECEC">
         </section>
 
     </form>
@@ -146,7 +138,7 @@
 <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 <script>
     $(function(){
-        $('#header').load('/hw4/Client/Components/header.html');
+        $('#header').load('../Components/header.html');
     });
 </script>
 <script src="airlineweb.js"></script>
@@ -154,10 +146,10 @@
     $(document).ready(function() {
 
         $(function() {
-            $( "#dates" ).datepicker();
-            $( "#datesStatus").datepicker();
+            $( "#date" ).datepicker();
+            $( "#dateStatus").datepicker();
         });
-    })
+    });
     autocomplete(document.getElementById("from"), cities);
     autocomplete(document.getElementById("to"), cities);
     autocomplete(document.getElementById("fromStatus"), cities);
