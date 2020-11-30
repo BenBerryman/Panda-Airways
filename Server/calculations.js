@@ -33,9 +33,9 @@ const calculateDuration = (flight) => {
 }
 const directFlights = () => {
     return `SELECT departing.id, scheduled_departure, scheduled_arrival, departing.city AS depart_city,
-       departing.airport_code AS depart, arriving.city AS arrive_city, arriving.airport_code AS arrive
+       departing.flight_status AS depart_flight_status, departing.airport_code AS depart, arriving.city AS arrive_city, arriving.airport_code AS arrive
             FROM
-                (SELECT id,scheduled_departure, scheduled_arrival, city, airport_code
+                (SELECT id,scheduled_departure, scheduled_arrival, city, airport_code, flight_status
                 FROM flight JOIN airport
                 ON flight.departure_airport=airport.airport_code) departing
             JOIN
@@ -46,15 +46,22 @@ const directFlights = () => {
 }
 
 const connectionFlights = ()  => {
-    return `SELECT departing.id, departing.scheduled_departure AS scheduled_departure,
-                departing.scheduled_arrival AS initial_scheduled_arrival, departing.city AS depart_city,
-                 departing.airport_code AS depart, connection1Departing.scheduled_departure
-                  AS conn1_scheduled_departure, connection1Departing.scheduled_arrival
-                   AS scheduled_arrival, connection1.city AS conn1_city, connection1.airport_code
-                    AS conn1,connection1Departing.id AS conn1_id, arriving.city AS arrive_city,
-                     arriving.airport_code AS arrive
+    return `SELECT departing.id,
+                departing.scheduled_departure AS scheduled_departure,
+                departing.scheduled_arrival AS initial_scheduled_arrival,
+                departing.city AS depart_city,
+                departing.flight_status AS depart_flight_status,
+                departing.airport_code AS depart,
+                connection1Departing.scheduled_departure AS conn1_scheduled_departure,
+                connection1Departing.scheduled_arrival AS scheduled_arrival, 
+                connection1.city AS conn1_city,
+                connection1.airport_code AS conn1,
+                connection1Departing.flight_status AS conn1_flight_status,
+                connection1Departing.id AS conn1_id,
+                arriving.city AS arrive_city,
+                arriving.airport_code AS arrive
             FROM
-                (SELECT id,scheduled_departure, scheduled_arrival, city, airport_code
+                (SELECT id,scheduled_departure, scheduled_arrival, city, airport_code, flight_status
                  FROM flight JOIN airport
                                    ON flight.departure_airport=airport.airport_code) departing
                     JOIN
@@ -63,7 +70,7 @@ const connectionFlights = ()  => {
                                    ON flight.arrival_airport=airport.airport_code) connection1
                 ON departing.id=connection1.id
                     JOIN
-                ((SELECT id, scheduled_departure, scheduled_arrival, city, airport_code
+                ((SELECT id, scheduled_departure, scheduled_arrival, city, airport_code, flight_status
                  FROM flight JOIN airport
                                    ON flight.departure_airport=airport.airport_code) connection1Departing
                     JOIN

@@ -89,7 +89,7 @@
         </section>
     </form>
 
-    <form id="status" action="" style="height:248px; padding: 20px;">
+    <form id="status" autocomplete="off" action="booking/flightStatus.html" style="height:248px; padding: 20px;">
         <section>
             <div class="input-field" style="margin-right: 20px;">
                 <input id="fromStatus" type="text" placeholder="From" required
@@ -111,25 +111,25 @@
             <div class="input-field" style="margin-right: 20px;">
                 <input id="dateStatus" type="text" placeholder="Date" style="padding-left: 7px" required
                        oninvalid="this.setCustomValidity('This field is required.')" onchange="this.setCustomValidity('')">
-                <input id="alt-date-status" name="date" type="hidden">
+                <input id="alt-date-status" type="hidden">
                 <label for="dateStatus">Date</label>
 
             </div>
 
             <div class="input-field">
-                <input id="flightNum" type="text" placeholder="Flight Number">
+                <input id="flightNum" type="text" name="flightNum" placeholder="Flight Number">
                 <label for="flightNum">(Optional) Flight Number</label>
 
             </div>
         </section>
         <section style="text-align: center;">
-            <input class="button" type="submit" value="Check Status" style="width: 262px; margin: 0 auto; background-color: #ECECEC">
+            <input class="button" onclick="insertDateStatus()" type="submit" value="Check Status" style="width: 262px; margin: 0 auto; background-color: #ECECEC">
         </section>
 
     </form>
 </div>
 
-<div class="container">
+<div class="container" style="padding:26px 0;">
     <div class="title">Find your adventure.</div>
     <p><span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ab ad alias beatae culpa, dolor dolorum eius explicabo facilis fugit in ipsa nam officia omnis quae, repellat reprehenderit velit voluptate!</span><span>Adipisci alias aliquid at deleniti dicta distinctio ea, eligendi et expedita explicabo facere fugiat ipsam itaque iusto libero nam officia perferendis quasi quis quos recusandae repellat reprehenderit soluta unde vero?</span><span>Aliquam eligendi est hic impedit ipsum nulla officia quibusdam quidem quod, reiciendis repellat repudiandae temporibus? Dicta dolore fuga mollitia nam neque nisi nulla quis quisquam, saepe vel vitae voluptate voluptatum.</span><span>Aliquid aspernatur, dolor dolorem dolorum error exercitationem fugiat illo itaque maiores, minus mollitia nulla pariatur possimus reiciendis reprehenderit. Aliquid asperiores blanditiis dicta et nisi nostrum nulla officiis optio quod rerum.</span><span>Aliquam consectetur cumque debitis deleniti impedit, iste laborum minima necessitatibus obcaecati, omnis quae quas tempora! Consequatur enim illum placeat qui rem. Ab aliquam natus nulla numquam quas reiciendis repudiandae voluptatem!</span></p>
 </div>

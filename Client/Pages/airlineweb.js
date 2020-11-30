@@ -127,9 +127,11 @@ function autocomplete(inp, arr) {
     });
 }
 
-function insertDate()
-{
+function insertDate() {
     localStorage.setItem("date", document.getElementById("alt-date").value);
+}
+function insertDateStatus() {
+    localStorage.setItem("date", document.getElementById("alt-date-status").value);
 }
 
 async function getCities() {
