@@ -74,7 +74,7 @@ CREATE TABLE ticket(
   id SERIAL PRIMARY KEY,
   transaction_id INTEGER REFERENCES transaction(id) NOT NULL,
   flight_id INTEGER REFERENCES flight(id) NOT NULL,
-  standby_flight_id INTEGER,
+  standby_flight_id INTEGER REFERENCES flight(id),
   passenger_id INTEGER REFERENCES passenger(id) NOT NULL,
   fare_condition CHAR VARYING(10) NOT NULL,
   baggage_claim_number SERIAL NOT NULL,

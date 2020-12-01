@@ -105,17 +105,43 @@ app.post('/purchase', async(req, res)=>{
 
         var price;
         var amount;
-        if(flight.fare === "Economy")
+        var fare;
+        if(flight.fare === "Economy"){
             price = flight.flight.econPrice;
-        else if(flight.fare === "Economy Plus")
+            fare = "economy";
+        }
+        else if(flight.fare === "Economy Plus"){
             price = flight.flight.econPlusPrice;
-        else
+            fare = "economy_plus";
+        }
+        else{
             price = flight.flight.businessPrice;
+            fare = "business";
+        }
         amount = (price*flight.travelers).toFixed(2);
 
         var indirect = false;
-        if (flight.flight.conn1_id != undefined)
+        if (flight.flight.conn1_id !== undefined)
             indirect = true;
+
+        var available = await pool.query(
+            `SELECT
+                CASE WHEN $1_available<=0 
+                THEN TRUE
+                ELSE FALSE
+                END
+            FROM flights WHERE flight_id=$2;`,
+            [fare, flight.flight.id]);
+
+        if (indirect)
+            var available = await pool.query(
+                `SELECT
+                    CASE WHEN $1_available<=0 
+                    THEN TRUE
+                    ELSE FALSE
+                    END
+                FROM flights WHERE flight_id=$2;`,
+                [fare, flight.flight.conn1_id]);
 
         var postCard = await pool.query(
             `INSERT INTO credit_card VALUES ($1, $2, $3, $4);`, 
@@ -124,7 +150,7 @@ app.post('/purchase', async(req, res)=>{
         var postTrans = await pool.query(
             `INSERT INTO transaction (card_number, voucher, amount, contact_email, contact_phone_number, transaction_date)
             VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP) RETURNING id;`, 
-            [paymentInfo.cardNum, "NULL", amount, contactInfo.email, contactInfo.phone]);
+            [paymentInfo.cardNum, null, amount, contactInfo.email, contactInfo.phone]);
         
         var i;
         for (i=0; i<flight.travelers; i++){
@@ -136,13 +162,13 @@ app.post('/purchase', async(req, res)=>{
             var postTicket = await pool.query(
                 `INSERT INTO ticket (transaction_id, flight_id, standby_flight_id, passenger_id, fare_condition)
                 VALUES ($1, $2, $3, $4, $5);`, 
-                [postTrans.rows[0].id, flight.flight.id, 0, postPass.rows[0].id, flight.fare]);
+                [postTrans.rows[0].id, flight.flight.id, null, postPass.rows[0].id, flight.fare]);
 
             if (indirect)
                 var postConnTicket = await pool.query(
                     `INSERT INTO ticket (transaction_id, flight_id, standby_flight_id, passenger_id, fare_condition)
                     VALUES ($1, $2, $3, $4, $5);`, 
-                    [postTrans.rows[0].id, flight.flight.conn1_id, 0, postPass.rows[0].id, flight.fare]);
+                    [postTrans.rows[0].id, flight.flight.conn1_id, null, postPass.rows[0].id, flight.fare]);
         }
 
         const response = {
