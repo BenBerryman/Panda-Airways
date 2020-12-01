@@ -10,7 +10,7 @@ CREATE TABLE passenger(
   id SERIAL PRIMARY KEY,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
-  date_of_birth TIMESTAMP NOT NULL
+  dob TIMESTAMP NOT NULL
 );
 
 CREATE TABLE credit_card(
@@ -26,7 +26,8 @@ CREATE TABLE transaction(
   voucher VARCHAR,
   amount NUMERIC(7,2) NOT NULL,
   contact_email TEXT NOT NULL,
-  contact_phone_number NUMERIC(10,0) NOT NULL
+  contact_phone_number NUMERIC(10,0) NOT NULL,
+  transaction_date TIMESTAMP NOT NULL
 );
 
 CREATE TABLE aircraft(
@@ -47,7 +48,7 @@ CREATE TABLE airport(
 );
 
 CREATE TABLE flight(
-  id SERIAL PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   aircraft_code CHAR(3) REFERENCES aircraft(aircraft_code) NOT NULL,
   boarding_time TIMESTAMP NOT NULL,
   departure_airport CHAR(3) REFERENCES airport(airport_code) NOT NULL,
@@ -71,10 +72,10 @@ CREATE TABLE flight(
 
 CREATE TABLE ticket(
   id SERIAL PRIMARY KEY,
-  transaction_id SERIAL REFERENCES transaction(id) NOT NULL,
-  flight_id SERIAL REFERENCES flight(id) NOT NULL,
-  standby_flight_id SERIAL REFERENCES flight(id),
-  passenger_id SERIAL REFERENCES passenger(id) NOT NULL,
+  transaction_id INTEGER REFERENCES transaction(id) NOT NULL,
+  flight_id INTEGER REFERENCES flight(id) NOT NULL,
+  standby_flight_id INTEGER,
+  passenger_id INTEGER REFERENCES passenger(id) NOT NULL,
   fare_condition CHAR VARYING(10) NOT NULL,
   baggage_claim_number SERIAL NOT NULL,
   boarding_no SERIAL NOT NULL
