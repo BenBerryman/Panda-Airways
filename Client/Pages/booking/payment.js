@@ -70,6 +70,7 @@ async function purchase(e) {
 
         const paymentInfo =
             {cardNum: document.getElementsByName("cardNum")[0].value,
+            nameOnCard: document.getElementsByName("nameOnCard")[0].value,
             expMonth: document.getElementsByName("cardExpiryMonth")[0].value,
             expYear: document.getElementsByName("cardExpiryYear")[0].value};
 
