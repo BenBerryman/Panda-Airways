@@ -24,12 +24,32 @@ function travelerInfo() {
         document.getElementsByClassName("passenger-info block")[0].appendChild(block);
         $('#passenger'+i).load("../../Components/passengerInfo.html", function() {
             this.getElementsByClassName("subtitle")[0].innerHTML += passengerNum;
+            this.getElementsByClassName("firstName")[0].addEventListener('invalid', function() {
+                console.log("invalid!");
+            });
         });
         passengers.push(block);
     }
 }
+function checkValidity() {
+    var allValid = true;
 
-async function purchase() {
+    return allValid;
+
+}
+function validate(element) {
+    if(element.checkValidity())
+        element.setAttribute("isvalid", "true");
+    else
+        element.setAttribute("isvalid", "false");
+    if(element.type === 'text')
+    {
+        if(element.value.trim() < 1)
+            element.setAttribute("isvalid", "false");
+    }
+}
+
+async function purchase(e) {
     try
     {   //Get passenger info in 2D array
         var passengerInfo = [];
@@ -63,6 +83,14 @@ async function purchase() {
         {method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(info)});
+        let resp = await response.json();
+        if(resp.status === "success")
+            window.location.replace("./confirmation.html");
+        else if(resp.status === "flight_full") {
+            //Display error page
+        }
+
+
 
 
 

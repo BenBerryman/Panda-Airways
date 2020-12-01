@@ -98,9 +98,11 @@ app.get('/getFlight', async(req, res)=> {
 app.post('/purchase', async(req, res)=>{
     try
     {
-        console.log(req.body);
+        const response = {
+            status: "success"
+        }
 
-
+        res.json(response);
     } catch(err) {
         console.log(err.message);
     }

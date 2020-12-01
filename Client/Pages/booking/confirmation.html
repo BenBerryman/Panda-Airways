@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="../../Components/styling.css">
+    <script src="https://kit.fontawesome.com/44362617d9.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div id="header"></div>
+
+<div class="container">
+    <div id="flightResultsHead" class="border-bottom" style="height: 87px; margin-bottom: 0;">
+        <div style="float: left;">
+            <div class="title">Reservation Successful</div>
+        </div>
+        <div id="stepProgressBar"></div>
+    </div>
+
+    <div>
+        Thank you for flying Panda Airways. Your transaction number is:
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+    $(function(){
+        $('#header').load('../../Components/header.html');
+        $('#stepProgressBar').load('../../Components/stepProgressBar.html', function() {
+            var step = 3;
+            var bullets = document.getElementsByClassName("bullet");
+            for(i=0; i < step-1; i++)
+            {
+                bullets[i].classList.add('completed');
+
+            }
+            bullets[step-1].classList.add('current');
+        });
+    });
+</script>
+
+</body>
+</html>

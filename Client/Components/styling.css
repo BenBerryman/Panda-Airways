@@ -162,14 +162,14 @@ input, label, select {
 .MDY-container {
     float: left;
     position: relative;
-    width: 235px;
+    width: 245px;
 }
 .MDY-container div, .MY-container div {
     margin-right:0 !important;
     margin-bottom: 0 !important;
 }
 .MDY-container div:first-of-type {
-    width: 111px;
+    width: 116px;
     margin-left: 0;
 }
 .MDY-container div:nth-of-type(2) {
@@ -183,10 +183,10 @@ input, label, select {
 .MY-container {
     float: left;
     position: relative;
-    width: 199px;
+    width: 208px;
 }
 .MY-container div:first-of-type {
-    width: 130px;
+    width: 134px;
     margin-left: 0;
 }
 .email-container {
@@ -263,6 +263,7 @@ select {
     background-repeat: no-repeat;
     background-position: 100%;
     cursor: pointer;
+    box-shadow: none;
 
 }
 select option {
@@ -682,4 +683,8 @@ table tbody tr:last-of-type #businessCol {
     align-items: center;
 }
 
+input:not(:placeholder-shown):invalid {
+    border-bottom-color: red;
+    box-shadow: none;
+}
 

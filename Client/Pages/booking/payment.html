@@ -69,125 +69,127 @@
         </div>
     </div>
 
-    <div class="passenger-info block">
+    <form onsubmit="purchase()">
+        <div class="passenger-info block">
 
-        <span class="block-title">Passenger Information</span>
-        <span>Please make sure names match government-issued IDs.</span>
-    </div>
-
-    <div class="contact-info block">
-        <span class="block-title">Contact Information</span>
-        <div class="block-section">
-            <div class="input-field small email-container">
-                <label>EMAIL ADDRESS<span style="color: red;"> *</span>
-                    <input class="email" type="email" required>
-                </label>
-            </div>
-            <div class="input-field small">
-
-                <label>PHONE NUMBER<span style="color: red;"> *</span><span class="tag">Numbers only</span>
-                    <input class="phoneNumber" type="tel" maxlength="10" required>
-                </label>
-
-            </div>
+            <span class="block-title">Passenger Information</span>
+            <span>Please make sure names match government-issued IDs.</span>
         </div>
-    </div>
 
-    <div class="vouchers-info block">
-        <span class="block-title">Voucher Code</span>
-        <div class="block-section">
-            <div class="input-field small">
-                <label>CODE
-                    <input name="voucherCode" type="text">
-                </label>
-            </div>
-            <button class="">APPLY</button>
-        </div>
-    </div>
-
-    <div class="payment-info block">
-        <span class="block-title">Credit Card Information</span>
-        <div class="block-section">
-            <div class="input-field small">
-                <label>CREDIT/DEBIT CARD #<span style="color: red;"> *</span><span class="tag">Numbers only</span>
-                    <input name="cardNum" type="text" required>
-                </label>
-            </div>
-            <div class="MY-container">
-                <div class="input-field small">
-                    <label>EXPIRATION DATE<span style="color: red;"> *</span>
-                        <select name="cardExpiryMonth" class="cardExpiryMonth" required>
-                            <option value="" disabled selected>Month</option>
-                            <option value="01">January</option>
-                            <option value="02">February</option>
-                            <option value="03">March</option>
-                            <option value="04">April</option>
-                            <option value="05">May</option>
-                            <option value="06">June</option>
-                            <option value="07">July</option>
-                            <option value="08">August</option>
-                            <option value="09">September</option>
-                            <option value="10">October</option>
-                            <option value="11">November</option>
-                            <option value="12">December</option>
-                        </select>
+        <div class="contact-info block">
+            <span class="block-title">Contact Information</span>
+            <div class="block-section">
+                <div class="input-field small email-container">
+                    <label>EMAIL ADDRESS<span style="color: red;">*</span>
+                        <input class="email" type="email" placeholder=" " required>
                     </label>
                 </div>
                 <div class="input-field small">
-                    <label>&nbsp;
-                        <input name="cardExpiryYear" type="text" placeholder="YYYY" required>
+
+                    <label>PHONE NUMBER<span style="color: red;">*</span><span class="tag">Numbers only</span>
+                        <input class="phoneNumber" type="tel" maxlength="10" minlength="10" placeholder=" " required>
+                    </label>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="vouchers-info block">
+            <span class="block-title">Voucher Code</span>
+            <div class="block-section">
+                <div class="input-field small">
+                    <label>CODE
+                        <input name="voucherCode" type="text">
                     </label>
                 </div>
-            </div>
-
-            <div class="input-field small" style="width:122px;">
-                <label>SECURITY CODE<span style="color: red;"> *</span>
-                    <input name="secCode" type="text" maxlength="3" required>
-                </label>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="price-summary">
-        <div class="extra-info-highlight" style="flex-direction: column">
-            <div style="font-weight: bold; font-size: 17pt">Temporary quarantine may apply:</div>
-            <div style="margin-left: 11px">This destination may be impacted by a temporary self-quarantine upon landing.</div>
-        </div>
-        <div id="priceTotals">
-            <div id="bag-fee">
-                <span>BAG FEE</span>
-                <span></span>
-            </div>
-            <div id="subtotal">
-                <span>SUBTOTAL</span>
-                <span></span>
-            </div>
-            <div id="taxes-fees">
-                <span>TAXES & FEES</span>
-                <span></span>
-            </div>
-            <div id="total">
-                <span>TRIP TOTAL</span>
-                <span></span>
+                <button class="">APPLY</button>
             </div>
         </div>
-    </div>
 
-    <div id="nextPageHolder" style="margin: 77px 0 0 0;">
-        <div id="policy-agreement">
-            <div><strong>Transportation of hazardous materials</strong></div>
-            <div>Federal law forbids the carriage of hazardous materials such as aerosols, fireworks, lithium batteries, and flammable liquids aboard the aircraft in your checked or carryon baggage.
-                E-cigarettes are not permitted in checked baggage and must be transported in carryon baggage only. By clicking 'Purchase', you acknowledge that you understand the hazardous materials restrictions and penalties. View more on hazardous materials.
+        <div class="payment-info block">
+            <span class="block-title">Credit Card Information</span>
+            <div class="block-section">
+                <div class="input-field small">
+                    <label>CREDIT/DEBIT CARD #<span style="color: red;">*</span><span class="tag">Numbers only</span>
+                        <input name="cardNum" type="text" maxlength="19" placeholder=" " required>
+                    </label>
                 </div>
-            <div style="width: 100%;">
-                By clicking 'Purchase', I agree to the Terms and Conditions below, the privacy policy, fare rules, and the contract of carriage.
+                <div class="MY-container">
+                    <div class="input-field small">
+                        <label>EXPIRATION DATE<span style="color: red;">*</span>
+                            <select name="cardExpiryMonth" class="cardExpiryMonth" required>
+                                <option value="" disabled selected>Month</option>
+                                <option value="01">January</option>
+                                <option value="02">February</option>
+                                <option value="03">March</option>
+                                <option value="04">April</option>
+                                <option value="05">May</option>
+                                <option value="06">June</option>
+                                <option value="07">July</option>
+                                <option value="08">August</option>
+                                <option value="09">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="input-field small">
+                        <label>&nbsp;
+                            <input name="cardExpiryYear" type="text" placeholder="YYYY" minlength="4" maxlength="4" required>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="input-field small" style="width:125px;">
+                    <label>SECURITY CODE<span style="color: red;">*</span>
+                        <input name="secCode" type="text" maxlength="3" minlength="3" placeholder=" " required>
+                    </label>
+                </div>
+
             </div>
-
-
         </div>
-        <button id="nextPage" onclick="purchase()">Purchase</button>
-    </div>
+
+        <div class="price-summary">
+            <div class="extra-info-highlight" style="flex-direction: column">
+                <div style="font-weight: bold; font-size: 17pt">Temporary quarantine may apply:</div>
+                <div style="margin-left: 11px">This destination may be impacted by a temporary self-quarantine upon landing.</div>
+            </div>
+            <div id="priceTotals">
+                <div id="bag-fee">
+                    <span>BAG FEE</span>
+                    <span></span>
+                </div>
+                <div id="subtotal">
+                    <span>SUBTOTAL</span>
+                    <span></span>
+                </div>
+                <div id="taxes-fees">
+                    <span>TAXES & FEES</span>
+                    <span></span>
+                </div>
+                <div id="total">
+                    <span>TRIP TOTAL</span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+
+        <div id="nextPageHolder" style="margin: 77px 0 0 0;">
+            <div id="policy-agreement">
+                <div><strong>Transportation of hazardous materials</strong></div>
+                <div>Federal law forbids the carriage of hazardous materials such as aerosols, fireworks, lithium batteries, and flammable liquids aboard the aircraft in your checked or carryon baggage.
+                    E-cigarettes are not permitted in checked baggage and must be transported in carryon baggage only. By clicking 'Purchase', you acknowledge that you understand the hazardous materials restrictions and penalties. View more on hazardous materials.
+                    </div>
+                <div style="width: 100%;">
+                    By clicking 'Purchase', I agree to the Terms and Conditions below, the privacy policy, fare rules, and the contract of carriage.
+                </div>
+
+
+            </div>
+            <button id="nextPage" type="submit">Purchase</button>
+        </div>
+    </form>
 
     <div class="legal-info">
         <strong>Terms and Conditions</strong>
@@ -224,12 +226,6 @@
                 card held as travel funds for use by the Customer on a future Panda Airways® flight.</li>
         </ul>
 
-
-
-
-
-
-
     </div>
 
 </div>
@@ -252,6 +248,9 @@
             }
             bullets[step-1].classList.add('current');
         });
+        document.getElementsByTagName("form")[0].addEventListener('submit', function(e){
+            e.preventDefault();
+        })
     });
 </script>
 <script src="./price.js"></script>

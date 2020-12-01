@@ -5,19 +5,19 @@
 <!--    <input name="firstName" type="text" required>-->
 <!--    <label for="firstName">First Name<span style="color:red;"> *</span></label>-->
 
-    <label>FIRST NAME<span style="color:red;"> *</span>
-        <input class="firstName" type="text" required>
+    <label>FIRST NAME<span style="color:red;">*</span>
+        <input class="firstName" type="text" placeholder=" " required>
     </label>
 </div>
 
 <div class="input-field small">
-    <label>LAST NAME<span style="color:red;"> *</span>
-        <input class="lastName" type="text" required>
+    <label>LAST NAME<span style="color:red;">*</span>
+        <input class="lastName" type="text" placeholder=" " required>
     </label>
 </div>
 <div class="MDY-container">
     <div class="input-field small">
-        <label>DATE OF BIRTH<span style="color: red;"> *</span>
+        <label>DATE OF BIRTH<span style="color: red;">*</span>
             <select class="dobMonth" required>
                 <option value="" disabled selected>Month</option>
                 <option value="01">January</option>
@@ -37,13 +37,13 @@
     </div>
     <div class="input-field small">
         <label>&nbsp;
-            <input class="dobDay" type="text" placeholder="DD" required>
+            <input class="dobDay" type="text" placeholder="DD" minlength="2" maxlength="2" required>
         </label>
 
     </div>
     <div class="input-field small">
         <label>&nbsp;
-            <input class="dobYear" type="text" placeholder="YYYY" required>
+            <input class="dobYear" type="text" placeholder="YYYY" minlength="4" maxlength="4" required>
         </label>
 
     </div>
