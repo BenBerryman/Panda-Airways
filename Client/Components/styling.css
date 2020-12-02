@@ -149,6 +149,9 @@ input, label, select {
 .block-section label {
     color: currentColor;
 }
+.block-section .block-content:not(:first-of-type) {
+    margin-top: 10px;
+}
 .MDY-container {
     float: left;
     position: relative;
@@ -161,23 +164,26 @@ input, label, select {
 .MDY-container div:first-of-type {
     width: 116px;
     margin-left: 0;
+    float: left;
 }
 .MDY-container div:nth-of-type(2) {
     width: 45px;
     margin-left: 10px;
+    float: left;
 }
 .MDY-container div:last-of-type, .MY-container div:last-of-type {
     width: 59px;
     margin-left: 10px;
+    float: left;
 }
 .MY-container {
-    float: left;
     position: relative;
     width: 208px;
 }
 .MY-container div:first-of-type {
     width: 134px;
     margin-left: 0;
+    float: left;
 }
 .email-container {
     width: 367px;

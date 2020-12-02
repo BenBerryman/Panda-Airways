@@ -79,17 +79,19 @@
         <div class="contact-info block">
             <span class="block-title">Contact Information</span>
             <div class="block-section">
-                <div class="input-field small email-container">
-                    <label>EMAIL ADDRESS<span style="color: red;">*</span>
-                        <input class="email" type="email" placeholder=" " required>
-                    </label>
-                </div>
-                <div class="input-field small">
+                <div class="block-content">
+                    <div class="input-field small email-container">
+                        <label>EMAIL ADDRESS<span style="color: red;">*</span>
+                            <input class="email" type="email" placeholder=" " required>
+                        </label>
+                    </div>
+                    <div class="input-field small">
 
-                    <label>PHONE NUMBER<span style="color: red;">*</span><span class="tag">Numbers only</span>
-                        <input class="phoneNumber" type="tel" maxlength="10" minlength="10" placeholder=" " required>
-                    </label>
+                        <label>PHONE NUMBER<span style="color: red;">*</span><span class="tag">Numbers only</span>
+                            <input class="phoneNumber" type="tel" maxlength="10" minlength="10" placeholder=" " required>
+                        </label>
 
+                    </div>
                 </div>
             </div>
         </div>
@@ -97,61 +99,66 @@
         <div class="vouchers-info block">
             <span class="block-title">Voucher Code</span>
             <div class="block-section">
-                <div class="input-field small">
-                    <label>CODE
-                        <input name="voucherCode" type="text">
-                    </label>
+                <div class="block-content">
+                    <div class="input-field small">
+                        <label>CODE
+                            <input name="voucherCode" type="text">
+                        </label>
+                    </div>
+                    <button class="button-small">APPLY</button>
                 </div>
-                <button class="button-small">APPLY</button>
             </div>
         </div>
 
         <div class="payment-info block">
             <span class="block-title">Credit Card Information</span>
             <div class="block-section">
-                <div class="input-field small" style="width:300px;">
-                    <label>CREDIT/DEBIT CARD #<span style="color: red;">*</span><span class="tag">Numbers only</span>
-                        <input name="cardNum" type="text" maxlength="16" placeholder=" " required>
-                    </label>
-                </div>
-                <div class="input-field small" style="width:400px;">
-                    <label>NAME ON CARD<span style="color: red;">*</span>
-                        <input name="nameOnCard" type="text" placeholder=" " required>
-                    </label>
-                </div>
-                <div class="MY-container" style="width:300px;">
-                    <div class="input-field small">
-                        <label>EXPIRATION DATE<span style="color: red;">*</span>
-                            <select name="cardExpiryMonth" class="cardExpiryMonth" required>
-                                <option value="" disabled selected>Month</option>
-                                <option value="01">January</option>
-                                <option value="02">February</option>
-                                <option value="03">March</option>
-                                <option value="04">April</option>
-                                <option value="05">May</option>
-                                <option value="06">June</option>
-                                <option value="07">July</option>
-                                <option value="08">August</option>
-                                <option value="09">September</option>
-                                <option value="10">October</option>
-                                <option value="11">November</option>
-                                <option value="12">December</option>
-                            </select>
+                <div class="block-content">
+                    <div class="input-field small" style="width:300px;">
+                        <label>CREDIT/DEBIT CARD #<span style="color: red;">*</span><span class="tag">Numbers only</span>
+                            <input name="cardNum" type="text" maxlength="16" placeholder=" " required>
                         </label>
                     </div>
-                    <div class="input-field small">
-                        <label>&nbsp;
-                            <input name="cardExpiryYear" type="text" placeholder="YYYY" minlength="4" maxlength="4" required>
+                    <div class="input-field small" style="width:300px; margin-right: 200px">
+                        <label>NAME ON CARD<span style="color: red;">*</span>
+                            <input name="nameOnCard" type="text" placeholder=" " required>
                         </label>
                     </div>
                 </div>
+                <div class="block-content">
+                    <div class="MY-container" style="width:300px;">
+                        <div class="input-field small">
+                            <label>EXPIRATION DATE<span style="color: red;">*</span>
+                                <select name="cardExpiryMonth" class="cardExpiryMonth" required>
+                                    <option value="" disabled selected>Month</option>
+                                    <option value="01">January</option>
+                                    <option value="02">February</option>
+                                    <option value="03">March</option>
+                                    <option value="04">April</option>
+                                    <option value="05">May</option>
+                                    <option value="06">June</option>
+                                    <option value="07">July</option>
+                                    <option value="08">August</option>
+                                    <option value="09">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="input-field small">
+                            <label>&nbsp;
+                                <input name="cardExpiryYear" type="text" placeholder="YYYY" minlength="4" maxlength="4" required>
+                            </label>
+                        </div>
+                    </div>
 
-                <div class="input-field small" style="width:125px;">
-                    <label>SECURITY CODE<span style="color: red;">*</span>
-                        <input name="secCode" type="text" maxlength="3" minlength="3" placeholder=" " required>
-                    </label>
+                    <div class="input-field small" style="width:125px;">
+                        <label>SECURITY CODE<span style="color: red;">*</span>
+                            <input name="secCode" type="text" maxlength="3" minlength="3" placeholder=" " required>
+                        </label>
+                    </div>
                 </div>
-
             </div>
         </div>
 

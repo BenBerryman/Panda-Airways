@@ -86,16 +86,17 @@ async function purchase() {
         {method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(info)});
-        let resp = await response.json();
-        if(resp.status === "success")
+        if(response.status === 200)
+        {
+            var resp = await response.json();
+            localStorage.removeItem("date");
+            localStorage.removeItem("flight");
+            localStorage.setItem("bookRef", resp.bookRef);
             window.location.replace("./confirmation.html");
-        else if(resp.status === "flight_full") {
-            //Display error page
         }
-
-
-
-
+        else if(response.status === 403) {
+            console.log("flight full");
+        }
 
     } catch(err) {
         console.log(err.message);

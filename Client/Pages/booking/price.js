@@ -1,8 +1,15 @@
 
 let flight;
-getFlight(JSON.parse(localStorage.getItem('flight')))
-    .then((value)=>flight=value)
-    .then(()=>insertInfo(flight));
+var locStorage = localStorage.getItem('flight');
+if(locStorage === null)
+    window.location.replace('../airlineweb.html');
+else
+{
+    getFlight(JSON.parse(locStorage))
+        .then((value)=>flight=value)
+        .then(()=>insertInfo(flight));
+}
+
 
 async function getFlight(flight) {
     if(flight.flight2 === undefined)
@@ -10,7 +17,7 @@ async function getFlight(flight) {
     else
         var resp = await fetch(`http://localhost:5000/getFlight?id=${flight.flight}&id2=${flight.flight2}`);
     let selection = await resp.json();
-    return {flight: selection[0], fare: flight.fare,travelers: flight.travelers};
+    return {flight: selection, fare: flight.fare,travelers: flight.travelers};
 }
 
 function convertTime(time) {
