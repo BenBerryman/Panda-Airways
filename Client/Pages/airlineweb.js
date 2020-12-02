@@ -154,6 +154,7 @@ $(document).ready(function() {
     $("#slideshow > img:gt(0)").hide();
     $('#book').show();
     $('#status').hide();
+    $('#change').hide();
 
     var today = new Date();
     var max = new Date();
@@ -179,14 +180,22 @@ $(document).ready(function() {
 
     $('#bookShow').click(function() {
         $('#status').hide();
+        $('#change').hide();
         $('#book').show();
         $('#idCaret').css('left','18.5%');
 
     });
     $('#statusShow').click(function() {
         $('#book').hide();
+        $('#change').hide();
         $('#status').show();
         $('#idCaret').css('left','52.4%');
     });
+    $('#changeShow').click(function() {
+        $('#book').hide();
+        $('#status').hide();
+        $('#change').show();
+    })
+
     getCities();
 });

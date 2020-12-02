@@ -13,17 +13,6 @@ sup {
     position: absolute;
     top: -5%;
 }
-.vouchers-info button {
-    width: 75px;
-    height: 39px;
-    position: absolute;
-    top: 30%;
-    font-size: 12pt;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    color: #6a6a6a;
-}
 #slideshow {
     position: relative;
     height: 615px;
@@ -64,7 +53,7 @@ a.navbar-item:hover {
     padding: 13px 10px 13px 26px;
 }
 
-#bookShow,#statusShow {
+#bookShow,#statusShow, #changeShow, #checkInShow {
     margin-bottom: 0;
     margin-left: 0;
     background-color: #363636;
@@ -75,7 +64,7 @@ a.navbar-item:hover {
     font-size:  2rem;
     font-weight: 600;
 }
-#bookShow:hover,#statusShow:hover {
+#bookShow:hover,#statusShow:hover, #changeShow:hover, #checkInShow:hover {
     color: #3273dc;
 }
 #statusShow {
@@ -138,7 +127,7 @@ input, label, select {
     background-color: inherit;
 }
 .input-field {
-    float: left;
+    /*float: left;*/
     position: relative;
     width: 262px;
 }
@@ -152,9 +141,10 @@ input, label, select {
 }
 .input-field.small label {
     font-size: 10pt;
-    top:-46%;
+    /*top:-46%;*/
     position: relative;
     width: inherit;
+    color: currentColor;
 }
 .block-section label {
     color: currentColor;
@@ -193,9 +183,9 @@ input, label, select {
     width: 367px;
 }
 
-form * {
-    padding: 0 0 0 5px;
-}
+/*form * {*/
+/*    padding: 0 0 0 5px;*/
+/*}*/
 input, select {
     border-bottom: #ccc solid 2px;
     position: relative;
@@ -255,6 +245,8 @@ select:hover ~ label {
 }
 section {
     height: 78px;
+    display: flex;
+    justify-content: center;
 }
 select {
     -webkit-appearance: none;
@@ -314,10 +306,9 @@ body {
     border-top: none;
     z-index: 99;
     /*position the autocomplete items to be the same width as the container:*/
-    top: 100%;
-    left: 5px;
-    right: 0;
+    top: 64%;
     padding: 0;
+    width: 100%;
 }
 .autocomplete-items div {
     padding: 10px;
@@ -638,7 +629,7 @@ table tbody tr:last-of-type #businessCol {
 .block-title {
     position: relative;
     width: 100%;
-    margin: 10px 25px;
+    padding: 10px 25px;
     font-size: 19pt;
     font-weight: bold;
     display: inline-block;
@@ -650,10 +641,13 @@ table tbody tr:last-of-type #businessCol {
 }
 .block-section {
     background: #f1f1f1;
-    padding: 20px 0 0 20px;
+    padding: 20px;
     overflow: auto;
     margin-left: 2px;
     position: relative;
+    /*display: flex;*/
+    /*align-items: center;*/
+    width: 99.8%;
 }
 .block-section:not(:last-of-type):after {
     display: block;
@@ -667,8 +661,12 @@ table tbody tr:last-of-type #businessCol {
     width: 97%;
 
 }
-.block-section div, .block-section button {
-    margin: 0 20px 33px 20px;
+.block-content {
+    display: flex;
+    align-items: center;
+}
+.block-content > * {
+    margin: 0 10px;
 }
 
 .block-title:not(.flights), .block-title + span{
@@ -683,8 +681,30 @@ table tbody tr:last-of-type #businessCol {
     align-items: center;
 }
 
-input:not(:placeholder-shown):invalid {
+.touched:required:invalid {
     border-bottom-color: red;
     box-shadow: none;
 }
+button {
+    cursor: pointer;
+    border: none;
+}
 
+.button-bold  {
+    background-color: #363636;
+    color: white;
+    font-size: 23pt;
+    border-radius: 10px;
+    padding: 7px;
+    font-weight: bold;
+}
+.button-small {
+    font-size: 14pt;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #6a6a6a;
+}
+.admin-controls > * {
+    margin-bottom: 25px;
+}

@@ -24,12 +24,14 @@ function travelerInfo() {
         document.getElementsByClassName("passenger-info block")[0].appendChild(block);
         $('#passenger'+i).load("../../Components/passengerInfo.html", function() {
             this.getElementsByClassName("subtitle")[0].innerHTML += passengerNum;
-            this.getElementsByClassName("firstName")[0].addEventListener('invalid', function() {
-                console.log("invalid!");
+            $(':required').one('blur keydown', function() {
+                $(this).addClass('touched');
             });
         });
         passengers.push(block);
     }
+
+
 }
 function checkValidity() {
     var allValid = true;
@@ -49,7 +51,7 @@ function validate(element) {
     }
 }
 
-async function purchase(e) {
+async function purchase() {
     try
     {   //Get passenger info in 2D array
         var passengerInfo = [];

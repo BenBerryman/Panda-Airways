@@ -33,6 +33,8 @@
             <ul>
                 <li><button class="title" id="bookShow">Book a Flight</button></li>
                 <li><button class="title" id="statusShow">Flight Status</button></li>
+                <li><button class="title" id="changeShow">Change/Cancel</button></li>
+                <li><button class="title" id="checkInShow">Check In</button></li>
             </ul>
         </div>
 
@@ -42,7 +44,7 @@
 
 
     <form id="book" autocomplete="off" action="booking/flightsAvailable.html" method="get" style="height: 248px; padding: 20px;">
-        <section>
+        <section style="margin-top: 7px;">
             <div class="input-field" style="margin-right: 20px;">
                 <input id="from" type="text" placeholder="From" required
                        oninvalid="this.setCustomValidity('Please enter a valid location.')" onchange="this.setCustomValidity('')">
@@ -89,8 +91,8 @@
         </section>
     </form>
 
-    <form id="status" autocomplete="off" action="booking/flightStatus.html" style="height:248px; padding: 20px;">
-        <section>
+    <form id="status" autocomplete="off" action="status/flightStatus.html" style="height:248px; padding: 20px;">
+        <section style="margin-top: 7px;">
             <div class="input-field" style="margin-right: 20px;">
                 <input id="fromStatus" type="text" placeholder="From" required
                        oninvalid="this.setCustomValidity('Please enter a valid location.')" onchange="this.setCustomValidity('')">
@@ -127,11 +129,18 @@
         </section>
 
     </form>
+
+    <form id="change" autocomplete="off" action="change/change.html" style="height: 248px; padding: 20px;">
+
+
+
+    </form>
 </div>
 
 <div class="container" style="padding:26px 0;">
     <div class="title">Find your adventure.</div>
     <p><span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ab ad alias beatae culpa, dolor dolorum eius explicabo facilis fugit in ipsa nam officia omnis quae, repellat reprehenderit velit voluptate!</span><span>Adipisci alias aliquid at deleniti dicta distinctio ea, eligendi et expedita explicabo facere fugiat ipsam itaque iusto libero nam officia perferendis quasi quis quos recusandae repellat reprehenderit soluta unde vero?</span><span>Aliquam eligendi est hic impedit ipsum nulla officia quibusdam quidem quod, reiciendis repellat repudiandae temporibus? Dicta dolore fuga mollitia nam neque nisi nulla quis quisquam, saepe vel vitae voluptate voluptatum.</span><span>Aliquid aspernatur, dolor dolorem dolorum error exercitationem fugiat illo itaque maiores, minus mollitia nulla pariatur possimus reiciendis reprehenderit. Aliquid asperiores blanditiis dicta et nisi nostrum nulla officiis optio quod rerum.</span><span>Aliquam consectetur cumque debitis deleniti impedit, iste laborum minima necessitatibus obcaecati, omnis quae quas tempora! Consequatur enim illum placeat qui rem. Ab aliquam natus nulla numquam quas reiciendis repudiandae voluptatem!</span></p>
+
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -148,6 +157,10 @@
         $(function() {
             $( "#date" ).datepicker();
             $( "#dateStatus").datepicker();
+        });
+
+        $(':required').one('blur keydown', function() {
+            $(this).addClass('touched');
         });
     });
     autocomplete(document.getElementById("from"), cities);

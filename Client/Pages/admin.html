@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Controls</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="../Components/styling.css">
+</head>
+<body>
+<div id="header"></div>
+
+<div class="admin-controls container">
+    <button class="button-bold">Reset Database</button>
+    <div class="view-flight-info block">
+        <span class="block-title">View Flight Information</span>
+
+        <div class="view-flight-info block-section">
+            <div class="block-content">
+                <div class="input-field small">
+                    <label>Flight ID
+                        <input type="text">
+                    </label>
+                </div>
+                <button class="button-small">View</button>
+            </div>
+        </div>
+
+        <div class="waitlist block-section">
+            <div class="subtitle">
+                <span>Waitlist</span>
+                <button class="button-small">View</button>
+            </div>
+
+            <div class="block-content">
+                <table class="waitlist-table">
+                    <thead>
+                    <tr>
+                        <th>Passenger ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="spacer"></tr>
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script>
+    $(function(){
+        $('#header').load('../Components/header.html');
+    });
+</script>
+<script src="admin.js"></script>
+</body>
+</html>
