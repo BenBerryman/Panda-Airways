@@ -83,7 +83,7 @@ app.get('/getFlight', async(req, res)=> {
                                             WHERE departing.id=$1;`, [flightID]);
         else
             flight = await pool.query(`${calculations.connectionFlights()}
-                                            WHERE departing.id=$1 AND connection1Departing.id=$2`, [flightID, flightID2]);
+                                            WHERE departing.id=$1 AND connection1Departing.id=$2;`, [flightID, flightID2]);
 
         calculations.calculateDuration(flight.rows[0]);
         calculations.calculateFarePrice(flight.rows[0]);
@@ -98,6 +98,79 @@ app.get('/getFlight', async(req, res)=> {
 app.post('/purchase', async(req, res)=>{
     try
     {
+        const flight = req.body.flight;
+        const passengerInfo = req.body.passengerInfo;
+        const contactInfo = req.body.contactInfo;
+        const paymentInfo = req.body.paymentInfo;
+
+        var price;
+        var amount;
+        var fare;
+        if(flight.fare === "Economy"){
+            price = flight.flight.econPrice;
+            fare = "economy";
+        }
+        else if(flight.fare === "Economy Plus"){
+            price = flight.flight.econPlusPrice;
+            fare = "economy_plus";
+        }
+        else{
+            price = flight.flight.businessPrice;
+            fare = "business";
+        }
+        amount = (price*flight.travelers).toFixed(2);
+
+        var indirect = false;
+        if (flight.flight.conn1_id !== undefined)
+            indirect = true;
+
+        var available = await pool.query(
+            `SELECT
+                CASE WHEN $1_available<=0 
+                THEN TRUE
+                ELSE FALSE
+                END
+            FROM flights WHERE flight_id=$2;`,
+            [fare, flight.flight.id]);
+
+        if (indirect)
+            var available = await pool.query(
+                `SELECT
+                    CASE WHEN $1_available<=0 
+                    THEN TRUE
+                    ELSE FALSE
+                    END
+                FROM flights WHERE flight_id=$2;`,
+                [fare, flight.flight.conn1_id]);
+
+        var postCard = await pool.query(
+            `INSERT INTO credit_card VALUES ($1, $2, $3, $4);`, 
+            [paymentInfo.cardNum, paymentInfo.nameOnCard, paymentInfo.expMonth, paymentInfo.expYear]);
+        
+        var postTrans = await pool.query(
+            `INSERT INTO transaction (card_number, voucher, amount, contact_email, contact_phone_number, transaction_date)
+            VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP) RETURNING id;`, 
+            [paymentInfo.cardNum, null, amount, contactInfo.email, contactInfo.phone]);
+        
+        var i;
+        for (i=0; i<flight.travelers; i++){
+            var postPass = await pool.query(
+                `INSERT INTO passenger (first_name, last_name, dob)
+                VALUES ($1, $2, $3) RETURNING id;`, 
+                [passengerInfo[i].firstName, passengerInfo[i].lastName, passengerInfo[i].dob]);
+
+            var postTicket = await pool.query(
+                `INSERT INTO ticket (transaction_id, flight_id, standby_flight_id, passenger_id, fare_condition)
+                VALUES ($1, $2, $3, $4, $5);`, 
+                [postTrans.rows[0].id, flight.flight.id, null, postPass.rows[0].id, flight.fare]);
+
+            if (indirect)
+                var postConnTicket = await pool.query(
+                    `INSERT INTO ticket (transaction_id, flight_id, standby_flight_id, passenger_id, fare_condition)
+                    VALUES ($1, $2, $3, $4, $5);`, 
+                    [postTrans.rows[0].id, flight.flight.conn1_id, null, postPass.rows[0].id, flight.fare]);
+        }
+
         const response = {
             status: "success"
         }

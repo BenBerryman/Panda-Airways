@@ -109,12 +109,17 @@
         <div class="payment-info block">
             <span class="block-title">Credit Card Information</span>
             <div class="block-section">
-                <div class="input-field small">
+                <div class="input-field small" style="width:300px;">
                     <label>CREDIT/DEBIT CARD #<span style="color: red;">*</span><span class="tag">Numbers only</span>
-                        <input name="cardNum" type="text" maxlength="19" placeholder=" " required>
+                        <input name="cardNum" type="text" maxlength="16" placeholder=" " required>
                     </label>
                 </div>
-                <div class="MY-container">
+                <div class="input-field small" style="width:400px;">
+                    <label>NAME ON CARD<span style="color: red;">*</span>
+                        <input name="nameOnCard" type="text" placeholder=" " required>
+                    </label>
+                </div>
+                <div class="MY-container" style="width:300px;">
                     <div class="input-field small">
                         <label>EXPIRATION DATE<span style="color: red;">*</span>
                             <select name="cardExpiryMonth" class="cardExpiryMonth" required>
