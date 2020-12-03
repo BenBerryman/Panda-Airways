@@ -155,6 +155,7 @@ $(document).ready(function() {
     $('#book').show();
     $('#status').hide();
     $('#change').hide();
+    $('#checkIn').hide();
 
     var today = new Date();
     var max = new Date();
@@ -182,20 +183,31 @@ $(document).ready(function() {
         $('#status').hide();
         $('#change').hide();
         $('#book').show();
-        $('#idCaret').css('left','18.5%');
+        $('#checkIn').hide();
+        $('#idCaret').css('left','13.5%');
 
     });
     $('#statusShow').click(function() {
         $('#book').hide();
         $('#change').hide();
+        $('#checkIn').hide();
         $('#status').show();
-        $('#idCaret').css('left','52.4%');
+        $('#idCaret').css('left','37.8%');
     });
     $('#changeShow').click(function() {
         $('#book').hide();
         $('#status').hide();
+        $('#checkIn').hide();
         $('#change').show();
-    })
+        $('#idCaret').css('left','64.8%');
+    });
+    $('#checkInShow').click(function() {
+        $('#book').hide();
+        $('#change').hide();
+        $('#status').hide();
+        $('#checkIn').show();
+        $('#idCaret').css('left','86.9%');
+    });
 
     getCities();
 });

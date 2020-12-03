@@ -41,7 +41,7 @@ a.navbar-item:hover {
 }
 
 .container.flight-search {
-    width: 613px;
+    width: 781px;
     margin: 181px auto;
     background-color: white;
     border-radius: 15px;
@@ -61,7 +61,7 @@ a.navbar-item:hover {
     border: none;
     cursor: pointer;
     transition: 0.2s;
-    font-size:  2rem;
+    font-size:  1.8rem;
     font-weight: 600;
 }
 #bookShow:hover,#statusShow:hover, #changeShow:hover, #checkInShow:hover {
@@ -188,10 +188,36 @@ input, label, select {
 .email-container {
     width: 367px;
 }
+.passenger-container, .payment-container {
+    width: 45%;
+    margin-bottom: 0 !important;
+}
+.passenger-container .subtitle {
+    display: flex;
+    justify-content: space-evenly;
+    border-bottom: #7d7d7d solid 2px;
+    margin-bottom:12px;
+    padding: 5px 0;
+    font-size: 12pt;
+}
+.passenger-container .spacer {
+    width: 80px;
+}
+.passenger-container .name {
+    width: 50%; text-align: right;
+}
+.passenger-container .dob {
+    width: 50%;
+}
+.passenger {
+    display: flex;
+    font-size: 16px;
+}
 
-/*form * {*/
-/*    padding: 0 0 0 5px;*/
-/*}*/
+.two-block-section {
+    display: flex;
+    justify-content: space-between;
+}
 input, select {
     border-bottom: #ccc solid 2px;
     position: relative;
@@ -333,7 +359,7 @@ body {
 }
 
 #header + .container {
-    margin-top: 115px;
+    margin: 115px auto 0 auto;
 }
 
 table {
@@ -469,6 +495,7 @@ table tbody tr:last-of-type #businessCol {
 .flight-container  {
     margin-bottom: 1.5rem;
     display: flex;
+    border-top: #d1d1d1 solid 2px;
 }
 .flight-node {
     position: relative;
@@ -594,7 +621,7 @@ table tbody tr:last-of-type #businessCol {
 
 #nextPageHolder {
     overflow: auto;
-    margin: 77px 0;
+    margin: 15px 0;
 }
 #nextPage {
     background-color: #cacdff;
@@ -627,10 +654,11 @@ table tbody tr:last-of-type #businessCol {
 }
 .block {
     background: #0b1b40;
+    height: 100%;
 }
 .subtitle {
     font-weight: bold;
-    padding: 5px 0 0 20px;
+    padding: 5px 0 5px 20px;
 }
 .block-title {
     position: relative;
@@ -680,7 +708,7 @@ table tbody tr:last-of-type #businessCol {
 }
 .block-title.flights {
     position: absolute;
-    top: 0%;
+    top: 0;
 }
 .flight {
     display: flex;
@@ -713,4 +741,27 @@ button {
 }
 .admin-controls > * {
     margin-bottom: 25px;
+}
+.block-text {
+    padding: 20px;
+}
+.block-text .highlight {
+    margin: 20px 80px;
+    font-weight: bold;
+    font-size: 30pt;
+    color: #073091;
+}
+.indent {
+    text-indent: 25px;
+}
+.cardNum {
+    overflow: auto;
+    margin-bottom: 10px;
+}
+.cardNum span:first-of-type, .total-amount span:first-of-type {
+    font-weight: bold;
+}
+
+.cardNum span:last-of-type, .total-amount span:last-of-type {
+    float: right;
 }

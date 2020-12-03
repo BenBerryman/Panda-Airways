@@ -5,12 +5,12 @@
 
 var passengers = [];
 
-function waitForElement(){
+function waitToInsertPassenger(){
     if(typeof flight !== "undefined"){
         travelerInfo();
     }
     else{
-        setTimeout(waitForElement, 250);
+        setTimeout(waitToInsertPassenger, 250);
     }
 }
 
@@ -22,7 +22,7 @@ function travelerInfo() {
         block.className += "passenger-info block-section";
         block.id = "passenger" + i;
         document.getElementsByClassName("passenger-info block")[0].appendChild(block);
-        $('#passenger'+i).load("../../Components/passengerInfo.html", function() {
+        $('#passenger'+i).load("../../Components/passengerForm.html", function() {
             this.getElementsByClassName("subtitle")[0].innerHTML += passengerNum;
             $(':required').one('blur keydown', function() {
                 $(this).addClass('touched');
@@ -89,9 +89,7 @@ async function purchase() {
         if(response.status === 200)
         {
             var resp = await response.json();
-            localStorage.removeItem("date");
-            localStorage.removeItem("flight");
-            localStorage.setItem("bookRef", resp.bookRef);
+            localStorage.setItem("response", JSON.stringify(resp));
             window.location.replace("./confirmation.html");
         }
         else if(response.status === 403) {
@@ -102,6 +100,6 @@ async function purchase() {
         console.log(err.message);
     }
 }
-waitForElement();
+waitToInsertPassenger();
 
 

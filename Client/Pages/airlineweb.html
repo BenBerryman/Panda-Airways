@@ -38,14 +38,14 @@
             </ul>
         </div>
 
-        <div class="arrow-up" id="idCaret" style="position:absolute; padding: 0; top: 52px; left:18.5%;"></div>
+        <div class="arrow-up" id="idCaret" style="position:absolute; padding: 0; top: 52px; left:13.5%;"></div>
     </div>
 
 
 
     <form id="book" autocomplete="off" action="booking/flightsAvailable.html" method="get" style="height: 248px; padding: 20px;">
         <section style="margin-top: 7px;">
-            <div class="input-field" style="margin-right: 20px;">
+            <div class="input-field" style="margin-right: 50px;">
                 <input id="from" type="text" placeholder="From" required
                        oninvalid="this.setCustomValidity('Please enter a valid location.')" onchange="this.setCustomValidity('')">
                 <input id="fromHidden" type="hidden" name="from">
@@ -62,7 +62,7 @@
         </section>
 
         <section>
-            <div class="input-field" style="margin-right: 20px;">
+            <div class="input-field" style="margin-right: 50px;">
                 <input id="date" type="text" placeholder="Date" style="padding-left: 7px" required
                        oninvalid="this.setCustomValidity('This field is required.')" onchange="this.setCustomValidity('')">
                 <input id="alt-date" type="hidden">
@@ -93,7 +93,7 @@
 
     <form id="status" autocomplete="off" action="status/flightStatus.html" style="height:248px; padding: 20px;">
         <section style="margin-top: 7px;">
-            <div class="input-field" style="margin-right: 20px;">
+            <div class="input-field" style="margin-right: 50px;">
                 <input id="fromStatus" type="text" placeholder="From" required
                        oninvalid="this.setCustomValidity('Please enter a valid location.')" onchange="this.setCustomValidity('')">
                 <input id="fromStatusHidden" type="hidden" name="from">
@@ -110,7 +110,7 @@
         </section>
 
         <section>
-            <div class="input-field" style="margin-right: 20px;">
+            <div class="input-field" style="margin-right: 50px;">
                 <input id="dateStatus" type="text" placeholder="Date" style="padding-left: 7px" required
                        oninvalid="this.setCustomValidity('This field is required.')" onchange="this.setCustomValidity('')">
                 <input id="alt-date-status" type="hidden">
@@ -131,6 +131,12 @@
     </form>
 
     <form id="change" autocomplete="off" action="change/change.html" style="height: 248px; padding: 20px;">
+
+
+
+    </form>
+
+    <form id="checkIn" autocomplete="off" action="checkIn/checkIn.html" style="height: 248px; padding: 20px;">
 
 
 

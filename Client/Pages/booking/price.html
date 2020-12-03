@@ -21,55 +21,7 @@
 
 
         <div>
-            <div class="flight-container">
-                <div class="flight-info">
-                    <div class="all-flights">
-                        <div class="flight">
-                            <span id="date"></span>
-                            <div class="flight-with-time">
-                                <div class="airport-with-time">
-                                    <div class="airport-code-bold"></div>
-                                    <div class="flight-time"></div>
-                                </div>
-                                <i class="fas fa-arrow-right"></i>
-                                <div class="airport-with-time">
-                                    <div class="airport-code-bold"></div>
-                                    <div class="flight-time"></div>
-                                </div>
-                            </div>
-                            <span id="flightTime"></span>
-                            <span class="connection border-left"></span>
-
-                            <span id="fare"></span>
-                        </div>
-
-                    </div>
-
-                </div>
-                <div class="price-info">
-                        <div class="price-per-pass">
-                        <span>Price per Passenger</span>
-                        <span></span>
-                    </div>
-                    <div class="taxes-per-pass">
-                        <span>Taxes and Fees per Passenger</span>
-                        <span></span>
-                    </div>
-                    <div class="total-per-pass">
-                        <span>Total per Passenger</span>
-                        <span></span>
-
-                    </div>
-                    <div class="passengers">
-                        <span>Passengers</span>
-                        <span></span>
-                    </div>
-                    <div class="flight-total">
-                        <span>Flight Total</span>
-                        <span></span>
-                    </div>
-                </div>
-            </div>
+            <div id="flightInfo"></div>
 
             <div class="price-summary">
                 <div class="extra-info-highlight">
@@ -105,9 +57,15 @@
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="../../Components/flightInfo.js"></script>
+<script src="./price.js"></script>
 <script>
     $(function(){
         $('#header').load('../../Components/header.html');
+        $('#flightInfo').load('../../Components/flightInfo.html', function() {
+            defineFlight().then(function() {
+                fillOutPriceSummary()});
+        });
         $('#stepProgressBar').load('../../Components/stepProgressBar.html', function() {
                 var step = 1;
                 var bullets = document.getElementsByClassName("bullet");
@@ -120,6 +78,5 @@
             });
     });
 </script>
-<script src="./price.js"></script>
 </body>
 </html>

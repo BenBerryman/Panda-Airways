@@ -144,7 +144,13 @@ app.post('/purchase', async(req, res)=>{
         else
             res.sendStatus(403);
 
-        res.status(200).json({bookRef: bookRef});
+        res.status(200).json(
+            {bookRef: bookRef,
+                travelers: passengerInfo,
+                payment:
+                    {cardLastFour: paymentInfo.cardNum.toString().substr(12),
+                    amount: amount}
+                });
     } catch(err) {
         console.log(err.message);
     }

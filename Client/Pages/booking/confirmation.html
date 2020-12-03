@@ -19,15 +19,66 @@
         <div id="stepProgressBar"></div>
     </div>
 
-    <div>
-        Thank you for flying Panda Airways. Your transaction number is:
+    <div class="block-text">
+        <p>Thank you for flying Panda Airways. Your transaction number is:</p>
+        <div id="bookRef" class="highlight"></div>
+        <p>Whenever you are ready, use this code to check in to your flight.</p>
+        <p class="indent">Please plan to arrive at the airport <b>at least one hour</b> before your flight's
+            departure time. This was allow ample time to check in to your flight, check any bags, and pass through security.</p>
+        <p></p>
+
+
+    </div>
+
+    <div id="flightInfo"></div>
+    <div class="two-block-section">
+        <div class="passenger-container block">
+            <div class="block-title passengers">Passenger Info</div>
+            <div class="block-section">
+                <div class="subtitle">
+                    <div class="name">NAME</div>
+                    <div class="spacer"></div>
+                    <div class="dob">DATE OF BIRTH</div>
+                </div>
+                <div class="passenger-info"></div>
+            </div>
+
+        </div>
+
+        <div class="payment-container block">
+            <div class="block-title payment">Payment Info</div>
+            <div class="block-section">
+                <div class="payment-info">
+                    <div class="cardNum">
+                        <span>Card Number</span>
+                        <span id="cardNum">xxxxxxxxxxxx</span>
+                    </div>
+                    <div class="total-amount">
+                        <span>Total Amount</span>
+                        <span id="totalAmount"></span>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+    <div id="nextPageHolder">
+
+        <a id="nextPage" onclick="clearLocalStorage()" href="../airlineweb.html" style="width: 173px;">Back to Homepage</a>
     </div>
 </div>
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="../../Components/flightInfo.js"></script>
+<script src="./price.js"></script>
 <script>
     $(function(){
         $('#header').load('../../Components/header.html');
+        $('#flightInfo').load('../../Components/flightInfo.html', function() {
+            defineFlight();
+        });
         $('#stepProgressBar').load('../../Components/stepProgressBar.html', function() {
             var step = 3;
             var bullets = document.getElementsByClassName("bullet");
@@ -40,6 +91,7 @@
         });
     });
 </script>
+<script src="confirmation.js"></script>
 
 </body>
 </html>
