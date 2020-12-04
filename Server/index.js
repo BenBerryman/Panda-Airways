@@ -112,13 +112,12 @@ app.post('/purchase', async(req, res)=>{
             fare = "business";
         }
         //Check availability of flight(s)
-        var available = await queryBank.checkAvailability(fare, flight.flight.id);
+        var available = await queryBank.checkAvailability(fare, flight.flight.id, flight.travelers);
         if(indirect)
-            available = await queryBank.checkAvailability(fare, flight.flight.conn1_id);
+            available = await queryBank.checkAvailability(fare, flight.flight.conn1_id, flight.travelers);
 
         if(available)
         {
-            console.log(flight.flight.id);
             while (true) {
                 try {
                     amount = (price*flight.travelers).toFixed(2);
@@ -126,9 +125,9 @@ app.post('/purchase', async(req, res)=>{
                     await queryBank.transactionStatus("start");
 
                     //Update seat on flight.id, if indirect then update flight.conn1_id
-                    await queryBank.updateSeat(fare, flight.flight.id);
+                    await queryBank.updateSeat(fare, flight.flight.id, flight.travelers);
                     if (indirect)
-                        await queryBank.updateSeat(fare, flight.flight.conn1_id);
+                        await queryBank.updateSeat(fare, flight.flight.conn1_id, flight.travelers);
 
                     //If credit card is not already on file, put it in database
                     await queryBank.postCreditCard(paymentInfo.cardNum, paymentInfo.nameOnCard,
@@ -157,17 +156,17 @@ app.post('/purchase', async(req, res)=>{
             }
             //TODO Update flight availabilities, booking
             var bookRef = processing.generateBookRef(6);
+            res.status(200).json(
+                {bookRef: bookRef,
+                    travelers: passengerInfo,
+                    payment:
+                        {cardLastFour: paymentInfo.cardNum.toString().substr(12),
+                            amount: amount}
+                });
         }
         else
             res.sendStatus(403);
 
-        res.status(200).json(
-            {bookRef: bookRef,
-                travelers: passengerInfo,
-                payment:
-                    {cardLastFour: paymentInfo.cardNum.toString().substr(12),
-                    amount: amount}
-                });
     } catch(err) {
         console.log(err.message);
     }

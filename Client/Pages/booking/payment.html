@@ -11,7 +11,7 @@
 
 <div id="header"></div>
 <div class="container">
-    <div id="flightResultsHead" class="border-bottom" style="height: 87px; margin-bottom: 0;">
+    <div id="flightResultsHead" style="height: 87px; margin-bottom: 0;">
         <div style="float: left;">
             <div class="title">Passenger & Payment Info</div>
         </div>
@@ -200,12 +200,16 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="../../Components/flightInfo.js"></script>
 <script src="./price.js"></script>
+<script src="./payment.js"></script>
 <script>
     $(function(){
         $('#header').load('../../Components/header.html');
         $('#flightInfo').load('../../Components/flightInfo.html', function() {
             defineFlight().then(function() {
-                fillOutPriceSummary()});
+                fillOutPriceSummary();
+                travelerInfo();
+            });
+
         });
         $('#stepProgressBar').load('../../Components/stepProgressBar.html', function() {
             var step = 2;
@@ -221,7 +225,6 @@
     });
 
 </script>
-<script src="./payment.js"></script>
 <script>
 
 

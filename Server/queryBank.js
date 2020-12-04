@@ -68,7 +68,8 @@ const connectionFlights = async(type, args)  => {
     try
     {
         var response;
-        var base = `SELECT departing.id,
+        var base =
+            `SELECT departing.id,
                 departing.scheduled_departure AS scheduled_departure,
                 departing.scheduled_arrival AS initial_scheduled_arrival,
                 departing.city AS depart_city,
@@ -82,25 +83,25 @@ const connectionFlights = async(type, args)  => {
                 connection1Departing.id AS conn1_id,
                 arriving.city AS arrive_city,
                 arriving.airport_code AS arrive
-        FROM
-            (SELECT id,scheduled_departure, scheduled_arrival, city, airport_code, flight_status
-             FROM flight JOIN airport
-                               ON flight.departure_airport=airport.airport_code) departing
-                JOIN
-            (SELECT id, city, airport_code
-             FROM flight JOIN airport
-                               ON flight.arrival_airport=airport.airport_code) connection1
-            ON departing.id=connection1.id
-                JOIN
-            ((SELECT id, scheduled_departure, scheduled_arrival, city, airport_code, flight_status
-             FROM flight JOIN airport
-                               ON flight.departure_airport=airport.airport_code) connection1Departing
-                JOIN
-            (SELECT id, city, airport_code
-             FROM flight JOIN airport
-                               ON flight.arrival_airport=airport.airport_code) arriving
-            ON connection1Departing.id=arriving.id)
-            ON connection1.airport_code=connection1Departing.airport_code`;
+            FROM
+                (SELECT id,scheduled_departure, scheduled_arrival, city, airport_code, flight_status
+                 FROM flight JOIN airport
+                                   ON flight.departure_airport=airport.airport_code) departing
+                    JOIN
+                (SELECT id, city, airport_code
+                 FROM flight JOIN airport
+                                   ON flight.arrival_airport=airport.airport_code) connection1
+                ON departing.id=connection1.id
+                    JOIN
+                ((SELECT id, scheduled_departure, scheduled_arrival, city, airport_code, flight_status
+                 FROM flight JOIN airport
+                                   ON flight.departure_airport=airport.airport_code) connection1Departing
+                    JOIN
+                (SELECT id, city, airport_code
+                 FROM flight JOIN airport
+                                   ON flight.arrival_airport=airport.airport_code) arriving
+                ON connection1Departing.id=arriving.id)
+                ON connection1.airport_code=connection1Departing.airport_code`;
 
         switch(type)
         {
@@ -144,39 +145,39 @@ const cities = async(type, code=null) => {
     }
 }
 
-const checkAvailability = async(fare, flightID) => {
+const checkAvailability = async(fare, flightID, travelers) => {
     var response;
     switch(fare)
     {
         case "economy":
             response = await pool.query(
                 `SELECT
-                CASE WHEN economy_available<=0
+                CASE WHEN economy_available<$1
                     THEN FALSE
                 ELSE TRUE
                 END
-            FROM flight WHERE id=$1;`,
-                [flightID]);
+            FROM flight WHERE id=$2;`,
+                [travelers, flightID]);
             break;
         case "economy_plus":
             response = await pool.query(
                 `SELECT
-                CASE WHEN economy_plus_available<=0
+                CASE WHEN economy_plus_available<$1
                     THEN FALSE
                 ELSE TRUE
                 END
-            FROM flight WHERE id=$1;`,
-                [flightID]);
+            FROM flight WHERE id=$2;`,
+                [travelers, flightID]);
             break;
         case "business":
             response = await pool.query(
                 `SELECT
-                CASE WHEN business_available<=0
+                CASE WHEN business_available<$1
                     THEN FALSE
                 ELSE TRUE
                 END
-            FROM flight WHERE id=$1;`,
-                [flightID]);
+            FROM flight WHERE id=$2;`,
+                [travelers, flightID]);
             break;
     }
     return response.rows[0].case;
@@ -211,31 +212,31 @@ const postTicket = async(transactionID, flightID, standbyFlightID, passID, fare)
         [transactionID, flightID, null, passID, fare]);
 }
 
-const updateSeat = async(fare, flightID) => {
+const updateSeat = async(fare, flightID, travelers) => {
     switch (fare){
         case "economy":
             await pool.query(
                 `UPDATE flight
-                    SET economy_booked=economy_booked+1,
-                        economy_available=economy_available-1
-                    WHERE id=$1;`,
-                    [flightID]);
+                    SET economy_booked=economy_booked+$1,
+                        economy_available=economy_available-$1
+                    WHERE id=$2;`,
+                    [travelers, flightID]);
             break;
         case "economy_plus":
             await pool.query(
                 `UPDATE flight
-                    SET economy_plus_booked=economy_booked+1,
-                        economy_plus_available=economy_available-1
-                    WHERE id=$1;`,
-                    [flightID]);
+                    SET economy_plus_booked=economy_plus_booked+$1,
+                        economy_plus_available=economy_plus_available-$1
+                    WHERE id=$2;`,
+                    [travelers, flightID]);
             break;
         case "business":
             await pool.query(
                 `UPDATE flight
-                    SET business_booked=economy_booked+1,
-                        business_available=economy_available-1
-                    WHERE id=$1;`,
-                    [flightID]);
+                    SET business_booked=business_booked+$1,
+                        business_available=business_available-$1
+                    WHERE id=$2;`,
+                    [travelers, flightID]);
             break;
     }
 }

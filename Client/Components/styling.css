@@ -129,7 +129,7 @@ input, label, select {
 .input-field {
     /*float: left;*/
     position: relative;
-    width: 262px;
+    width: 310px;
 }
 .input-field.small input, .input-field.small select {
     width: inherit;
@@ -359,7 +359,7 @@ body {
 }
 
 #header + .container {
-    margin: 115px auto 0 auto;
+    margin: 115px auto 20px auto;
 }
 
 table {

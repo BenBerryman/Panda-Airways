@@ -1,18 +1,9 @@
 
 
-//STILL HAVE ACCESS TO VARIABLE flight FROM price.js
+//STILL HAVE ACCESS TO VARIABLE flight FROM price.js ONCE IT IS DEFINED
 
 
 var passengers = [];
-
-function waitToInsertPassenger(){
-    if(typeof flight !== "undefined"){
-        travelerInfo();
-    }
-    else{
-        setTimeout(waitToInsertPassenger, 250);
-    }
-}
 
 function travelerInfo() {
     for(i=1;i<=flight.travelers; i++)
@@ -30,25 +21,34 @@ function travelerInfo() {
         });
         passengers.push(block);
     }
-
-
 }
-function checkValidity() {
-    var allValid = true;
 
-    return allValid;
+function flightUnavailable() {
+    document.getElementsByClassName("container")[0].style.display='none';
+    var unavailable = document.createElement("DIV");
+    unavailable.setAttribute("class", "container no-flights");
+    unavailable.style.display = "block";
+    var mainHead = document.createElement("p");
+    mainHead.innerHTML = "We're sorry, it looks like this flight is not available anymore.";
+    var extraText = document.createElement("p");
+    extraText.innerHTML = "Keep searching, we may have other available flights between these cities at different times."
+    unavailable.appendChild(mainHead);
+    unavailable.appendChild(extraText);
 
-}
-function validate(element) {
-    if(element.checkValidity())
-        element.setAttribute("isvalid", "true");
-    else
-        element.setAttribute("isvalid", "false");
-    if(element.type === 'text')
-    {
-        if(element.value.trim() < 1)
-            element.setAttribute("isvalid", "false");
-    }
+    var nextPageHolder = document.createElement("DIV");
+    nextPageHolder.setAttribute("id", "nextPageHolder");
+
+    var homepageLink = document.createElement("a");
+    homepageLink.setAttribute("id", "nextPage");
+    homepageLink.setAttribute("href", "../airlineweb.html");
+    homepageLink.style.width = "173px";
+    homepageLink.innerHTML = "Back to Homepage";
+    nextPageHolder.appendChild(homepageLink);
+    unavailable.appendChild(nextPageHolder);
+    document.getElementsByTagName("body")[0].appendChild(unavailable);
+
+    localStorage.removeItem("date");
+    localStorage.removeItem("flight");
 }
 
 async function purchase() {
@@ -93,13 +93,12 @@ async function purchase() {
             window.location.replace("./confirmation.html");
         }
         else if(response.status === 403) {
-            console.log("flight full");
+            flightUnavailable();
         }
 
     } catch(err) {
         console.log(err.message);
     }
 }
-waitToInsertPassenger();
 
 
