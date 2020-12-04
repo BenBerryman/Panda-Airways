@@ -3,6 +3,27 @@ const pool = require('./db');
 //TYPE can be either 'all' or 'one'
 //IF 'all', args={to:<>, from:<>, date:<>}
 //IF 'one', args={flightID:<>}
+
+const transactionStatus = async(status) => {
+    switch (true){
+        case "start":
+        {
+            await pool.query(`BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;`);
+            break;
+        } 
+        case "commit":
+        {
+            await pool.query(`COMMIT;`);
+            break;
+        }
+        case "rollback":
+        {
+            await pool.query(`ROLLBACK;`);
+            break;
+        }
+    }
+}
+
 const directFlights = async(type, args) => {
     try
     {
@@ -216,5 +237,5 @@ const postTicket = async(transactionID, flightID, standbyFlightID, passID, fare)
     }
 }
 
-module.exports = {directFlights, connectionFlights, cities, checkAvailability,
+module.exports = {transactionStatus, directFlights, connectionFlights, cities, checkAvailability,
     postCreditCard, postTransaction, postPassenger, postTicket};

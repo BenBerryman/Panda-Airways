@@ -118,26 +118,35 @@ app.post('/purchase', async(req, res)=>{
 
         if(available)
         {
-            amount = (price*flight.travelers).toFixed(2);
-            //If credit card is not already on file, put it in database
-            await queryBank.postCreditCard(paymentInfo.cardNum, paymentInfo.nameOnCard,
-                                                            paymentInfo.expMonth, paymentInfo.expYear);
+            while (true) {
+                try {
+                    amount = (price*flight.travelers).toFixed(2);
+                    //If credit card is not already on file, put it in database
+                    await queryBank.transactionStatus("start");
+                    await queryBank.postCreditCard(paymentInfo.cardNum, paymentInfo.nameOnCard,
+                                                                    paymentInfo.expMonth, paymentInfo.expYear);
 
-            //Insert transaction into database and return transaction ID
-            var transID = await queryBank.postTransaction(paymentInfo.cardNum, null, amount, contactInfo.email, contactInfo.phone);
+                    //Insert transaction into database and return transaction ID
+                    var transID = await queryBank.postTransaction(paymentInfo.cardNum, null, amount, contactInfo.email, contactInfo.phone);
 
-            //If travelers not already on file, put in database and return passenger ID
-            //For each traveler, create ticket for flight(s)
-            for (var i=0; i<flight.travelers; i++)
-            {
-                var passID = await queryBank.postPassenger(passengerInfo[i].firstName, passengerInfo[i].lastName, passengerInfo[i].dob);
+                    //If travelers not already on file, put in database and return passenger ID
+                    //For each traveler, create ticket for flight(s)
+                    for (var i=0; i<flight.travelers; i++)
+                    {
+                        var passID = await queryBank.postPassenger(passengerInfo[i].firstName, passengerInfo[i].lastName, passengerInfo[i].dob);
 
-                await queryBank.postTicket(transID, flight.flight.id, null, passID, flight.fare);
+                        await queryBank.postTicket(transID, flight.flight.id, null, passID, flight.fare);
 
-                if (indirect)
-                    await queryBank.postTicket(transID, flight.flight.conn1_id, null, passID, flight.fare);
+                        if (indirect)
+                            await queryBank.postTicket(transID, flight.flight.conn1_id, null, passID, flight.fare);
+                    }
+                    await queryBank.transactionStatus("commit");
+                    break;
+                } catch(err) {
+                    await queryBank.transactionStatus("rollback");
+                    console.log(err.message);
+                }
             }
-
             //TODO Update flight availabilities, booking
             var bookRef = processing.generateBookRef(6);
         }
