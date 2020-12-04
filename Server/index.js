@@ -118,11 +118,19 @@ app.post('/purchase', async(req, res)=>{
 
         if(available)
         {
+            console.log(flight.flight.id);
             while (true) {
                 try {
                     amount = (price*flight.travelers).toFixed(2);
-                    //If credit card is not already on file, put it in database
+                    //Start transaction query
                     await queryBank.transactionStatus("start");
+
+                    //Update seat on flight.id, if indirect then update flight.conn1_id
+                    await queryBank.updateSeat(fare, flight.flight.id);
+                    if (indirect)
+                        await queryBank.updateSeat(fare, flight.flight.conn1_id);
+
+                    //If credit card is not already on file, put it in database
                     await queryBank.postCreditCard(paymentInfo.cardNum, paymentInfo.nameOnCard,
                                                                     paymentInfo.expMonth, paymentInfo.expYear);
 

@@ -5,7 +5,7 @@ const pool = require('./db');
 //IF 'one', args={flightID:<>}
 
 const transactionStatus = async(status) => {
-    switch (true){
+    switch (status){
         case "start":
         {
             await pool.query(`BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;`);
@@ -145,97 +145,100 @@ const cities = async(type, code=null) => {
 }
 
 const checkAvailability = async(fare, flightID) => {
-    try
+    var response;
+    switch(fare)
     {
-        var response;
-        switch(fare)
-        {
-            case "economy":
-                response = await pool.query(
-                    `SELECT
-                    CASE WHEN economy_available<=0
-                        THEN FALSE
-                    ELSE TRUE
-                    END
-                FROM flight WHERE id=$1;`,
-                    [flightID]);
-                break;
-            case "economy_plus":
-                response = await pool.query(
-                    `SELECT
-                    CASE WHEN economy_plus_available<=0
-                        THEN FALSE
-                    ELSE TRUE
-                    END
-                FROM flight WHERE id=$1;`,
-                    [flightID]);
-                break;
-            case "business":
-                response = await pool.query(
-                    `SELECT
-                    CASE WHEN business_available<=0
-                        THEN FALSE
-                    ELSE TRUE
-                    END
-                FROM flight WHERE id=$1;`,
-                    [flightID]);
-        }
-        return response.rows[0].case;
+        case "economy":
+            response = await pool.query(
+                `SELECT
+                CASE WHEN economy_available<=0
+                    THEN FALSE
+                ELSE TRUE
+                END
+            FROM flight WHERE id=$1;`,
+                [flightID]);
+            break;
+        case "economy_plus":
+            response = await pool.query(
+                `SELECT
+                CASE WHEN economy_plus_available<=0
+                    THEN FALSE
+                ELSE TRUE
+                END
+            FROM flight WHERE id=$1;`,
+                [flightID]);
+            break;
+        case "business":
+            response = await pool.query(
+                `SELECT
+                CASE WHEN business_available<=0
+                    THEN FALSE
+                ELSE TRUE
+                END
+            FROM flight WHERE id=$1;`,
+                [flightID]);
+            break;
     }
-    catch(err)
-    {
-        console.log(err.message);
-    }
-
+    return response.rows[0].case;
 }
 
 const postCreditCard = async(cardNum, nameOnCard, expMonth, expYear) => {
-    try
-    {
-        await pool.query(
-            `INSERT INTO credit_card VALUES ($1, $2, $3, $4) ON CONFLICT(card_number) DO NOTHING`,
-            [cardNum, nameOnCard, expMonth, expYear]);
-    }
-    catch(err)
-    {
-        console.log(err.message);
-    }
+    await pool.query(
+        `INSERT INTO credit_card VALUES ($1, $2, $3, $4) ON CONFLICT(card_number) DO NOTHING`,
+        [cardNum, nameOnCard, expMonth, expYear]);
 }
+
 const postTransaction = async(cardNum, voucher, amount, contactEmail, contactPhone) => {
-    try
-    {
-        const response = await pool.query(
-            `INSERT INTO transaction (card_number, voucher, amount, contact_email, contact_phone_number, transaction_date)
-            VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP) RETURNING id;`,
-            [cardNum, null, amount, contactEmail, contactPhone]);
-        return response.rows[0].id;
-    } catch(err) {
-        console.log(err.message);
-    }
+    const response = await pool.query(
+        `INSERT INTO transaction (card_number, voucher, amount, contact_email, contact_phone_number, transaction_date)
+        VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP) RETURNING id;`,
+        [cardNum, null, amount, contactEmail, contactPhone]);
+    return response.rows[0].id;
 }
+
 const postPassenger = async(firstName, lastName, dob) => {
-    try
-    {
-        const response = await pool.query(
-            `INSERT INTO passenger (first_name, last_name, dob)
-                VALUES ($1, $2, $3) RETURNING id;`,
-            [firstName, lastName, dob]);
-        return response.rows[0].id;
-    } catch(err) {
-        console.log(err.message);
-    }
+    const response = await pool.query(
+        `INSERT INTO passenger (first_name, last_name, dob)
+            VALUES ($1, $2, $3) RETURNING id;`,
+        [firstName, lastName, dob]);
+    return response.rows[0].id;
 }
+
 const postTicket = async(transactionID, flightID, standbyFlightID, passID, fare) => {
-    try
-    {
-        const response = await pool.query(
-            `INSERT INTO ticket (transaction_id, flight_id, standby_flight_id, passenger_id, fare_condition)
-                VALUES ($1, $2, $3, $4, $5);`,
-            [transactionID, flightID, null, passID, fare]);
-    } catch(err) {
-        console.log(err.message);
+    const response = await pool.query(
+        `INSERT INTO ticket (transaction_id, flight_id, standby_flight_id, passenger_id, fare_condition)
+            VALUES ($1, $2, $3, $4, $5);`,
+        [transactionID, flightID, null, passID, fare]);
+}
+
+const updateSeat = async(fare, flightID) => {
+    switch (fare){
+        case "economy":
+            await pool.query(
+                `UPDATE flight
+                    SET economy_booked=economy_booked+1,
+                        economy_available=economy_available-1
+                    WHERE id=$1;`,
+                    [flightID]);
+            break;
+        case "economy_plus":
+            await pool.query(
+                `UPDATE flight
+                    SET economy_plus_booked=economy_booked+1,
+                        economy_plus_available=economy_available-1
+                    WHERE id=$1;`,
+                    [flightID]);
+            break;
+        case "business":
+            await pool.query(
+                `UPDATE flight
+                    SET business_booked=economy_booked+1,
+                        business_available=economy_available-1
+                    WHERE id=$1;`,
+                    [flightID]);
+            break;
     }
 }
 
 module.exports = {transactionStatus, directFlights, connectionFlights, cities, checkAvailability,
-    postCreditCard, postTransaction, postPassenger, postTicket};
+    postCreditCard, postTransaction, postPassenger, postTicket, updateSeat};
