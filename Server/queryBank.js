@@ -189,30 +189,36 @@ const postCreditCard = async(cardNum, nameOnCard, expMonth, expYear) => {
         [cardNum, nameOnCard, expMonth, expYear]);
 }
 
-const postTransaction = async(cardNum, voucher, amount, contactEmail, contactPhone) => {
+const postBooking = async(bookRef, cardNum, voucher, amount, contactEmail, contactPhone) => {
     const response = await pool.query(
-        `INSERT INTO transaction (card_number, voucher, amount, contact_email, contact_phone_number, transaction_date)
-        VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP) RETURNING id;`,
-        [cardNum, null, amount, contactEmail, contactPhone]);
-    return response.rows[0].id;
+        `INSERT INTO booking (book_ref, card_number, discount_code, amount, contact_email, contact_phone_number, booking_date)
+        VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP);`,
+        [bookRef, cardNum, voucher, amount, contactEmail, contactPhone]);
 }
 
 const postPassenger = async(firstName, lastName, dob) => {
     const response = await pool.query(
-        `INSERT INTO passenger (first_name, last_name, dob)
+        `INSERT INTO passenger (first_name, last_name, date_of_birth)
             VALUES ($1, $2, $3) RETURNING id;`,
         [firstName, lastName, dob]);
     return response.rows[0].id;
 }
 
-const postTicket = async(transactionID, flightID, standbyFlightID, passID, fare) => {
+const postTicket = async(bookRef, flightID, passID, fare) => {
     const response = await pool.query(
-        `INSERT INTO ticket (transaction_id, flight_id, standby_flight_id, passenger_id, fare_condition)
+        `INSERT INTO ticket (book_ref, flight_id, passenger_id, fare_condition, check_in_time)
             VALUES ($1, $2, $3, $4, $5);`,
-        [transactionID, flightID, null, passID, fare]);
+        [bookRef, flightID, passID, fare, null]);
 }
 
-const updateSeat = async(fare, flightID, travelers) => {
+const postCargo = async(flightID, passID) => {
+    const response = await pool.query(
+        `INSERT INTO cargo (flight_id, passenger_id)
+            VALUES ($1, $2);`,
+        [flightID, passID]);
+}
+
+const addSeat = async(fare, flightID, travelers) => {
     switch (fare){
         case "economy":
             await pool.query(
@@ -242,4 +248,4 @@ const updateSeat = async(fare, flightID, travelers) => {
 }
 
 module.exports = {transactionStatus, directFlights, connectionFlights, cities, checkAvailability,
-    postCreditCard, postTransaction, postPassenger, postTicket, updateSeat};
+    postCreditCard, postBooking, postPassenger, postTicket, postCargo, addSeat};
