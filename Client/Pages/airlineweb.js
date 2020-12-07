@@ -1,12 +1,4 @@
 
-setInterval(function() {
-    $('#slideshow > img:first')
-        .fadeOut(2500)
-        .next()
-        .show()
-        .end()
-        .appendTo('#slideshow');
-}, 25000);
 
 function changeText() {
     var value = document.getElementById('travelers').value;
@@ -133,6 +125,13 @@ function insertDate() {
 function insertDateStatus() {
     localStorage.setItem("date", document.getElementById("alt-date-status").value);
 }
+function insertChangeInfo() {
+    const items =
+        {"firstName": document.getElementById("firstName").value,
+        "lastName": document.getElementById("lastName").value,
+        "bookRef": document.getElementById("bookRef").value};
+    localStorage.setItem("changeInfo", JSON.stringify(items));
+}
 
 async function getCities() {
     try {
@@ -147,10 +146,18 @@ async function getCities() {
         console.log(err.message);
     }
 }
+let cities = [];
 
-var cities = [];
-//WHEN DOM IS LOADED
-$(document).ready(function() {
+function homepageStart() {
+    setInterval(function() {
+        $('#slideshow > img:first')
+            .fadeOut(2500)
+            .next()
+            .show()
+            .end()
+            .appendTo('#slideshow');
+    }, 25000);
+
     $("#slideshow > img:gt(0)").hide();
     $('#book').show();
     $('#status').hide();
@@ -210,4 +217,7 @@ $(document).ready(function() {
     });
 
     getCities();
-});
+
+}
+
+

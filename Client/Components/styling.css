@@ -39,6 +39,15 @@ a.navbar-item:hover {
     font-weight: 600;
     line-height: 1.125;
 }
+form#book, form#status, form#change, form#checkIn {
+    height: 100%;
+    padding: 20px;
+}
+.submit-section {
+    text-align: center;
+    height: 50px;
+    align-items: center;
+}
 
 .container.flight-search {
     width: 781px;
@@ -126,10 +135,31 @@ input, label, select {
     display: block;
     background-color: inherit;
 }
+.input-field.radio {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    cursor: default;
+}
+.input-field.radio label {
+    color: #363636;
+    top: -2px;
+    left: 20px;
+    font-size: 11pt;
+}
+input[type="radio"] {
+    height: 14px;
+    width: 14px;
+}
+.radio-option {
+    position: relative;
+}
 .input-field {
-    /*float: left;*/
     position: relative;
     width: 310px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 .input-field.small input, .input-field.small select {
     width: inherit;
@@ -248,10 +278,10 @@ input:hover, select:hover {
 input:focus, select:focus {
     border-bottom-color: currentColor;
 }
-label {
+.input-field label {
     position: absolute;
     z-index: 2;
-    top: -25%;
+    top: 0;
     transition: 0.3s;
     color: transparent;
 }
@@ -276,9 +306,10 @@ select:hover ~ label {
     color: currentColor;
 }
 section {
-    height: 78px;
+    height: 72px;
     display: flex;
     justify-content: center;
+    margin: 7px 0;
 }
 select {
     -webkit-appearance: none;
@@ -331,6 +362,9 @@ body {
     position: relative;
     display: inline-block;
 }
+.input-field.small .autocomplete-items {
+    top: 100%;
+}
 .autocomplete-items {
     position: absolute;
     border: 1px solid #d4d4d4;
@@ -338,7 +372,7 @@ body {
     border-top: none;
     z-index: 99;
     /*position the autocomplete items to be the same width as the container:*/
-    top: 64%;
+    top: 84%;
     padding: 0;
     width: 100%;
 }
@@ -458,7 +492,7 @@ table tbody tr:last-of-type #businessCol {
     transition: background-color 500ms;
     line-height:20px;
 }
-#stepProgressBar  {
+#bookStepProgressBar, #changeStepProgressBar  {
     display:  flex;
     float: right;
     justify-content:  space-between;
@@ -473,7 +507,7 @@ table tbody tr:last-of-type #businessCol {
 }
 .step  {
     text-align:  center;
-    width:  55px;
+    width:  74px;
 }
 .bullet.current  {
     color:  white;
@@ -483,13 +517,22 @@ table tbody tr:last-of-type #businessCol {
     color:  white;
     background-color:  #28a745;
 }
-.bullet:not(.final)::after {
+#bookStepProgressBar .bullet:not(.final)::after {
     content: '';
     position: absolute;
     right: -86px;
     bottom: 10px;
     height: 1px;
     width: 69px;
+    background-color: #363636;
+}
+#changeStepProgressBar .bullet:not(.final)::after {
+    content: '';
+    position: absolute;
+    right: -44px;
+    bottom: 10px;
+    height: 1px;
+    width: 33px;
     background-color: #363636;
 }
 .flight-container  {
@@ -679,8 +722,7 @@ table tbody tr:last-of-type #businessCol {
     overflow: auto;
     margin-left: 2px;
     position: relative;
-    /*display: flex;*/
-    /*align-items: center;*/
+    overflow: visible;
     width: 99.8%;
 }
 .block-section:not(:last-of-type):after {
@@ -758,7 +800,7 @@ button {
     overflow: auto;
     margin-bottom: 10px;
 }
-.cardNum span:first-of-type, .total-amount span:first-of-type {
+.cardNum span:first-of-type, .total-amount span:first-of-type, #blockTextAmount, #lastFourDigits {
     font-weight: bold;
 }
 

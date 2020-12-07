@@ -1,4 +1,5 @@
 
+const queryBank = require('./queryBank');
 
 const calculateFarePrice = (flight) => {
     const economyStarter = 200;
@@ -13,13 +14,12 @@ const calculateFarePrice = (flight) => {
     var econPlusPrice = (economyPlusStarter/(Math.log(flightTime)/18))+(100000/timeTillFlight);
     var businessPrice = (businessStarter/(Math.log(flightTime)/18))+(100000/timeTillFlight);
 
-    //Add tax and round to 2 decimals
-    econPrice = +(econPrice+(0.0825*econPrice)).toFixed(2);
-    econPlusPrice = +(econPlusPrice+(0.0825*econPlusPrice)).toFixed(2);
-    businessPrice = +(businessPrice+(0.0825*businessPrice)).toFixed(2);
-    flight.econPrice = econPrice;
-    flight.econPlusPrice = econPlusPrice;
-    flight.businessPrice = businessPrice;
+    flight.econPrice = +(econPrice.toFixed(2));
+    flight.econPlusPrice = +(econPlusPrice.toFixed(2));
+    flight.businessPrice = +(businessPrice.toFixed(2));
+    flight.econWithTax = +((econPrice+(0.0825*econPrice)).toFixed(2));
+    flight.econPlusWithTax = +((econPlusPrice+(0.0825*econPlusPrice)).toFixed(2));
+    flight.businessWithTax = +((businessPrice+(0.0825*businessPrice)).toFixed(2));
 };
 
 const calculateDuration = (flight) => {
@@ -32,6 +32,51 @@ const calculateDuration = (flight) => {
     return arriveTime-departTime;
 }
 
+const getFlight = async(flightID, flightID2)=> {
+    try {
+        let flight;
+        if(flightID2 === undefined)
+            flight = await queryBank.directFlights('one', {flightID: flightID});
+        else
+            flight = await queryBank.connectionFlights('one', {flightID: flightID, flightID2: flightID2});
+        calculateDuration(flight);
+        calculateFarePrice(flight);
+        return flight;
+    }
+    catch (err) {
+        console.log(err.message);
+    }
+}
+
+const priceDiff = async(oldFlight, newFlight)=> {
+    const newFl = await getFlight(newFlight.flight, newFlight.flight2);
+
+    var price;
+    var priceWithTax;
+    switch(newFlight.fare)
+    {
+        case 'Economy':
+            price = newFl.econPrice;
+            priceWithTax = newFl.econWithTax;
+            break;
+        case 'Economy Plus':
+            price = newFl.econPlusPrice;
+            priceWithTax = newFl.econPlusWithTax;
+            break;
+        case 'Business':
+            price = newFl.businessPrice;
+            priceWithTax = newFl.businessWithTax;
+    }
+    var priceDiff = (priceWithTax*newFlight.travelers-oldFlight.amount);
+    var refund = false;
+    if(priceDiff<0)
+        refund = true;
+    return {
+        priceDiff: priceDiff.toFixed(2),
+        refund: refund
+    };
+}
+
 const generateBookRef = (length) => {
     var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     var result = '';
@@ -39,5 +84,5 @@ const generateBookRef = (length) => {
     return result;
 }
 
-module.exports = {calculateFarePrice, calculateDuration, generateBookRef};
+module.exports = {calculateFarePrice, calculateDuration, generateBookRef, getFlight, priceDiff};
 

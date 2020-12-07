@@ -10,7 +10,16 @@
 </head>
 <body>
 <div id="header"></div>
-<div id="flightResultsHead" class="container">
+
+
+<div id="flightResultsHead" class="container" style="margin-bottom: 0; overflow: auto; height: 100%;">
+    <div style="overflow: auto; margin-bottom: 15px;">
+        <div style="float: left;">
+            <div class="title">New Flight</div>
+        </div>
+        <div id="changeStepProgressBar"></div>
+    </div>
+
 
     <div class="title" style="width: 159px; float: left;">Depart:</div>
     <div class="flight-info-title">
@@ -31,8 +40,9 @@
         <label for="date" style="font-size: 16px; top: -12px;">Date</label>
 
     </div>
-
 </div>
+
+
 <div class="container" style="width: 1000px;">
 
     <div style="width: 100%;">
@@ -54,7 +64,7 @@
             </tr>
             </thead>
             <tbody>
-                <tr class="spacer"></tr>
+            <tr class="spacer"></tr>
 
             </tbody>
 
@@ -84,23 +94,27 @@
 </div>
 
 
-
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-<script>
-    $(function(){
-        $('#header').load('../../Components/header.html');
-    });
-</script>
-<script src="flightsAvailable.js"></script>
+<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script src="../booking/flightsAvailable.js"></script>
 <script>
     $(document).ready(function() {
 
-        $(function() {
-            $( "#date" ).datepicker();
+
+        $('#header').load('../../Components/header.html');
+
+
+        $('#changeStepProgressBar').load('../../Components/changeStepProgressBar.html', function () {
+            var step = 2;
+            var bullets = document.getElementsByClassName("bullet");
+            for (i = 0; i < step - 1; i++) {
+                bullets[i].classList.add('completed');
+
+            }
+            bullets[step - 1].classList.add('current');
         });
     });
 </script>
+
 </body>
 </html>

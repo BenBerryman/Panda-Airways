@@ -1,9 +1,9 @@
 
 var response = JSON.parse(localStorage.getItem("response"));
-document.getElementById("bookRef").innerHTML = response.bookRef;
+// document.getElementById("bookRef").innerHTML = response.bookRef;
 var passengers = response.travelers;
 passengers.forEach(function(pass) {
-    var dob = pass.dob.toString().substr(0,10);
+    var dob = pass.date_of_birth.toString().substr(0,10);
     dob = dob.split("-").reverse().join("/");
 
     var parent = document.createElement("DIV");
@@ -11,7 +11,7 @@ passengers.forEach(function(pass) {
 
     var name = document.createElement("DIV");
     name.classList.add("name");
-    name.innerHTML = `${pass.firstName} ${pass.lastName}`;
+    name.innerHTML = `${pass.first_name} ${pass.last_name}`;
     parent.appendChild(name);
 
     var spacer = document.createElement("DIV");
@@ -31,5 +31,6 @@ document.getElementById("totalAmount").innerHTML ="$"+ response.payment.amount;
 function clearLocalStorage() {
     localStorage.removeItem("date");
     localStorage.removeItem("flight");
+    localStorage.removeItem("changeInfo");
     localStorage.removeItem("response");
 }

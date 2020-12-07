@@ -86,6 +86,7 @@ CREATE TABLE ticket(
   passenger_id SERIAL REFERENCES passenger(id) NOT NULL,
   fare_condition CHAR VARYING(20) NOT NULL,
   boarding_no SERIAL NOT NULL,
+  connecting_ticket INTEGER REFERENCES ticket(id) ON DELETE NO ACTION,
   check_in_time TIMESTAMP
 );
 
@@ -97,9 +98,10 @@ CREATE TABLE pilot(
 );
 
 CREATE TABLE standby(
-  flight_id INTEGER REFERENCES flight(id) NOT NULL,
-  position SERIAL PRIMARY KEY,
-  passenger_id INTEGER REFERENCES passenger(id) NOT NULL
+  flight_id INTEGER,
+  position SERIAL,
+  passenger_id INTEGER REFERENCES passenger(id) NOT NULL,
+  PRIMARY KEY(flight_id, position)
 );
 
 CREATE TABLE cargo(

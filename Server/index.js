@@ -44,7 +44,6 @@ app.get('/cities', async(req, res)=>{
 app.get('/findFlights', async(req, res)=>{
     try{
         const args = [req.query.from, req.query.to, req.query.date.toString(), req.query.travelers];
-
         const directFlights = await queryBank.directFlights('all', {from: args[0], to: args[1], date: args[2]});
 
         const oneStopFlights = await queryBank.connectionFlights('all', {from: args[0], to: args[1], date: args[2]});
@@ -67,16 +66,7 @@ app.get('/findFlights', async(req, res)=>{
 app.get('/getFlight', async(req, res)=> {
     try
     {
-        const flightID = req.query.id;
-        const flightID2 = req.query.id2;
-        let flight;
-        if(flightID2 === undefined)
-            flight = await queryBank.directFlights('one', {flightID: flightID});
-        else
-            flight = await queryBank.connectionFlights('one', {flightID: flightID, flightID2: flightID2});
-
-        processing.calculateDuration(flight);
-        processing.calculateFarePrice(flight);
+        const flight = await processing.getFlight(req.query.id, req.query.id2);
         res.json(flight);
     }
     catch(err){
@@ -84,54 +74,77 @@ app.get('/getFlight', async(req, res)=> {
     }
 });
 
+app.get('/priceDiff', async(req, res)=> {
+    try {
+        var priceDiff = await processing.priceDiff(req.query.oldFlight, req.query.newFlight);
+        res.json(priceDiff);
+    } catch(err) {
+        console.log(err.message);
+    }
+})
+
+app.get('/booking', async(req, res)=> {
+    try {
+        let flight = await queryBank.getBooking(req.query.bookRef, req.query.type);
+        res.json(flight);
+
+    } catch(err) {
+        console.log(err.message);
+    }
+})
+
 app.post('/purchase', async(req, res)=>{
     try
     {
-        const flight = req.body.flight;
+        const flight = await processing.getFlight(req.body.flight.flight, req.body.flight.flight2);
+
         const passengerInfo = req.body.passengerInfo;
         const contactInfo = req.body.contactInfo;
         const paymentInfo = req.body.paymentInfo;
 
         var price;
+        var priceWithTax;
         var amount;
         var fare;
-        var indirect = false;
-        if (flight.flight.conn1_id !== undefined)
-            indirect = true;
+        var indirect = (flight.conn1_id !== undefined);
 
-        if(flight.fare === "Economy"){
-            price = flight.flight.econPrice;
-            fare = "economy";
-        }
-        else if(flight.fare === "Economy Plus"){
-            price = flight.flight.econPlusPrice;
-            fare = "economy_plus";
-        }
-        else{
-            price = flight.flight.businessPrice;
-            fare = "business";
+        switch(req.body.flight.fare)
+        {
+            case 'Economy':
+                price = flight.econPrice;
+                priceWithTax = flight.econWithTax;
+                fare = "economy";
+                break;
+            case 'Economy Plus':
+                price = flight.econPlusPrice;
+                priceWithTax = flight.econPlusWithTax;
+                fare = "economy_plus";
+                break;
+            case 'Business':
+                price = flight.businessPrice;
+                priceWithTax = flight.businessWithTax;
+                fare = "business";
+                break;
         }
         //Check availability of flight(s)
-        var available = await queryBank.checkAvailability(fare, flight.flight.id, flight.travelers);
+        var available = await queryBank.checkAvailability(fare, flight.id, req.body.flight.travelers);
         if(indirect)
-            available = await queryBank.checkAvailability(fare, flight.flight.conn1_id, flight.travelers);
+            available = await queryBank.checkAvailability(fare, flight.conn1_id, req.body.flight.travelers);
 
         if(available)
         {
-            console.log(flight.flight.id);
-            console.log(flight.flight.conn1_id);
             while (true) {
                 try {
-                    amount = (price*flight.travelers).toFixed(2);
-                    //TODO Update flight availabilities, booking
                     var bookRef = processing.generateBookRef(6);
+
+                    amount = (priceWithTax*req.body.flight.travelers).toFixed(2);
                     //Start transaction query
                     await queryBank.transactionStatus("start");
 
-                    //Update seat on flight.id, if indirect then update flight.conn1_id
-                    await queryBank.addSeat(fare, flight.flight.id, flight.travelers);
-                    if (indirect)
-                        await queryBank.addSeat(fare, flight.flight.conn1_id, flight.travelers);
+                    // //Update seat on flight.id, if indirect then update flight.conn1_id
+                    // await queryBank.postSeat(fare, flight.id, req.body.flight.travelers);
+                    // if (indirect)
+                    //     await queryBank.postSeat(fare, flight.conn1_id, req.body.flight.travelers);
 
                     //If credit card is not already on file, put it in database
                     await queryBank.postCreditCard(paymentInfo.cardNum, paymentInfo.nameOnCard,
@@ -142,17 +155,16 @@ app.post('/purchase', async(req, res)=>{
 
                     //If travelers not already on file, put in database and return passenger ID
                     //For each traveler, create ticket for flight(s)
-                    for (var i=0; i<flight.travelers; i++)
+                    for (var i=0; i<req.body.flight.travelers; i++)
                     {
-                        var passID = await queryBank.postPassenger(passengerInfo[i].firstName, passengerInfo[i].lastName, passengerInfo[i].dob);
+                        var passID = await queryBank.postPassenger(passengerInfo[i].first_name, passengerInfo[i].last_name, passengerInfo[i].date_of_birth);
+                        var ticket;
+                        if (indirect)
+                            ticket = await queryBank.postTicket(bookRef, flight.conn1_id, passID, req.body.flight.fare);
 
-                        await queryBank.postTicket(bookRef, flight.flight.id, passID, flight.fare);
-                        await queryBank.postCargo(flight.flight.id, passID);
+                        await queryBank.postTicket(bookRef, flight.id, passID, req.body.flight.fare, ticket);
 
-                        if (indirect) {
-                            await queryBank.postTicket(bookRef, flight.flight.conn1_id, passID, flight.fare);
-                            await queryBank.postCargo(flight.flight.conn1_id, passID);
-                        }
+
                     }
                     await queryBank.transactionStatus("commit");
                     break;
@@ -161,13 +173,13 @@ app.post('/purchase', async(req, res)=>{
                     console.log(err.message);
                 }
             }
-            
-            res.status(200).json(
-                {bookRef: bookRef,
-                    travelers: passengerInfo,
-                    payment:
-                        {cardLastFour: paymentInfo.cardNum.toString().substr(12),
-                            amount: amount}
+            //TODO Update flight availabilities, booking
+            res.status(200).json({
+                bookRef: bookRef,
+                travelers: passengerInfo,
+                payment:
+                    {cardLastFour: paymentInfo.cardNum.toString().substr(12),
+                        amount: amount}
                 });
         }
         else
@@ -176,8 +188,66 @@ app.post('/purchase', async(req, res)=>{
     } catch(err) {
         console.log(err.message);
     }
-
 });
+
+app.put('/purchase', async(req, res)=> {
+    try {
+        const booking = await  queryBank.getBooking(req.body.bookRef, 'all');
+        const oldFlight = await processing.getFlight(req.body.oldFlight.flight, req.body.oldFlight.flight2);
+        const newFlight = await processing.getFlight(req.body.newFlight.flight, req.body.newFlight.flight2);
+        const priceDiff = await processing.priceDiff(req.body.oldFlight, req.body.newFlight);
+        var indirect = (oldFlight.conn1_id !== undefined);
+        var newIndirect = (newFlight.conn1_id !== undefined);
+        var newFare;
+        while(true) {
+            try {
+
+                //Start transaction query
+                await queryBank.transactionStatus("start");
+                //Change amount of booking
+
+                await queryBank.putBookingAmount(req.body.bookRef,
+                    parseFloat(booking.amount) + parseFloat(priceDiff.priceDiff));
+
+                //For each passenger, update tickets
+                for (var i = 0; i < booking.travelers.length; i++) {
+                    var tickets = await queryBank.getAllTickets(req.body.bookRef, booking.travelers[i].id);
+                    //CASE 1: Both are indirect
+                    if (indirect && newIndirect) {
+                        await queryBank.updateTicket(tickets[0].id, newFlight.id, req.body.newFlight.fare);
+                        await queryBank.updateTicket(tickets[1].id, newFlight.conn1_id, req.body.newFlight.fare);
+                    } else if (!indirect && newIndirect) {
+                        //CASE 2: Old is direct, new is indirect
+                        var ticketID = await queryBank.updateTicket(tickets[0].id, newFlight.conn1_id, req.body.newFlight.fare);
+                        await queryBank.postTicket(req.body.bookRef, newFlight.id, booking.travelers[i].id, req.body.newFlight.fare, ticketID);
+                    } else if (indirect && !newIndirect) {
+                        //CASE 3: Old is indirect, new is direct
+                        await queryBank.updateTicket(tickets[1].id, newFlight.id, req.body.newFlight.fare);
+                        await queryBank.deleteTicket(tickets[0].id);
+                    } else {
+                        //CASE 4: Both are direct
+                        await queryBank.updateTicket(tickets[0].id, newFlight.id, req.body.newFlight.fare);
+                    }
+                }
+
+                await queryBank.transactionStatus("commit");
+                break;
+            } catch(err) {
+                await queryBank.transactionStatus("rollback");
+                console.log(err.message);
+            }
+        }
+        const newBooking = await queryBank.getBooking(req.body.bookRef, 'all');
+        res.status(200).json({
+            travelers: newBooking.travelers,
+            payment:
+                {cardLastFour: newBooking.cardLastFour,
+                    amount: newBooking.amount}
+        });
+    } catch(err) {
+        console.log(err.message);
+    }
+})
 
 // //insert a todo
 // app.post('/todos', async(req, res)=>{

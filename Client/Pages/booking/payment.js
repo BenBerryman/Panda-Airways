@@ -1,11 +1,11 @@
 
 
-//STILL HAVE ACCESS TO VARIABLE flight FROM price.js ONCE IT IS DEFINED
+//STILL HAVE ACCESS TO VARIABLE flight FROM flightInfo.js ONCE IT IS DEFINED
 
 
 var passengers = [];
 
-function travelerInfo() {
+function travelerInfo(flight) {
     for(i=1;i<=flight.travelers; i++)
     {
         const passengerNum = i;
@@ -59,11 +59,11 @@ async function purchase() {
             var dobMonth = pass.getElementsByClassName("dobMonth")[0].value;
             var dobDay = pass.getElementsByClassName("dobDay")[0].value;
             var dobYear = pass.getElementsByClassName("dobYear")[0].value;
-            var dob = new Date(dobYear, dobMonth-1, dobDay);
+            var date_of_birth = new Date(dobYear, dobMonth-1, dobDay);
             passengerInfo.push(
-                {firstName: pass.getElementsByClassName("firstName")[0].value,
-                lastName: pass.getElementsByClassName("lastName")[0].value,
-                dob: dob});
+                {first_name: pass.getElementsByClassName("firstName")[0].value,
+                last_name: pass.getElementsByClassName("lastName")[0].value,
+                date_of_birth: date_of_birth});
         });
         const contactInfo =
             {email: document.getElementsByClassName("email")[0].value,
@@ -77,7 +77,7 @@ async function purchase() {
             expYear: document.getElementsByName("cardExpiryYear")[0].value};
 
         const info =
-            {flight: flight,
+            {flight: JSON.parse(localStorage.getItem("flight")),
             passengerInfo: passengerInfo,
             contactInfo: contactInfo,
             paymentInfo: paymentInfo};

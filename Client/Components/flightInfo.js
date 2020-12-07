@@ -1,8 +1,8 @@
 
-async function defineFlight() {
-    var locStorage = localStorage.getItem('flight');
-    window.flight = await getFlight(JSON.parse(locStorage));
-    insertInfo(window.flight);
+async function defineFlight(flightInfo, block) {
+    var flight = await getFlight(flightInfo);
+    insertFlightInfo(flight, block);
+    return flight;
 }
 
 async function getFlight(flight) {
@@ -26,7 +26,7 @@ function convertTime(time) {
     return hour.toString() + ":" + min + AmOrPm;
 }
 
-function insertInfo(selection) {
+function insertFlightInfo(selection, block) {
     var dateDepart = new Date(selection.flight.scheduled_departure);
     var dateArrive = new  Date(selection.flight.scheduled_arrival);
     var weekday=new Array(7);
@@ -44,40 +44,67 @@ function insertInfo(selection) {
     var arriveTime = convertTime(dateArrive);
 
 
-    document.getElementById("date").innerHTML = `${weekday[dateDepart.getDay()]} ${month}/${dayOfMonth}`;
-    var airportCodes = document.getElementsByClassName("airport-code-bold");
+    block.getElementsByClassName("flightDate")[0].innerHTML = `${weekday[dateDepart.getDay()]} ${month}/${dayOfMonth}`;
+    var airportCodes = block.getElementsByClassName("airport-code-bold");
     airportCodes[0].innerHTML = selection.flight.depart;
     airportCodes[1].innerHTML = selection.flight.arrive;
-    var times = document.getElementsByClassName("flight-time");
+    var times = block.getElementsByClassName("flight-time");
     times[0].innerHTML = boardTime;
     times[1].innerHTML = arriveTime;
 
     var res = Math.abs(dateArrive - dateDepart) / 1000;
     var hoursBetween = Math.floor(res / 3600) % 24;
     var minutesBetween = Math.floor(res / 60) % 60;
-    document.getElementById("flightTime").innerHTML = selection.flight.duration;
+    block.getElementsByClassName("flightTime")[0].innerHTML = selection.flight.duration;
 
-    var connection = document.getElementsByClassName("connection")[0];
+    var connection = block.getElementsByClassName("connection")[0];
     if(selection.flight.conn1 === undefined)
         connection.innerHTML = "Nonstop";
     else
         connection.innerHTML = "1 stop";
 
-    document.getElementById("fare").innerHTML = selection.fare;
+    block.getElementsByClassName("fare")[0].innerHTML = selection.fare;
 
 
-    //Price info
-    var price;
-    if(flight.fare === "Economy")
-        price = flight.flight.econPrice;
-    else if(flight.fare === "Economy Plus")
-        price = flight.flight.econPlusPrice;
-    else
-        price = flight.flight.businessPrice;
-    document.getElementsByClassName("price-per-pass")[0].lastElementChild.innerHTML = "$"+(price-(0.0825*price)).toFixed(2);
-    document.getElementsByClassName("taxes-per-pass")[0].lastElementChild.innerHTML = "$"+(0.0825*price).toFixed(2);
-    document.getElementsByClassName("total-per-pass")[0].lastElementChild.innerHTML = "$"+price.toFixed(2);
-    document.getElementsByClassName("passengers")[0].lastElementChild.innerHTML = "x"+flight.travelers;
-    document.getElementsByClassName("flight-total")[0].lastElementChild.innerHTML = "<sup>$</sup>"+(price*flight.travelers).toFixed(2);
+}
 
+function priceInfo(block, flight, type='default') {
+    switch(type)
+    {
+        //CASE 'default': new flight being selected, get info from new flight
+        case 'default':
+            var price;
+            var priceWithTax;
+            switch(flight.fare)
+            {
+                case 'Economy':
+                    price = flight.flight.econPrice;
+                    priceWithTax = flight.flight.econWithTax;
+                    break;
+                case 'Economy Plus':
+                    price = flight.flight.econPlusPrice;
+                    priceWithTax = flight.flight.econPlusWithTax;
+                    break;
+                case 'Business':
+                    price = flight.flight.businessPrice;
+                    priceWithTax = flight.flight.businessWithTax;
+            }
+            block.getElementsByClassName("price-per-pass")[0].lastElementChild.innerHTML = "$"+price.toFixed(2);
+            block.getElementsByClassName("taxes-per-pass")[0].lastElementChild.innerHTML = "$"+(priceWithTax-price).toFixed(2);
+            block.getElementsByClassName("total-per-pass")[0].lastElementChild.innerHTML = "$"+priceWithTax.toFixed(2);
+            block.getElementsByClassName("passengers")[0].lastElementChild.innerHTML = "x"+flight.travelers;
+            block.getElementsByClassName("flight-total")[0].lastElementChild.innerHTML = "<sup>$</sup>"+(priceWithTax*flight.travelers).toFixed(2);
+            break;
+
+        //CASE 'change': flight is being changed, get info from old booking
+        case 'change':
+            //TODO store taxes separately in db (going backwards isn't entirely accurate)
+            var amount = JSON.parse(localStorage.getItem("flight")).amount;
+            var perPassenger = amount/JSON.parse(localStorage.getItem("flight")).travelers;
+            block.getElementsByClassName("price-per-pass")[0].lastElementChild.innerHTML = "$"+(perPassenger-(0.0825*perPassenger)).toFixed(2);
+            block.getElementsByClassName("taxes-per-pass")[0].lastElementChild.innerHTML = "$"+(0.0825*perPassenger).toFixed(2);
+            block.getElementsByClassName("total-per-pass")[0].lastElementChild.innerHTML = "$"+perPassenger.toFixed(2);
+            block.getElementsByClassName("passengers")[0].lastElementChild.innerHTML = "x"+JSON.parse(localStorage.getItem("flight")).travelers;
+            block.getElementsByClassName("flight-total")[0].lastElementChild.innerHTML = "<sup>$</sup>"+amount;
+    }
 }

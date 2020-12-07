@@ -15,7 +15,7 @@
         <div style="float: left;">
             <div class="title">Passenger & Payment Info</div>
         </div>
-        <div id="stepProgressBar"></div>
+        <div id="bookStepProgressBar"></div>
     </div>
 
     <div id="flightInfo"></div>
@@ -119,7 +119,7 @@
                 <div style="margin-left: 11px">This destination may be impacted by a temporary self-quarantine upon landing.</div>
             </div>
             <div id="priceTotals">
-                <div id="bag-fee">
+                <div id="bagFee">
                     <span>BAG FEE</span>
                     <span></span>
                 </div>
@@ -127,7 +127,7 @@
                     <span>SUBTOTAL</span>
                     <span></span>
                 </div>
-                <div id="taxes-fees">
+                <div id="taxesFees">
                     <span>TAXES & FEES</span>
                     <span></span>
                 </div>
@@ -205,13 +205,15 @@
     $(function(){
         $('#header').load('../../Components/header.html');
         $('#flightInfo').load('../../Components/flightInfo.html', function() {
-            defineFlight().then(function() {
-                fillOutPriceSummary();
-                travelerInfo();
+            var block = this;
+            defineFlight(JSON.parse(localStorage.getItem("flight")), block).then(function(flight) {
+                priceInfo(block, flight);
+                fillOutPriceSummary(flight);
+                travelerInfo(flight);
             });
 
         });
-        $('#stepProgressBar').load('../../Components/stepProgressBar.html', function() {
+        $('#bookStepProgressBar').load('../../Components/bookStepProgressBar.html', function() {
             var step = 2;
             var bullets = document.getElementsByClassName("bullet");
             for(i=0; i < step-1; i++)

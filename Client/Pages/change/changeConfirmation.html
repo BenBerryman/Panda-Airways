@@ -14,15 +14,13 @@
 <div class="container">
     <div id="flightResultsHead" class="border-bottom" style="height: 87px; margin-bottom: 0;">
         <div style="float: left;">
-            <div class="title">Reservation Successful</div>
+            <div class="title">Change Successful</div>
         </div>
         <div id="bookStepProgressBar"></div>
     </div>
 
     <div class="block-text">
-        <p>Thank you for flying Panda Airways. Your booking number is:</p>
-        <div id="bookRef" class="highlight"></div>
-        <p>Whenever you are ready, use this code to check in to your flight.</p>
+        <p>Thank you for flying Panda Airways. Your flight has been changed.</p>
         <p class="indent">Please plan to arrive at the airport <b>at least one hour</b> before your flight's
             departure time. This was allow ample time to check in to your flight, check any bags, and pass through security.</p>
         <p></p>
@@ -72,13 +70,12 @@
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="../../Components/flightInfo.js"></script>
-<script src="./price.js"></script>
 <script>
     $(function(){
         $('#header').load('../../Components/header.html');
         $('#flightInfo').load('../../Components/flightInfo.html', function() {
             var block = this;
-            defineFlight(JSON.parse(localStorage.getItem("flight")), block).then(function(flight) {
+            defineFlight(JSON.parse(localStorage.getItem("newFlight")), block).then(function(flight) {
                 priceInfo(block, flight);
             });
         });
@@ -94,7 +91,7 @@
         });
     });
 </script>
-<script src="confirmation.js"></script>
+<script src="../booking/confirmation.js"></script>
 
 </body>
 </html>

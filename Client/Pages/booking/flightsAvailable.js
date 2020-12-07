@@ -73,7 +73,8 @@ function convertTime(time) {
     return hour.toString() + ":" + min + AmOrPm;
 }
 
-function insertInfo(row, data) {
+function insertInfo(row, data, isChangeBooking) {
+
     //Depart time
     var departing = row.insertCell();
     var departTime = new Date(data.scheduled_departure);
@@ -95,7 +96,10 @@ function insertInfo(row, data) {
     var economy = row.insertCell();
     economy.setAttribute("id", "ecoCol");
     var linkEcon = document.createElement("a");
-    linkEcon.href = "./price.html";
+    if(isChangeBooking)
+        linkEcon.href = "./priceReconcile.html";
+    else
+        linkEcon.href = "./price.html";
     linkEcon.onclick = function() {pickFlight(data, "Economy");}
     linkEcon.innerHTML = "$"+data.econPrice.toFixed(0);
     economy.appendChild(linkEcon);
@@ -103,7 +107,10 @@ function insertInfo(row, data) {
     var economyPlus = row.insertCell();
     economyPlus.setAttribute("id","ecoPlusCol");
     var linkEconPlus = document.createElement("a");
-    linkEconPlus.href = "./price.html";
+    if(isChangeBooking)
+        linkEconPlus.href = "./priceReconcile.html";
+    else
+        linkEconPlus.href = "./price.html";
     linkEconPlus.onclick = function() {pickFlight(data, "Economy Plus")};
     linkEconPlus.innerHTML = "$"+data.econPlusPrice.toFixed(0);
     economyPlus.appendChild(linkEconPlus);
@@ -111,7 +118,10 @@ function insertInfo(row, data) {
     var business = row.insertCell();
     business.setAttribute("id","businessCol");
     var linkBusiness = document.createElement("a");
-    linkBusiness.href = "./price.html";
+    if(isChangeBooking)
+        linkBusiness.href = "./priceReconcile.html";
+    else
+        linkBusiness.href = "./price.html";
     linkBusiness.onclick = function() {pickFlight(data, "Business")};
     linkBusiness.innerHTML = "$"+data.businessPrice.toFixed(0);
     business.appendChild(linkBusiness);
@@ -125,19 +135,48 @@ function noFlights() {
 }
 
 function pickFlight(flight, fare) {
-    var flight_picked = {"flight":flight.id, "fare":fare, "travelers": travelers};
-    if(flight.conn1_id !== undefined)
-        flight_picked.flight2 = flight.conn1_id;
-    localStorage.setItem("flight", JSON.stringify(flight_picked));
+
+    var flight_picked = {flight: flight.id, fare: fare};
+    if(localStorage.getItem("changeInfo") === null)
+    {
+        flight_picked.travelers = travelers;
+        if(flight.conn1_id !== undefined)
+            flight_picked.flight2 = flight.conn1_id;
+        localStorage.setItem("flight", JSON.stringify(flight_picked));
+    }
+    else
+    {
+        flight_picked.travelers = JSON.parse(localStorage.getItem("flight")).travelers;
+        if(flight.conn1_id !== undefined)
+            flight_picked.flight2 = flight.conn1_id;
+        localStorage.setItem("newFlight", JSON.stringify(flight_picked));
+    }
 }
 
 function showFlights() {
     document.getElementsByClassName("container")[1].style.display = "block";
     document.getElementsByClassName("no-flights")[0].style.display = "none";
+    //Check if this is being called for changing a flight or booking a new one
+    // (i.e. check if changeInfo exists in local storage
+    var isChangeFlight = false;
+    if(localStorage.getItem("changeInfo") !== null)
+    {
+        var currentFlight = JSON.parse(localStorage.getItem("flight"));
+        isChangeFlight = true;
+    }
+
     flights.forEach(function(type, i) {
         type.forEach(function(flight) {
-            var row = table.insertRow();
-            insertInfo(row, flight);
+            if(!isChangeFlight || (isChangeFlight && currentFlight.flight !== flight.id))
+            {
+                var row = table.insertRow();
+                //If change flight
+                if(isChangeFlight)
+                    insertInfo(row, flight, true);
+                //Else, it's a new booking
+                else
+                    insertInfo(row, flight, false);
+            }
         });
     });
 }

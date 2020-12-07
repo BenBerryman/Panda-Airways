@@ -43,8 +43,8 @@
 
 
 
-    <form id="book" autocomplete="off" action="booking/flightsAvailable.html" method="get" style="height: 248px; padding: 20px;">
-        <section style="margin-top: 7px;">
+    <form id="book" autocomplete="off" action="booking/flightsAvailable.html" method="get">
+        <section>
             <div class="input-field" style="margin-right: 50px;">
                 <input id="from" type="text" placeholder="From" required
                        oninvalid="this.setCustomValidity('Please enter a valid location.')" onchange="this.setCustomValidity('')">
@@ -86,13 +86,13 @@
             </div>
         </section>
 
-        <section style="text-align: center">
+        <section class="submit-section">
             <input class="button" type="submit" onclick="insertDate()" value="Find Flights" style="width: 262px; background-color: #ECECEC">
         </section>
     </form>
 
-    <form id="status" autocomplete="off" action="status/flightStatus.html" style="height:248px; padding: 20px;">
-        <section style="margin-top: 7px;">
+    <form id="status" autocomplete="off" action="status/flightStatus.html">
+        <section>
             <div class="input-field" style="margin-right: 50px;">
                 <input id="fromStatus" type="text" placeholder="From" required
                        oninvalid="this.setCustomValidity('Please enter a valid location.')" onchange="this.setCustomValidity('')">
@@ -124,27 +124,57 @@
 
             </div>
         </section>
-        <section style="text-align: center;">
+        <section class="submit-section">
             <input class="button" onclick="insertDateStatus()" type="submit" value="Check Status" style="width: 262px; margin: 0 auto; background-color: #ECECEC">
         </section>
 
     </form>
 
-    <form id="change" autocomplete="off" action="change/change.html" style="height: 248px; padding: 20px;">
-        <section style="margin-top: 7px;">
-            <div class="input-field">
-                <input id="transactionNum" type="text" name="transactionNum" minlength="6" maxlength="6"
-                       placeholder="Transaction Number" oninvalid="this.setCustomValidity('Please enter a valid transaction number.')"
+    <form id="change" autocomplete="off" action="change/change.html">
+        <section>
+            <div class="input-field" style="margin-right: 50px;">
+                <input id="firstName" type="text"
+                       placeholder="First Name" oninvalid="this.setCustomValidity('Please enter a first name.')"
                        onchange="this.setCustomValidity('')" required>
-                <label for="transactionNum">Transaction Number</label>
-
+                <label for="firstName">First Name</label>
+            </div>
+            <div class="input-field">
+                <input id="lastName" type="text"
+                       placeholder="Last Name" oninvalid="this.setCustomValidity('Please enter a last name.')"
+                       onchange="this.setCustomValidity('')" required>
+                <label for="lastName">Last Name</label>
             </div>
         </section>
+        <section>
+            <div class="input-field" style="margin-right: 50px;">
+                <input id="bookRef" type="text" minlength="6" maxlength="6"
+                       placeholder="Booking Number" oninvalid="this.setCustomValidity('Please enter a valid booking number.')"
+                       onchange="this.setCustomValidity('')" required>
+                <label for="bookRef">Booking Number</label>
+            </div>
 
+            <div class="input-field radio">
+                <div class="radio-option">
+                    <input id="changeFlight" type="radio" name="change_cancel" value="change" required>
+                    <label for="changeFlight">CHANGE</label>
+                </div>
+                <div class="radio-option">
+                    <input id="cancelFlight" type="radio" name="change_cancel" value="cancel">
+                    <label for="cancelFlight">CANCEL</label>
+                </div>
+            </div>
+
+        </section>
+        <section class="submit-section">
+            <input class="button" onclick="insertChangeInfo()" type="submit" value="Search" style="width: 262px; margin: 0 auto; background-color: #ECECEC">
+        </section>
 
     </form>
 
-    <form id="checkIn" autocomplete="off" action="checkIn/checkIn.html" style="height: 248px; padding: 20px;">
+    <form id="checkIn" autocomplete="off" action="checkIn/checkIn.html">
+        <section></section>
+        <section></section>
+        <section class="submit-section"></section>
 
 
 
@@ -167,11 +197,10 @@
 <script src="airlineweb.js"></script>
 <script>
     $(document).ready(function() {
+        homepageStart();
+        $( "#date" ).datepicker();
+        $( "#dateStatus").datepicker();
 
-        $(function() {
-            $( "#date" ).datepicker();
-            $( "#dateStatus").datepicker();
-        });
 
         $(':required').one('blur keydown', function() {
             $(this).addClass('touched');
