@@ -69,14 +69,14 @@ function insertFlightInfo(selection, block) {
 }
 
 function priceInfo(block, flight, type='default') {
-    switch(type)
-    {
+    var amount;
+    var perPassenger;
+    switch(type) {
         //CASE 'default': new flight being selected, get info from new flight
         case 'default':
             var price;
             var priceWithTax;
-            switch(flight.fare)
-            {
+            switch (flight.fare) {
                 case 'Economy':
                     price = flight.flight.econPrice;
                     priceWithTax = flight.flight.econWithTax;
@@ -89,22 +89,44 @@ function priceInfo(block, flight, type='default') {
                     price = flight.flight.businessPrice;
                     priceWithTax = flight.flight.businessWithTax;
             }
-            block.getElementsByClassName("price-per-pass")[0].lastElementChild.innerHTML = "$"+price.toFixed(2);
-            block.getElementsByClassName("taxes-per-pass")[0].lastElementChild.innerHTML = "$"+(priceWithTax-price).toFixed(2);
-            block.getElementsByClassName("total-per-pass")[0].lastElementChild.innerHTML = "$"+priceWithTax.toFixed(2);
-            block.getElementsByClassName("passengers")[0].lastElementChild.innerHTML = "x"+flight.travelers;
-            block.getElementsByClassName("flight-total")[0].lastElementChild.innerHTML = "<sup>$</sup>"+(priceWithTax*flight.travelers).toFixed(2);
+            block.getElementsByClassName("price-per-pass")[0].lastElementChild.innerHTML = "$" + price.toFixed(2);
+            block.getElementsByClassName("taxes-per-pass")[0].lastElementChild.innerHTML = "$" + (priceWithTax - price).toFixed(2);
+            block.getElementsByClassName("total-per-pass")[0].lastElementChild.innerHTML = "$" + priceWithTax.toFixed(2);
+            block.getElementsByClassName("passengers")[0].lastElementChild.innerHTML = "x" + flight.travelers;
+            block.getElementsByClassName("flight-total")[0].lastElementChild.innerHTML = "<sup>$</sup>" + (priceWithTax * flight.travelers).toFixed(2);
             break;
 
         //CASE 'change': flight is being changed, get info from old booking
         case 'change':
             //TODO store taxes separately in db (going backwards isn't entirely accurate)
-            var amount = JSON.parse(localStorage.getItem("flight")).amount;
-            var perPassenger = amount/JSON.parse(localStorage.getItem("flight")).travelers;
+            amount = JSON.parse(localStorage.getItem("flight")).amount;
+            perPassenger = amount / JSON.parse(localStorage.getItem("flight")).travelers;
+            block.getElementsByClassName("price-per-pass")[0].lastElementChild.innerHTML = "$" + (perPassenger - (0.0825 * perPassenger)).toFixed(2);
+            block.getElementsByClassName("taxes-per-pass")[0].lastElementChild.innerHTML = "$" + (0.0825 * perPassenger).toFixed(2);
+            block.getElementsByClassName("total-per-pass")[0].lastElementChild.innerHTML = "$" + perPassenger.toFixed(2);
+            block.getElementsByClassName("passengers")[0].lastElementChild.innerHTML = "x" + JSON.parse(localStorage.getItem("flight")).travelers;
+            block.getElementsByClassName("flight-total")[0].lastElementChild.innerHTML = "<sup>$</sup>" + amount;
+            break;
+
+        case 'cancel':
+            //TODO store taxes separately in db (going backwards isn't entirely accurate)
+            amount = JSON.parse(localStorage.getItem("flight")).amount;
+            perPassenger = amount / JSON.parse(localStorage.getItem("flight")).travelers.length;
+            block.getElementsByClassName("price-per-pass")[0].lastElementChild.innerHTML = "$" + (perPassenger - (0.0825 * perPassenger)).toFixed(2);
+            block.getElementsByClassName("taxes-per-pass")[0].lastElementChild.innerHTML = "$" + (0.0825 * perPassenger).toFixed(2);
+            block.getElementsByClassName("total-per-pass")[0].lastElementChild.innerHTML = "$" + perPassenger.toFixed(2);
+            block.getElementsByClassName("passengers")[0].lastElementChild.innerHTML = "x" + JSON.parse(localStorage.getItem("flight")).travelers.length;
+            block.getElementsByClassName("flight-total")[0].lastElementChild.innerHTML = "<sup>$</sup>" + amount;
+            break;
+        case 'cancelConf':
+        case 'changeConf':
+            amount = JSON.parse(localStorage.getItem("response")).payment.amount;
+            perPassenger = amount/JSON.parse(localStorage.getItem("flight")).travelers.length;
             block.getElementsByClassName("price-per-pass")[0].lastElementChild.innerHTML = "$"+(perPassenger-(0.0825*perPassenger)).toFixed(2);
             block.getElementsByClassName("taxes-per-pass")[0].lastElementChild.innerHTML = "$"+(0.0825*perPassenger).toFixed(2);
             block.getElementsByClassName("total-per-pass")[0].lastElementChild.innerHTML = "$"+perPassenger.toFixed(2);
-            block.getElementsByClassName("passengers")[0].lastElementChild.innerHTML = "x"+JSON.parse(localStorage.getItem("flight")).travelers;
+            block.getElementsByClassName("passengers")[0].lastElementChild.innerHTML = "x"+JSON.parse(localStorage.getItem("response")).travelers.length;
             block.getElementsByClassName("flight-total")[0].lastElementChild.innerHTML = "<sup>$</sup>"+amount;
+            break;
     }
 }

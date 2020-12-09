@@ -81,9 +81,9 @@ CREATE TABLE flight(
 
 CREATE TABLE ticket(
   id SERIAL PRIMARY KEY,
-  book_ref TEXT REFERENCES booking(book_ref) NOT NULL,
+  book_ref TEXT REFERENCES booking(book_ref) ON DELETE CASCADE NOT NULL,
   flight_id INTEGER REFERENCES flight(id) NOT NULL,
-  passenger_id SERIAL REFERENCES passenger(id) NOT NULL,
+  passenger_id SERIAL REFERENCES passenger(id) ON DELETE CASCADE NOT NULL,
   fare_condition CHAR VARYING(20) NOT NULL,
   boarding_no SERIAL NOT NULL,
   connecting_ticket INTEGER REFERENCES ticket(id) ON DELETE NO ACTION,
@@ -100,14 +100,14 @@ CREATE TABLE pilot(
 CREATE TABLE standby(
   flight_id INTEGER,
   position SERIAL,
-  passenger_id INTEGER REFERENCES passenger(id) NOT NULL,
+  passenger_id INTEGER REFERENCES passenger(id) ON DELETE CASCADE NOT NULL,
   PRIMARY KEY(flight_id, position)
 );
 
 CREATE TABLE cargo(
   stock_keeping_no SERIAL PRIMARY KEY,
   flight_id INTEGER REFERENCES flight(id) NOT NULL,
-  passenger_id INTEGER REFERENCES passenger(id) NOT NULL
+  passenger_id INTEGER REFERENCES passenger(id) ON DELETE CASCADE NOT NULL
 );
 
 

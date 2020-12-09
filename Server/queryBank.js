@@ -1,34 +1,39 @@
 const pool = require('./db');
+const sql = require('fs');
 
 //TYPE can be either 'all' or 'one'
 //IF 'all', args={to:<>, from:<>, date:<>}
 //IF 'one', args={flightID:<>}
 
-const transactionStatus = async(status) => {
+
+
+const transactionStatus = async(client, status) => {
     switch (status){
         case "start":
         {
-            await pool.query(`BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;`);
+
+            await client.query(`BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;`);
             break;
         } 
         case "commit":
         {
-            await pool.query(`COMMIT;`);
+            await client.query(`COMMIT;`);
             break;
         }
         case "rollback":
         {
-            await pool.query(`ROLLBACK;`);
+            await client.query(`ROLLBACK;`);
             break;
         }
     }
 }
 
-const directFlights = async(type, args) => {
+const directFlights = async(client, type, args) => {
     try
     {
         var response;
-        var base = `SELECT departing.id, scheduled_departure, scheduled_arrival, departing.city AS depart_city,
+        var base =
+            `SELECT departing.id, scheduled_departure, scheduled_arrival, departing.city AS depart_city,
             departing.flight_status AS depart_flight_status, departing.airport_code AS depart,
             arriving.city AS arrive_city, arriving.airport_code AS arrive
         FROM
@@ -44,7 +49,7 @@ const directFlights = async(type, args) => {
         switch(type)
         {
             case "all":
-                response = await pool.query(
+                response = await client.query(
                     `${base}
             WHERE departing.airport_code LIKE $1 AND arriving.airport_code LIKE $2
             AND scheduled_departure::text LIKE $3
@@ -52,7 +57,7 @@ const directFlights = async(type, args) => {
                     [args.from, args.to, args.date+' %']);
                 return response.rows;
             case "one":
-                response = await pool.query(
+                response = await client.query(
                     `${base}
             WHERE departing.id=$1;`, [args.flightID]);
                 return response.rows[0];
@@ -65,7 +70,7 @@ const directFlights = async(type, args) => {
 //TYPE can be either 'all' or 'one'
 //IF 'all', args={to:<>, from:<>, date:<>}
 //IF 'one', args={flightID:<>, flightID2:<>}
-const connectionFlights = async(type, args)  => {
+const connectionFlights = async(client, type, args)  => {
     try
     {
         var response;
@@ -107,7 +112,7 @@ const connectionFlights = async(type, args)  => {
         switch(type)
         {
             case "all":
-                response = await pool.query(
+                response = await client.query(
                     `${base}
             WHERE connection1Departing.scheduled_departure > departing.scheduled_arrival
             AND departing.airport_code LIKE $1 AND arriving.airport_code LIKE $2
@@ -117,7 +122,7 @@ const connectionFlights = async(type, args)  => {
                     [args.from, args.to, args.date+' %']);
                 return response.rows;
             case "one":
-                response = await pool.query(
+                response = await client.query(
                     `${base}
             WHERE departing.id=$1
             AND connection1Departing.id=$2;`,
@@ -147,14 +152,15 @@ const cities = async(type, code=null) => {
     }
 }
 
-const getBooking = async(bookRef, type) => {
+const getBooking = async(client, bookRef, type) => {
     try {
+        var response;
         var passengers;
         var cardLastFour;
         switch(type)
         {
             case 'passengerCount':
-                passengers = await pool.query(
+                passengers = await client.query(
                     `SELECT COUNT(DISTINCT passenger.id)
                     FROM booking
                     JOIN ticket
@@ -166,7 +172,7 @@ const getBooking = async(bookRef, type) => {
                 passengers = passengers.rows[0].count;
                 break;
             case 'all':
-                passengers = await pool.query(
+                passengers = await client.query(
                     `SELECT DISTINCT passenger.id, first_name, last_name, date_of_birth
                     FROM booking
                     JOIN ticket
@@ -177,7 +183,7 @@ const getBooking = async(bookRef, type) => {
                                 [bookRef]);
                 passengers = passengers.rows;
             case 'cardNumber':
-                var cardNumber = await pool.query(
+                var cardNumber = await client.query(
                     `SELECT credit_card.card_number
                     FROM booking
                     JOIN credit_card
@@ -186,7 +192,7 @@ const getBooking = async(bookRef, type) => {
                     [bookRef]);
                 cardLastFour = cardNumber.rows[0].card_number.toString().substr(12);
         }
-        var flight = await pool.query(
+        var flight = await client.query(
             `WITH RECURSIVE tab AS (
                 (SELECT amount, t.book_ref, id, flight_id, fare_condition, connecting_ticket
                  FROM ticket t
@@ -257,34 +263,34 @@ const checkAvailability = async(fare, flightID, travelers) => {
     return response.rows[0].case;
 }
 
-const postCreditCard = async(cardNum, nameOnCard, expMonth, expYear) => {
-    await pool.query(
-        `INSERT INTO credit_card VALUES ($1, $2, $3, $4) ON CONFLICT(card_number) DO NOTHING`,
+const postCreditCard = async(client, cardNum, nameOnCard, expMonth, expYear) => {
+    await client.query(
+        `INSERT INTO credit_card VALUES ($1, $2, $3, $4) ON CONFLICT(card_number) DO NOTHING;`,
         [cardNum, nameOnCard, expMonth, expYear]);
 }
 
-const postBooking = async(bookRef, cardNum, discount, amount, contactEmail, contactPhone) => {
-    const response = await pool.query(
+const postBooking = async(client, bookRef, cardNum, discount, amount, contactEmail, contactPhone) => {
+    const response = await client.query(
         `INSERT INTO booking (book_ref, card_number, discount_code, amount, contact_email, contact_phone_number, booking_date)
         VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP);`,
         [bookRef, cardNum, discount, amount, contactEmail, contactPhone]);
 }
 
-const postPassenger = async(firstName, lastName, date_of_birth) => {
-    const response = await pool.query(
+const postPassenger = async(client, firstName, lastName, date_of_birth) => {
+    const response = await client.query(
         `INSERT INTO passenger (first_name, last_name, date_of_birth)
             VALUES ($1, $2, $3) RETURNING id;`,
         [firstName, lastName, date_of_birth]);
     return response.rows[0].id;
 }
 
-const postTicket = async(bookRef, flightID, passID, fare, connectingTicket=null) => {
+const postTicket = async(client, bookRef, flightID, passID, fare, connectingTicket=null) => {
     try {
-        var ticket = await pool.query(
+        var ticket = await client.query(
             `INSERT INTO ticket (book_ref, flight_id, passenger_id, fare_condition, connecting_ticket)
             VALUES ($1, $2, $3, $4, $5) RETURNING id;`,
             [bookRef, flightID, passID, fare, connectingTicket]);
-        await postSeat(fare, flightID, 1);
+        await postSeat(client, fare, flightID, 1);
         return ticket.rows[0].id;
     } catch(err) {
         console.log(err.message);
@@ -292,10 +298,10 @@ const postTicket = async(bookRef, flightID, passID, fare, connectingTicket=null)
 
 }
 
-const postSeat = async(fare, flightID, travelers) => {
+const postSeat = async(client, fare, flightID, travelers) => {
     switch (fare){
         case "Economy":
-            await pool.query(
+            await client.query(
                 `UPDATE flight
                     SET economy_booked=economy_booked+$1,
                         economy_available=economy_available-$1
@@ -303,7 +309,7 @@ const postSeat = async(fare, flightID, travelers) => {
                     [travelers, flightID]);
             break;
         case "Economy Plus":
-            await pool.query(
+            await client.query(
                 `UPDATE flight
                     SET economy_plus_booked=economy_plus_booked+$1,
                         economy_plus_available=economy_plus_available-$1
@@ -311,7 +317,7 @@ const postSeat = async(fare, flightID, travelers) => {
                     [travelers, flightID]);
             break;
         case "Business":
-            await pool.query(
+            await client.query(
                 `UPDATE flight
                     SET business_booked=business_booked+$1,
                         business_available=business_available-$1
@@ -321,10 +327,10 @@ const postSeat = async(fare, flightID, travelers) => {
     }
 }
 
-const removeSeat = async(fare, flightID, travelers) => {
+const removeSeat = async(client, fare, flightID, travelers) => {
     switch (fare){
         case "Economy":
-            await pool.query(
+            await client.query(
                 `UPDATE flight
                     SET economy_booked=economy_booked-$1,
                         economy_available=economy_available+$1
@@ -332,7 +338,7 @@ const removeSeat = async(fare, flightID, travelers) => {
                 [travelers, flightID]);
             break;
         case "Economy Plus":
-            await pool.query(
+            await client.query(
                 `UPDATE flight
                     SET economy_plus_booked=economy_plus_booked-$1,
                         economy_plus_available=economy_plus_available+$1
@@ -340,7 +346,7 @@ const removeSeat = async(fare, flightID, travelers) => {
                 [travelers, flightID]);
             break;
         case "Business":
-            await pool.query(
+            await client.query(
                 `UPDATE flight
                     SET business_booked=business_booked-$1,
                         business_available=business_available+$1
@@ -350,9 +356,9 @@ const removeSeat = async(fare, flightID, travelers) => {
     }
 }
 
-const putBookingAmount = async(bookRef, newAmount) => {
+const putBookingAmount = async(client, bookRef, newAmount) => {
     try {
-        await pool.query(
+        await client.query(
             `UPDATE booking
                 SET amount=$1
             WHERE book_ref LIKE $2;`,
@@ -362,9 +368,9 @@ const putBookingAmount = async(bookRef, newAmount) => {
     }
 }
 
-const getAllTickets = async(bookRef, passengerID) => {
+const getAllTickets = async(client, bookRef, passengerID) => {
     try {
-        const tickets = await pool.query(
+        const tickets = await client.query(
             `WITH RECURSIVE tab AS (
                 (SELECT amount, t.book_ref, id, flight_id, fare_condition, connecting_ticket
                  FROM ticket t
@@ -386,43 +392,90 @@ const getAllTickets = async(bookRef, passengerID) => {
         console.log(err.message);
     }
 }
-const updateTicket = async(ticketID, flightID, fare) => {
+const updateTicket = async(client, ticketID, flightID, fare) => {
     try {
-        var oldFlight = await pool.query(
+        var oldFlight = await client.query(
             `SELECT flight_id, fare_condition
             FROM ticket
             WHERE id=$1;`,
             [ticketID]);
-        var newTicketID = await pool.query(
+        var newTicketID = await client.query(
             `UPDATE ticket
             SET flight_id=$1,
                 fare_condition=$2
             WHERE id=$3 RETURNING id;`,
             [flightID, fare, ticketID]);
 
-        await removeSeat(oldFlight.rows[0].fare_condition, oldFlight.rows[0].flight_id, 1);
-        await postSeat(fare, flightID, 1);
+        await removeSeat(client, oldFlight.rows[0].fare_condition, oldFlight.rows[0].flight_id, 1);
+        await postSeat(client, fare, flightID, 1);
         return newTicketID.rows[0].id;
     } catch(err) {
         console.log(err.message);
     }
 }
 
-const deleteTicket = async(ticketID) => {
+const deleteTicket = async(client, ticketID) => {
     try {
-        var flightAndFare = await pool.query(
+        var flightAndFare = await client.query(
             `DELETE FROM ticket
             WHERE id=$1 RETURNING flight_id, fare_condition;`,
             [ticketID]);
-        await removeSeat(flightAndFare.rows[0].fare_condition, flightAndFare.rows[0].flight_id, 1);
+        await removeSeat(client, flightAndFare.rows[0].fare_condition, flightAndFare.rows[0].flight_id, 1);
     } catch(err) {
         console.log(err.message);
     }
 }
 
+const deletePassenger = async(client, passID) => {
+    try  {
+        await client.query(
+            `DELETE FROM passenger
+            WHERE id=$1;`,
+            [passID]);
+    } catch(err) {
+        console.log(err.message);
+    }
+}
+
+const deleteBooking = async(client, bookRef) => {
+    try {
+        var cardNum = await client.query(
+            `DELETE from booking
+            WHERE book_ref=$1 RETURNING card_number;`,
+            [bookRef]);
+
+        var cardReferences = await client.query(
+            `SELECT COUNT(book_ref)
+             FROM booking
+                JOIN credit_card
+            ON booking.card_number = credit_card.card_number
+            WHERE credit_card.card_number=$1;`,
+            [cardNum.rows[0].card_number]);
+        if(parseInt(cardReferences.rows[0].count) === 0)
+        {
+            await client.query(
+                `DELETE FROM credit_card
+                WHERE card_number=$1;`,
+                [cardNum.rows[0].card_number]);
+        }
+
+    } catch(err) {
+        console.log(err.message);
+    }
+}
+
+const checkBookRefUniqueness = async(bookRef) => {
+    const response = await pool.query(
+        `SELECT COUNT(*)
+            FROM booking
+            WHERE book_ref=$1;`,
+            [bookRef]);
+    return parseInt(response.rows[0].count);
+}
+
 module.exports = {transactionStatus, directFlights, connectionFlights, cities, getBooking, checkAvailability,
     postCreditCard, postBooking, postPassenger, postTicket, postSeat, removeSeat, putBookingAmount, updateTicket,
-    deleteTicket, getAllTickets};
+    deleteTicket, getAllTickets, deleteBooking, deletePassenger, checkBookRefUniqueness};
 
 // try {
 //

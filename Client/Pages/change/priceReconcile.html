@@ -28,15 +28,6 @@
             <i class="fas fa-arrows-alt-h"></i>
             <span>For your safety, middle seats will stay open through January 21, 2021 to promote physical distancing onboard.</span></div>
         <div id="priceTotals">
-
-            <div id="priceDiff">
-                <span>PRICE DIFFERENCE</span>
-                <span></span>
-            </div>
-            <div id="taxesFees">
-                <span>TAXES & FEES</span>
-                <span></span>
-            </div>
             <div id="total">
                 <span>TOTAL DIFFERENCE</span>
                 <span></span>
@@ -65,7 +56,7 @@
 
 
         </div>
-        <button id="nextPage" onclick="finalizeChange()">Confirm</button>
+        <button id="nextPage" onclick="finalizeChange('change')">Confirm</button>
     </div>
 
     <div class="legal-info">
@@ -119,7 +110,7 @@
         $('#header').load('../../Components/header.html');
         $('#flightInfo').load('../../Components/flightInfo.html', function () {
             var block = this;
-            getBooking(changeInfo).then(function() {
+            getBooking(changeInfo, 'passengerCount').then(function() {
                 defineFlight(JSON.parse(localStorage.getItem('flight')), block).then(function(flight) {
                     priceInfo(block, flight, 'change');
                 });

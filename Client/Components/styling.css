@@ -55,11 +55,20 @@ form#book, form#status, form#change, form#checkIn {
     background-color: white;
     border-radius: 15px;
     position: relative;
+    overflow: visible;
+}
+.homepage-bar {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
     overflow: hidden;
 }
 
 .flight-search > * > div {
     padding: 13px 10px 13px 26px;
+}
+
+.flight-search input, .flight-search  select {
+    height: 50px;
 }
 
 #bookShow,#statusShow, #changeShow, #checkInShow {
@@ -141,15 +150,18 @@ input, label, select {
     justify-content: space-evenly;
     cursor: default;
 }
-.input-field.radio label {
+.radio-option label {
     color: #363636;
-    top: -2px;
-    left: 20px;
     font-size: 11pt;
+    display: flex;
 }
 input[type="radio"] {
     height: 14px;
     width: 14px;
+    margin-right: 20px;
+}
+input[type="checkbox"] {
+    cursor: pointer;
 }
 .radio-option {
     position: relative;
@@ -161,6 +173,13 @@ input[type="radio"] {
     flex-direction: column;
     justify-content: center;
 }
+.encompassing-label {
+    display: flex;
+}
+.encompassing-label input {
+    margin-right: 25px;
+}
+
 .input-field.small input, .input-field.small select {
     width: inherit;
     height: 34px;
@@ -239,9 +258,13 @@ input[type="radio"] {
 .passenger-container .dob {
     width: 50%;
 }
-.passenger {
+.passenger-info .passenger {
     display: flex;
     font-size: 16px;
+}
+.passenger {
+    font-size: 14pt;
+    font-weight: bold;
 }
 
 .two-block-section {
@@ -258,7 +281,7 @@ input, select {
     border-top: none;
     outline: none;
     width: inherit;
-    height: 50px;
+    height: inherit;
     font-size: 20pt;
     transition: 0.3s;
 }
@@ -278,7 +301,7 @@ input:hover, select:hover {
 input:focus, select:focus {
     border-bottom-color: currentColor;
 }
-.input-field label {
+.flight-search .input-field:not(.radio) label, #flightResultsHead .input-field label {
     position: absolute;
     z-index: 2;
     top: 0;
@@ -286,23 +309,23 @@ input:focus, select:focus {
     color: transparent;
 }
 
-input:focus::placeholder {
+.flight-search .input-field input:focus::placeholder {
     color: transparent;
 }
-input:hover::placeholder {
+.flight-search .input-field input:hover::placeholder {
     color:transparent;
 }
 
-input:focus ~ label {
+.flight-search .input-field input:focus ~ label, #flightResultsHead .input-field input:focus ~ label {
     color: currentColor;
 }
-input:hover ~ label {
+.flight-search .input-field input:hover ~ label, #flightResultsHead .input-field input:hover ~ label {
     color: currentColor;
 }
-select:focus ~ label {
+.flight-search .input-field select:focus ~ label {
     color: currentColor;
 }
-select:hover ~ label {
+.flight-search .input-field select:hover ~ label {
     color: currentColor;
 }
 section {
@@ -492,7 +515,7 @@ table tbody tr:last-of-type #businessCol {
     transition: background-color 500ms;
     line-height:20px;
 }
-#bookStepProgressBar, #changeStepProgressBar  {
+#bookStepProgressBar, #changeStepProgressBar, #cancelStepProgressBar  {
     display:  flex;
     float: right;
     justify-content:  space-between;
@@ -533,6 +556,15 @@ table tbody tr:last-of-type #businessCol {
     bottom: 10px;
     height: 1px;
     width: 33px;
+    background-color: #363636;
+}
+#cancelStepProgressBar .bullet:not(.final)::after {
+    content: '';
+    position: absolute;
+    right: -82px;
+    bottom: 10px;
+    height: 1px;
+    width: 69px;
     background-color: #363636;
 }
 .flight-container  {

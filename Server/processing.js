@@ -32,13 +32,13 @@ const calculateDuration = (flight) => {
     return arriveTime-departTime;
 }
 
-const getFlight = async(flightID, flightID2)=> {
+const getFlight = async(client,  flightID, flightID2)=> {
     try {
         let flight;
         if(flightID2 === undefined)
-            flight = await queryBank.directFlights('one', {flightID: flightID});
+            flight = await queryBank.directFlights(client, 'one', {flightID: flightID});
         else
-            flight = await queryBank.connectionFlights('one', {flightID: flightID, flightID2: flightID2});
+            flight = await queryBank.connectionFlights(client, 'one', {flightID: flightID, flightID2: flightID2});
         calculateDuration(flight);
         calculateFarePrice(flight);
         return flight;
@@ -48,39 +48,59 @@ const getFlight = async(flightID, flightID2)=> {
     }
 }
 
-const priceDiff = async(oldFlight, newFlight)=> {
-    const newFl = await getFlight(newFlight.flight, newFlight.flight2);
-
-    var price;
-    var priceWithTax;
-    switch(newFlight.fare)
-    {
-        case 'Economy':
-            price = newFl.econPrice;
-            priceWithTax = newFl.econWithTax;
-            break;
-        case 'Economy Plus':
-            price = newFl.econPlusPrice;
-            priceWithTax = newFl.econPlusWithTax;
-            break;
-        case 'Business':
-            price = newFl.businessPrice;
-            priceWithTax = newFl.businessWithTax;
-    }
-    var priceDiff = (priceWithTax*newFlight.travelers-oldFlight.amount);
+const priceDiff = async(client, query, type)=> {
+    //TODO potential security issue here, get booking for amount instead of from query
+    var priceDiff;
     var refund = false;
-    if(priceDiff<0)
-        refund = true;
-    return {
-        priceDiff: priceDiff.toFixed(2),
-        refund: refund
-    };
+    var response = {};
+    switch(type)
+    {
+        case 'change':
+            const newFl = await getFlight(client, query.newFlight.flight, query.newFlight.flight2);
+
+            var price;
+            var priceWithTax;
+            switch(query.newFlight.fare)
+            {
+                case 'Economy':
+                    price = newFl.econPrice;
+                    priceWithTax = newFl.econWithTax;
+                    break;
+                case 'Economy Plus':
+                    price = newFl.econPlusPrice;
+                    priceWithTax = newFl.econPlusWithTax;
+                    break;
+                case 'Business':
+                    price = newFl.businessPrice;
+                    priceWithTax = newFl.businessWithTax;
+            }
+            priceDiff = (priceWithTax*query.newFlight.travelers-query.oldFlight.amount);
+            if(priceDiff<0)
+                refund = true;
+            break;
+        //USES oldFlight, travelersCancel
+        case 'cancel':
+
+            var pricePerPass = query.oldFlight.amount/query.oldFlight.travelers.length;
+            priceDiff = pricePerPass*query.travelersCancel.length;
+
+            response.newTotal = query.oldFlight.amount-priceDiff;
+
+    }
+    response.priceDiff = priceDiff.toFixed(2);
+    response.refund = refund;
+    return response;
 }
 
-const generateBookRef = (length) => {
+const generateBookRef = async(length) => {
+    while(true) {
     var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     var result = '';
     for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
+    var response = await queryBank.checkBookRefUniqueness(result);
+    if(response === 0)
+        break;
+    }
     return result;
 }
 

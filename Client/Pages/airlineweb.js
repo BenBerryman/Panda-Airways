@@ -126,11 +126,17 @@ function insertDateStatus() {
     localStorage.setItem("date", document.getElementById("alt-date-status").value);
 }
 function insertChangeInfo() {
+    var radio = document.querySelector('input[name=change_cancel]:checked').value;
     const items =
         {"firstName": document.getElementById("firstName").value,
-        "lastName": document.getElementById("lastName").value,
-        "bookRef": document.getElementById("bookRef").value};
+            "lastName": document.getElementById("lastName").value,
+            "bookRef": document.getElementById("bookRef").value};
     localStorage.setItem("changeInfo", JSON.stringify(items));
+    if (radio === 'change')
+        window.location.href = "change/change.html";
+    else
+        window.location.href="change/cancel.html";
+    return false;
 }
 
 async function getCities() {

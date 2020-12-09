@@ -28,7 +28,7 @@
 
 
 <div class="container flight-search">
-    <div style="padding:0">
+    <div class="homepage-bar" style="padding:0">
         <div class="tabs" style="margin-bottom: 0; height: 62px;">
             <ul>
                 <li><button class="title" id="bookShow">Book a Flight</button></li>
@@ -130,7 +130,7 @@
 
     </form>
 
-    <form id="change" autocomplete="off" action="change/change.html">
+    <form id="change" onsubmit="return insertChangeInfo()" autocomplete="off">
         <section>
             <div class="input-field" style="margin-right: 50px;">
                 <input id="firstName" type="text"
@@ -155,18 +155,23 @@
 
             <div class="input-field radio">
                 <div class="radio-option">
-                    <input id="changeFlight" type="radio" name="change_cancel" value="change" required>
-                    <label for="changeFlight">CHANGE</label>
+                    <label>
+                        <input id="changeFlight" type="radio" name="change_cancel" value="change" required>
+                        CHANGE
+                    </label>
                 </div>
                 <div class="radio-option">
-                    <input id="cancelFlight" type="radio" name="change_cancel" value="cancel">
-                    <label for="cancelFlight">CANCEL</label>
+
+                    <label>
+                        <input id="cancelFlight" type="radio" name="change_cancel" value="cancel">
+                        CANCEL
+                    </label>
                 </div>
             </div>
 
         </section>
         <section class="submit-section">
-            <input class="button" onclick="insertChangeInfo()" type="submit" value="Search" style="width: 262px; margin: 0 auto; background-color: #ECECEC">
+            <input class="button" type="submit" value="Search" style="width: 262px; margin: 0 auto; background-color: #ECECEC">
         </section>
 
     </form>

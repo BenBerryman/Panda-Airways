@@ -73,6 +73,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="../../Components/flightInfo.js"></script>
 <script src="./price.js"></script>
+<script src="confirmation.js"></script>
 <script>
     $(function(){
         $('#header').load('../../Components/header.html');
@@ -82,6 +83,7 @@
                 priceInfo(block, flight);
             });
         });
+        fillOutResponseInfo();
         $('#bookStepProgressBar').load('../../Components/bookStepProgressBar.html', function() {
             var step = 3;
             var bullets = document.getElementsByClassName("bullet");
@@ -94,7 +96,5 @@
         });
     });
 </script>
-<script src="confirmation.js"></script>
-
 </body>
 </html>

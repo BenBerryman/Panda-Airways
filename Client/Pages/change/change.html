@@ -82,7 +82,7 @@
             $('#header').load('../../Components/header.html');
             $('#flightInfo').load('../../Components/flightInfo.html', function () {
                 var block = this;
-                getBooking(changeInfo).then(function() {
+                getBooking(changeInfo, 'passengerCount').then(function() {
                     defineFlight(JSON.parse(localStorage.getItem('flight')), block).then(function(flight) {
                         priceInfo(block, flight);
                     });
