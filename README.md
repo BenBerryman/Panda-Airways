@@ -3,12 +3,12 @@ Database ER Design, Normalization, and Web App for An Airline Database System
 
 Prefered system: Window
 
-# Prerequisites
-node.js installed on local machine (nodejs.org)
-source-code editor such as visual studio code
-UH server connection
+## Prerequisites
+- node.js installed on local machine (nodejs.org)
+- source-code editor such as visual studio code
+- UH server connection
 
-# Getting Started
+## Getting Started
 
   The Client
   
