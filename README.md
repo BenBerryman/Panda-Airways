@@ -5,7 +5,7 @@ Prefered system: Window
 
 ## Prerequisites
 - node.js installed on local machine (nodejs.org)
-- source-code editor such as visual studio code
+- source-code editor such as Visual Studio Code
 - UH server connection
 
 ## Getting Started
