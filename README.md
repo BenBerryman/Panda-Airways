@@ -10,7 +10,7 @@ Prefered system: Window
 
 ## Getting Started
 
-  The Client
+  ### The Client
   
   - Components
     + bookStepProgressbar.html
@@ -31,7 +31,7 @@ Prefered system: Window
     + airlineweb.html : main web page
     + airlineweb.js
    
-  The Server
+  ### The Server
   
   - createdb.sql : setting up the database
   - db.js : connect the webserver to the database
@@ -40,7 +40,7 @@ Prefered system: Window
   - processing.js : generate information about the flight
   - queryBank.js : communicate with the database
     
-# The following instruction is made using Visual Studio Code
+## The following instruction is made using Visual Studio Code
 - Log in to your UH server and upload the file hw4/Server/createdb.sql
 - Run createdb.sql in your database to establish the necessary relations
 - Open the file hw4/Server/password.txt and insert your UH server username and password as follow:
