@@ -52,7 +52,7 @@ Prefered system: Window
   Start up the server
   + Open a new Terminal inside Visual Studio Code (Terminal - New Terminal)
   + Navigate to hw4/Server using cd
-  + Install dependencies by using command "npm install", follow by "npm install line-reader"
+  + Install dependencies by using command "npm install"
   + After succesfully installing dependencies, start the server using "node index.js"
   
   Open up web interface
