@@ -24,13 +24,15 @@ fs.writeFile('transaction.sql', '', function (err) {if (err) throw err;});
 
 
 const pool = new Pool({
-    host: 'localhost',
-    user: user,
-    password: password,
+    host: 'code.cs.uh.edu',
+    user: 'cosc0187',
+    password: '1823265PT',
     port: 5432,
     database: 'COSC3380'
 });
-var isTransaction = false;
+
+
+/*var isTransaction = false;
 const Query = require('pg').Query;
 const submit = Query.prototype.submit;
 Query.prototype.submit = function () {
@@ -55,6 +57,6 @@ Query.prototype.submit = function () {
         isTransaction = false;
 
     submit.apply(this, arguments);
-};
+};*/
 
 module.exports = pool;

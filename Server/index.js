@@ -340,6 +340,26 @@ app.delete('/purchase', async(req, res) => {
     }
 });
 
+app.put('/checkin', async(req, res)=> {
+    try {
+        pool.connect(async(err, client, done) => {
+            var valid = await queryBank.validBookRef(client, req.body.bookRef);
+            console.log(valid);
+            if (valid) {
+                await queryBank.checkIn(client, req.body.bookRef);
+                await queryBank.addCargo(client, req.body.bookRef, req.body.numBag);
+                res.sendStatus(200);
+            }
+            else
+                res.sendStatus(403);
+            done();
+        });
+    } catch(err) {
+        console.log(err.message);
+        res.sendStatus(403);
+    }
+})
+
 // set up the server listening at port 5000 (the port number can be changed)
 app.listen(5000, ()=>{
     console.log("Server has started on port 5000");
