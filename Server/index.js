@@ -377,5 +377,5 @@ app.put('/checkIn', async(req, res)=> {
 
 // set up the server listening at port 5000 (the port number can be changed)
 app.listen(5000, ()=>{
-    console.log("Server has started on port 5000");
+    console.log("Database server started on port 5000");
 });
