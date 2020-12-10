@@ -2,30 +2,18 @@
 const {Pool} = require('pg');
 const lineReader = require('line-reader');
 const fs = require('fs');
-var user, password;
 var dedent = require('dedent-js');
 
-lineReader.open('./password.txt', function(err, reader){
-    if(err) throw err;
-    reader.nextLine(function(err,line) {
-        if(err) throw err;
-        user = line;
-    });
-    reader.nextLine(function(err,line) {
-        if(err) throw err;
-        password = line;
-    });
-    reader.close(function(err) {
-        if(err) throw err;
-    });
-});
+var file = fs.readFileSync('./password.txt', 'utf8');
+var arg = file.split('\r\n');
+
 fs.writeFile('query.sql', '', function (err) {if (err) throw err;});
 fs.writeFile('transaction.sql', '', function (err) {if (err) throw err;});
 
 const pool = new Pool({
-    host: 'localhost',
-    user: user,
-    password: password,
+    host: 'code.cs.uh.edu',
+    user: arg[0],
+    password: arg[1],
     port: 5432,
     database: 'COSC3380'
 });
