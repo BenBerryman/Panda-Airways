@@ -55,12 +55,15 @@
         <div class="block-section">
             <div class="block-content">
 
-                Add 10 random bookings to the database
+                <span>Add</span>
+                <div class="input-field" style="width: 74px">
+                    <input id="numOfBookings" type="number" min="1" max="100" onfocusout="">
+                </div>
+                <span>random bookings to the database.</span>
             </div>
         </div>
     </div>
 
-    <button class="button-danger">Reset Database</button>
 
 </div>
 
@@ -69,6 +72,17 @@
 <script>
     $(function(){
         $('#header').load('../Components/header.html');
+    });
+    $(document).ready(function() {
+        $("#numOfBookings").focusout(function() {
+            if($(this).val()>100 || $this.val()<0) {
+                $(this).css('border', 'solid 2px red');
+            }
+            else {
+                // If it is not blank.
+                $(this).css('border', 'solid 2px green');
+            }
+        }) .trigger("focusout");
     });
 </script>
 <script src="admin.js"></script>

@@ -22,7 +22,6 @@ lineReader.open('./password.txt', function(err, reader){
 fs.writeFile('query.sql', '', function (err) {if (err) throw err;});
 fs.writeFile('transaction.sql', '', function (err) {if (err) throw err;});
 
-
 const pool = new Pool({
     host: 'localhost',
     user: user,

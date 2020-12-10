@@ -107,8 +107,8 @@ CREATE TABLE standby(
 
 CREATE TABLE cargo(
   stock_keeping_no SERIAL PRIMARY KEY,
-  flight_id INTEGER REFERENCES flight(id) NOT NULL,
-  passenger_id INTEGER REFERENCES passenger(id) ON DELETE CASCADE NOT NULL
+  book_ref TEXT REFERENCES booking(book_ref) ON DELETE CASCADE NOT NULL,
+  number_of_bag INTEGER NOT NULL
 );
 
 

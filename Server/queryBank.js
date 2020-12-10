@@ -546,11 +546,32 @@ const postStandby = async(client, flightID, bookRef, fare) => {
     return position.rows[0].position;
 }
 
+const validBookRef = async(client, bookRef) => {
+    var response = await client.query(
+        `SELECT EXISTS (SELECT 1 FROM booking WHERE book_ref=$1);`,
+        [bookRef]);
+    return response.rows[0].exists;
+}
 
+const checkIn = async(client, bookRef) => {
+    await client.query(
+        `UPDATE ticket
+            SET check_in_time=CURRENT_TIMESTAMP
+            WHERE book_ref=$1`,
+        [bookRef]);
+}
+
+const addCargo = async(client, bookRef, numBag=0) => {
+    await client.query(
+        `INSERT INTO cargo (book_ref, number_of_bag)
+            VALUES ($1, $2)`,
+        [bookRef, numBag]);
+}
 
 module.exports = {transactionStatus, directFlights, connectionFlights, cities, getBooking, checkAvailability,
     postCreditCard, postBooking, postPassenger, postTicket, putBookingAmount, updateTicket,
-    deleteTicket, getAllTickets, deleteBooking, deletePassenger, checkBookRefUniqueness, postStandby};
+    deleteTicket, getAllTickets, deleteBooking, deletePassenger, checkBookRefUniqueness, postStandby,
+    validBookRef, checkIn, addCargo};
 
 // try {
 //

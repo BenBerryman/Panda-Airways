@@ -13,7 +13,6 @@ async function getCities() {
     }
 }
 
-
 function randomDate(start, end) {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 }
@@ -29,13 +28,14 @@ function randomNumbers(length) {
 
 async function purchases() {
     try {
-        for(const i of Array(10).keys())
+        for(const i of Array(20).keys())
         {
-            var from = cities[Math.floor(Math.random()*cities.length)];
-            var to = cities[Math.floor(Math.random()*cities.length)];
-            var response = await (await fetch(`http://localhost:5000/findFlights?from=${from}&to=${to}&date=2020-12-11&travelers=1`)).json();
             while(true)
             {
+                var from = cities[Math.floor(Math.random()*cities.length)];
+                var to = cities[Math.floor(Math.random()*cities.length)];
+                var response = await (await fetch(`http://localhost:5000/findFlights?from=${from}&to=${to}&date=2020-12-11&travelers=1`)).json();
+
                 if(response[0].length > 0 && response[1].length > 0)
                 {
                     var index = Math.round(Math.random());
@@ -67,8 +67,6 @@ async function purchases() {
                     if(randomFlight.conn1_id !== undefined)
                         flight.flight2 = randomFlight.conn1_id;
 
-
-
                     fetch("http://localhost:5000/purchase",
                         {method: "POST",
                             headers: {"Content-Type": "application/json"},
@@ -89,14 +87,13 @@ async function purchases() {
                     break;
                 }
             }
-
-
         }
 
     } catch(err) {
         console.log(err.message);
     }
 }
+
 getCities().then(()=>{
     purchases();
 });

@@ -10,7 +10,6 @@ app.use(cors());
 app.use(express.json());      //req.body
 
 //ROUTES
-
 app.get('/city', async(req, res)=>{
     try {
         const code = req.query.airport_code;
@@ -21,7 +20,14 @@ app.get('/city', async(req, res)=>{
     }
 });
 
+app.get('/fakeBookings', async(req, res)=> {
+    try {
 
+
+    } catch(err) {
+        console.log(err.message);
+    }
+});
 
 app.get('/cities', async(req, res)=>{
     try {
@@ -339,6 +345,25 @@ app.delete('/purchase', async(req, res) => {
         console.log(err.message);
     }
 });
+
+app.put('/checkIn', async(req, res)=> {
+    try {
+        pool.connect(async(err, client, done) => {
+            var valid = await queryBank.validBookRef(client, req.body.bookRef);
+            if (valid) {
+                await queryBank.checkIn(client, req.body.bookRef);
+                await queryBank.addCargo(client, req.body.bookRef, req.body.numBag);
+                res.sendStatus(200);
+            }
+            else
+                res.sendStatus(403);
+            done();
+        });
+    } catch(err) {
+        console.log(err.message);
+        res.sendStatus(403);
+    }
+})
 
 // set up the server listening at port 5000 (the port number can be changed)
 app.listen(5000, ()=>{

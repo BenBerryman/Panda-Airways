@@ -149,6 +149,37 @@ async function getCities() {
         console.log(err.message);
     }
 }
+
+function checkIn() {
+    try {
+        const info =
+            {bookRef: document.getElementById("checkInBookRef").value,
+            numBag: document.getElementById("checkInBag").value};
+
+        checkInOnDB(info).then(status=> {
+            if(status === 200)
+            {
+                window.location.href="checkIn/success.html";
+            }
+            else if(status === 403) {
+                window.location.href="checkIn/failed.html";
+            }
+        });
+        return false;
+    }
+    catch(err) {
+        console.log(err.message);
+    }
+}
+
+async function checkInOnDB(info) {
+    const response = await fetch('http://localhost:5000/checkIn',
+        {method: "PUT",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(info)});
+    return response.status;
+}
+
 let cities = [];
 
 function homepageStart() {
