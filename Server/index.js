@@ -21,6 +21,8 @@ app.get('/city', async(req, res)=>{
     }
 });
 
+
+
 app.get('/cities', async(req, res)=>{
     try {
         const allCities = await queryBank.cities('all');
@@ -31,17 +33,17 @@ app.get('/cities', async(req, res)=>{
     }
 });
 
+
+
 app.get('/findFlights', async(req, res)=>{
     try{
         pool.connect(async(err, client, done) => {
             const args = [req.query.from, req.query.to, req.query.date.toString(), req.query.travelers];
-            const directFlights = await queryBank.directFlights(client, 'all', {from: args[0], to: args[1], date: args[2]});
+            const directFlights = await queryBank.directFlights(client, 'all',
+                {from: args[0], to: args[1], date: args[2], travelers: args[3]});
 
-            const oneStopFlights = await queryBank.connectionFlights(client, 'all', {
-                from: args[0],
-                to: args[1],
-                date: args[2]
-            });
+            const oneStopFlights = await queryBank.connectionFlights(client, 'all',
+                {from: args[0], to: args[1], date: args[2], travelers: args[3]});
 
             const allFlights = [directFlights, oneStopFlights];
 
@@ -93,10 +95,12 @@ app.get('/booking', async(req, res)=> {
         pool.connect(async(err, client, done) => {
             flight = await queryBank.getBooking(client, req.query.bookRef, req.query.type);
             done();
-            res.json(flight);
+            if(flight === undefined)
+                res.sendStatus(404);
+            else {
+                res.status(200).json(flight);
+            }
         });
-
-
     } catch(err) {
         console.log(err.message);
     }
@@ -149,11 +153,6 @@ app.post('/purchase', async(req, res)=>{
                         //Start transaction query
                         await queryBank.transactionStatus(client, "start");
 
-                        // //Update seat on flight.id, if indirect then update flight.conn1_id
-                        // await queryBank.postSeat(fare, flight.id, req.body.flight.travelers);
-                        // if (indirect)
-                        //     await queryBank.postSeat(fare, flight.conn1_id, req.body.flight.travelers);
-
                         //If credit card is not already on file, put it in database
                         await queryBank.postCreditCard(client, paymentInfo.cardNum, paymentInfo.nameOnCard,
                             paymentInfo.expMonth, paymentInfo.expYear);
@@ -204,44 +203,49 @@ app.post('/purchase', async(req, res)=>{
 app.put('/purchase', async(req, res)=> {
     try {
         pool.connect(async(err, client, done) => {
-        const booking = await queryBank.getBooking(client, req.body.bookRef, 'all');
-        const oldFlight = await processing.getFlight(client, req.body.oldFlight.flight, req.body.oldFlight.flight2);
-        const newFlight = await processing.getFlight(client, req.body.newFlight.flight, req.body.newFlight.flight2);
-        const priceDiff = await processing.priceDiff(client, req.body, 'change');
+            const booking = await queryBank.getBooking(client, req.body.bookRef, 'all');
+            const oldFlight = await processing.getFlight(client, req.body.oldFlight.flight, req.body.oldFlight.flight2);
+            const newFlight = await processing.getFlight(client, req.body.newFlight.flight, req.body.newFlight.flight2);
+            const priceDiff = await processing.priceDiff(client, req.body, 'change');
+            const isStandby = req.body.newFlight.isStandby;
 
-        var indirect = (oldFlight.conn1_id !== undefined);
-        var newIndirect = (newFlight.conn1_id !== undefined);
-        var newFare;
+            var response = {};
+            var indirect = (oldFlight.conn1_id !== undefined);
+            var newIndirect = (newFlight.conn1_id !== undefined);
+            var newFare;
             while (true) {
                 try {
-
                     //Start transaction query
                     await queryBank.transactionStatus(client, "start");
                     //Change amount of booking
 
-                    //If a refund, the price diff is negative, so the right amount is put each time
-                    await queryBank.putBookingAmount(client, req.body.bookRef,
-                        parseFloat(booking.amount) + parseFloat(priceDiff.priceDiff));
+                    if (isStandby) {
+                        response.standbyPosition = await queryBank.postStandby(client, newFlight.id, req.body.bookRef, newFlight.fare);
+                    } else {
+                        //If a refund, the price diff is negative, so the right amount is put each time
+                        await queryBank.putBookingAmount(client, req.body.bookRef,
+                            parseFloat(booking.amount) + parseFloat(priceDiff.priceDiff));
 
+                        //For each passenger, update tickets
+                        for (var i = 0; i < booking.travelers.length; i++) {
+                            var tickets = await queryBank.getAllTickets(client, req.body.bookRef, booking.travelers[i].id);
+                            //CASE 1: Both are indirect
+                            if (indirect && newIndirect) {
+                                await queryBank.updateTicket(client, tickets[0].id, newFlight.id, req.body.newFlight.fare);
+                                await queryBank.updateTicket(client, tickets[1].id, newFlight.conn1_id, req.body.newFlight.fare);
+                            } else if (!indirect && newIndirect) {
+                                //CASE 2: Old is direct, new is indirect
+                                var ticketID = await queryBank.updateTicket(client, tickets[0].id, newFlight.conn1_id, req.body.newFlight.fare);
+                                await queryBank.postTicket(client, req.body.bookRef, newFlight.id, booking.travelers[i].id, req.body.newFlight.fare, ticketID);
+                            } else if (indirect && !newIndirect) {
+                                //CASE 3: Old is indirect, new is direct
+                                await queryBank.updateTicket(client, tickets[1].id, newFlight.id, req.body.newFlight.fare);
+                                await queryBank.deleteTicket(client, tickets[0].id);
+                            } else {
+                                //CASE 4: Both are direct
+                                await queryBank.updateTicket(client, tickets[0].id, newFlight.id, req.body.newFlight.fare);
+                            }
 
-                    //For each passenger, update tickets
-                    for (var i = 0; i < booking.travelers.length; i++) {
-                        var tickets = await queryBank.getAllTickets(client, req.body.bookRef, booking.travelers[i].id);
-                        //CASE 1: Both are indirect
-                        if (indirect && newIndirect) {
-                            await queryBank.updateTicket(client, tickets[0].id, newFlight.id, req.body.newFlight.fare);
-                            await queryBank.updateTicket(client, tickets[1].id, newFlight.conn1_id, req.body.newFlight.fare);
-                        } else if (!indirect && newIndirect) {
-                            //CASE 2: Old is direct, new is indirect
-                            var ticketID = await queryBank.updateTicket(client, tickets[0].id, newFlight.conn1_id, req.body.newFlight.fare);
-                            await queryBank.postTicket(client, req.body.bookRef, newFlight.id, booking.travelers[i].id, req.body.newFlight.fare, ticketID);
-                        } else if (indirect && !newIndirect) {
-                            //CASE 3: Old is indirect, new is direct
-                            await queryBank.updateTicket(client, tickets[1].id, newFlight.id, req.body.newFlight.fare);
-                            await queryBank.deleteTicket(client, tickets[0].id);
-                        } else {
-                            //CASE 4: Both are direct
-                            await queryBank.updateTicket(client, tickets[0].id, newFlight.id, req.body.newFlight.fare);
                         }
                     }
 
@@ -254,13 +258,15 @@ app.put('/purchase', async(req, res)=> {
                 }
             }
 
-        const newBooking = await queryBank.getBooking(client, req.body.bookRef, 'all');
+            const newBooking = await queryBank.getBooking(client, req.body.bookRef, 'all');
 
             res.status(200).json({
                 travelers: newBooking.travelers,
                 payment:
-                    {cardLastFour: newBooking.cardLastFour,
-                        amount: newBooking.amount}
+                    {
+                        cardLastFour: newBooking.cardLastFour,
+                        amount: newBooking.amount
+                    }
             });
         });
     } catch(err) {
@@ -278,7 +284,6 @@ app.delete('/purchase', async(req, res) => {
                 try {
                     var response;
                     await queryBank.transactionStatus(client,"start");
-
                     /*
                     IF FULL CANCELLATION: delete from booking and passenger, check credit card
                     Deletions will cascade to ticket, cargo, and standby
@@ -289,10 +294,10 @@ app.delete('/purchase', async(req, res) => {
                             await queryBank.deletePassenger(client, req.body.travelersCancel[i]);
                         }
                         await queryBank.transactionStatus(client,"commit");
-                        done();
                         response = {
                             type: 'fullDelete'
                         }
+                        break;
                     }
                     /*
                     IF PARTIAL CANCELLATION: delete from passenger for specific passengers and update booking amount
@@ -306,8 +311,10 @@ app.delete('/purchase', async(req, res) => {
                         var priceDiff = await processing.priceDiff(client, req.body, 'cancel');
                         await queryBank.putBookingAmount(client, req.body.bookRef,
                             parseFloat(booking.amount) - parseFloat(priceDiff.priceDiff));
-                        await queryBank.transactionStatus(client,"commit");
-                        done();
+
+                        await queryBank.transactionStatus(client, "commit");
+
+
                         const newBooking = await queryBank.getBooking(client, req.body.bookRef, 'all');
                         response = {
                             type: 'partialDelete',
@@ -317,15 +324,15 @@ app.delete('/purchase', async(req, res) => {
                                 amount: newBooking.amount
                             }
                         };
+                        break;
                     }
-                    res.status(200).json(response);
-                    break;
-
                 } catch (err) {
                     await queryBank.transactionStatus(client,"rollback");
                     console.log(err.message);
                 }
             }
+            res.status(200).json(response);
+            done();
         });
     } catch(err) {
         res.sendStatus(500);

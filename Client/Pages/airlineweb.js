@@ -127,10 +127,7 @@ function insertDateStatus() {
 }
 function insertChangeInfo() {
     var radio = document.querySelector('input[name=change_cancel]:checked').value;
-    const items =
-        {"firstName": document.getElementById("firstName").value,
-            "lastName": document.getElementById("lastName").value,
-            "bookRef": document.getElementById("bookRef").value};
+    const items = {"bookRef": document.getElementById("bookRef").value};
     localStorage.setItem("changeInfo", JSON.stringify(items));
     if (radio === 'change')
         window.location.href = "change/change.html";

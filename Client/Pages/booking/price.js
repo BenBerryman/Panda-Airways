@@ -44,14 +44,27 @@ async function fillOutPriceDifference(type='change') {
             }));
             booking = await booking.json();
 
-            //New flight price info
+            if(JSON.parse(localStorage.getItem("newFlight")).isStandby)
+            {
+                document.getElementsByClassName("block-text")[0].innerHTML =
+                    `<p>You are signing up to put your party on the standby list for this flight. This means that the flight is currently full for your chosen fare class,
+                    but your party will be automatically be booked on the flight and notified if seats becomes available.</p>
+                    <p>A total of <span id="blockTextAmount">$${Math.abs(priceDiff.priceDiff).toFixed(2)}</span>
+                    will be <span id="refundOrPayment">${priceDiff.refund ? "refunded" : "charged"}</span> to card ending in
+                <span id="lastFourDigits">xxxxxxxxxxxx${booking.cardLastFour}</span> upon booking.</p>`;
+            }
+            else
+            {
+                //New flight price info
+                document.getElementsByClassName("block-text")[0].innerHTML =
+                    `<p>A total of <span id="blockTextAmount">$${Math.abs(priceDiff.priceDiff).toFixed(2)}</span>
+                will be <span id="refundOrPayment">${priceDiff.refund ? "refunded" : "charged"}</span> to card ending in
+                <span id="lastFourDigits">xxxxxxxxxxxx${booking.cardLastFour}</span>.</p>`;
+            }
 
-            // document.getElementById("priceDiff").lastElementChild.innerHTML = "<sup>$</sup>"+ ((price-(0.0825*price))*flight.travelers).toFixed(2);
-            // document.getElementById("taxesFees").lastElementChild.innerHTML = "<sup>$</sup>"+((0.0825*price)*flight.travelers).toFixed(2);
-            document.getElementById("refundOrPayment").innerHTML = priceDiff.refund ? "refunded" : "charged";
+
             document.getElementById("total").lastElementChild.innerHTML = "<sup>$</sup>"+priceDiff.priceDiff;
-            document.getElementById("lastFourDigits").innerHTML += booking.cardLastFour;
-            document.getElementById("blockTextAmount").innerHTML = "$"+Math.abs(priceDiff.priceDiff).toFixed(2);
+
             break;
         case 'cancel':
             priceDiff = await fetch("http://localhost:5000/priceDiff?"+$.param({

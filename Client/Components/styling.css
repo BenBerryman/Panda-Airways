@@ -70,6 +70,11 @@ form#book, form#status, form#change, form#checkIn {
 .flight-search input, .flight-search  select {
     height: 50px;
 }
+.flight-search .submit-section input.button {
+    height: 40px;
+    background-color: #ECECEC;
+    width: 262px;
+}
 
 #bookShow,#statusShow, #changeShow, #checkInShow {
     margin-bottom: 0;
@@ -427,11 +432,11 @@ table {
     height: 1px;
 }
 table th, table td {
-    padding: 20px;
+    padding: 20px 0;
     text-align: center !important;
     vertical-align: middle;
 }
-td#ecoCol a, td#ecoPlusCol a, td#businessCol a {
+td.ecoCol a, td.ecoPlusCol a, td.businessCol a {
     display: flex;
     position: absolute;
     top: 0;
@@ -441,37 +446,40 @@ td#ecoCol a, td#ecoPlusCol a, td#businessCol a {
     align-items: center;
     justify-content: center;
 }
+td.unavailable span {
+    color: gray;
+}
 table thead {
     border-bottom-style: solid;
     border-bottom-width: 2px;
 }
-th#ecoCol {
+th.ecoCol {
     border-top-left-radius: 5px;
 }
-th#businessCol {
+th.businessCol {
     border-top-right-radius: 5px;
 }
-#ecoCol {
+.ecoCol {
     background-color: #eee;
 }
-table tbody tr:last-of-type  #ecoCol {
+table tbody tr:last-of-type  .ecoCol {
     border-bottom-left-radius: 5px;
 }
-td#ecoCol, td#ecoPlusCol, td#businessCol {
+td.ecoCol, td.ecoPlusCol, td.businessCol {
     font-weight: bold;
     transition: 0.3s;
     position: relative;
 }
-td#ecoCol:hover, td#ecoPlusCol:hover, td#businessCol:hover {
+td.ecoCol:not(.unavailable):hover, td.ecoPlusCol:not(.unavailable):hover, td.businessCol:not(.unavailable):hover {
     filter: brightness(85%);
 }
-#ecoPlusCol {
+.ecoPlusCol {
     background-color: #c9cbec;
 }
-#businessCol {
+.businessCol {
     background-color: #adb1e6;
 }
-table tbody tr:last-of-type #businessCol {
+table tbody tr:last-of-type .businessCol {
     border-bottom-right-radius: 5px;
 }
 #flightResultsHead {
@@ -798,14 +806,15 @@ button {
     border: none;
 }
 
-.button-bold  {
-    background-color: #363636;
+.button-danger  {
+    background-color: #8C1212;
     color: white;
-    font-size: 23pt;
-    border-radius: 10px;
-    padding: 7px;
+    font-size: 17pt;
+    border-radius: 5px;
+    padding: 10px;
     font-weight: bold;
 }
+
 .button-small {
     font-size: 14pt;
     border: none;

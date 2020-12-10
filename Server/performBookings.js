@@ -34,57 +34,62 @@ async function purchases() {
             var from = cities[Math.floor(Math.random()*cities.length)];
             var to = cities[Math.floor(Math.random()*cities.length)];
             var response = await (await fetch(`http://localhost:5000/findFlights?from=${from}&to=${to}&date=2020-12-11&travelers=1`)).json();
-            if(response[0].length > 0 && response[1].length > 0)
+            while(true)
             {
-                var index = Math.round(Math.random());
-                var flightType = response[index];
-                var randomFlight = response[index][Math.floor(Math.random() * flightType.length)];
-                var fare = fares[Math.floor(Math.random()*3)];
-                var travelerCount = Math.round(Math.random()*(5-1)+1);
-                var travelers = [];
-                var primaryTraveler = fakerator.names.firstName();
-                var lastName = fakerator.names.lastName();
-                travelers.push({
-                    first_name: primaryTraveler,
-                    last_name: lastName,
-                    date_of_birth: randomDate(new Date(1961, 0, 1), new Date())
-                });
-                for(let i=1;i<travelerCount;i++)
+                if(response[0].length > 0 && response[1].length > 0)
                 {
+                    var index = Math.round(Math.random());
+                    var flightType = response[index];
+                    var randomFlight = response[index][Math.floor(Math.random() * flightType.length)];
+                    var fare = fares[Math.floor(Math.random()*3)];
+                    var travelerCount = Math.round(Math.random()*(5-1)+1);
+                    var travelers = [];
+                    var primaryTraveler = fakerator.names.firstName();
+                    var lastName = fakerator.names.lastName();
                     travelers.push({
-                        first_name: fakerator.names.firstName(),
+                        first_name: primaryTraveler,
                         last_name: lastName,
                         date_of_birth: randomDate(new Date(1961, 0, 1), new Date())
                     });
+                    for(let i=1;i<travelerCount;i++)
+                    {
+                        travelers.push({
+                            first_name: fakerator.names.firstName(),
+                            last_name: lastName,
+                            date_of_birth: randomDate(new Date(1961, 0, 1), new Date())
+                        });
+                    }
+                    var flight = {
+                        flight: randomFlight.id,
+                        fare: fare,
+                        travelers: travelerCount
+                    }
+                    if(randomFlight.conn1_id !== undefined)
+                        flight.flight2 = randomFlight.conn1_id;
+
+
+
+                    fetch("http://localhost:5000/purchase",
+                        {method: "POST",
+                            headers: {"Content-Type": "application/json"},
+                            body: JSON.stringify({
+                                flight: flight,
+                                passengerInfo: travelers,
+                                contactInfo: {
+                                    email: primaryTraveler.toLowerCase()+"."+lastName.toLowerCase()+"@postgres.com",
+                                    phone: randomNumbers(10)
+                                },
+                                paymentInfo: {
+                                    cardNum: randomNumbers(16),
+                                    nameOnCard: primaryTraveler+" "+lastName,
+                                    expMonth: Math.floor(Math.random()*12),
+                                    expYear: Math.floor(Math.random() * (2040 - 2022) + 2022)
+                                }
+                            })});
+                    break;
                 }
-                var flight = {
-                    flight: randomFlight.id,
-                    fare: fare,
-                    travelers: travelerCount
-                }
-                if(randomFlight.conn1_id !== undefined)
-                    flight.flight2 = randomFlight.conn1_id;
-
-
-
-                fetch("http://localhost:5000/purchase",
-                    {method: "POST",
-                        headers: {"Content-Type": "application/json"},
-                        body: JSON.stringify({
-                            flight: flight,
-                            passengerInfo: travelers,
-                            contactInfo: {
-                                email: primaryTraveler.toLowerCase()+"."+lastName.toLowerCase()+"@postgres.com",
-                                phone: randomNumbers(10)
-                            },
-                            paymentInfo: {
-                                cardNum: randomNumbers(16),
-                                nameOnCard: primaryTraveler+" "+lastName,
-                                expMonth: Math.floor(Math.random()*12),
-                                expYear: Math.floor(Math.random() * (2040 - 2022) + 2022)
-                            }
-                        })});
             }
+
 
         }
 

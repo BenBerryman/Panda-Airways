@@ -6,8 +6,12 @@ var to = urlParams.get('to');
 var date = localStorage.getItem("date");
 var fare = urlParams.get('fare');
 var travelers = urlParams.get('travelers');
+if(travelers===null)
+    travelers = JSON.parse(localStorage.getItem("flight")).travelers;
+
 let flights = [];
 let table = document.getElementById("flightsTable").getElementsByTagName('tbody')[0];
+
 
 document.getElementById("depart").innerHTML = from;
 document.getElementById("arrive").innerHTML = to;
@@ -17,6 +21,7 @@ getCities(to)
     .then((value)=>document.getElementById("arriveCity").innerHTML = value);
 initialDateInsert();
 findFlights();
+
 
 function initialDateInsert() {
     var year = date.substr(0,4);
@@ -74,7 +79,6 @@ function convertTime(time) {
 }
 
 function insertInfo(row, data, isChangeBooking) {
-
     //Depart time
     var departing = row.insertCell();
     var departTime = new Date(data.scheduled_departure);
@@ -94,36 +98,81 @@ function insertInfo(row, data, isChangeBooking) {
     flightLength.innerHTML = data.duration;
     //Fare pricing
     var economy = row.insertCell();
-    economy.setAttribute("id", "ecoCol");
-    var linkEcon = document.createElement("a");
-    if(isChangeBooking)
-        linkEcon.href = "./priceReconcile.html";
-    else
-        linkEcon.href = "./price.html";
-    linkEcon.onclick = function() {pickFlight(data, "Economy");}
-    linkEcon.innerHTML = "$"+data.econPrice.toFixed(0);
+    economy.classList.add("ecoCol");
+    var linkEcon;
+    // console.log(data.economy_available);
+    if(data.economy_available===0 || data.conn1_economy_available===0) {
+        if(isChangeBooking) {
+            linkEcon = document.createElement("a");
+            linkEcon.href = "./priceReconcile.html";
+            linkEcon.innerHTML = "Standby";
+            linkEcon.onclick = function() {pickFlight(data, "Economy", true);}
+        } else {
+            linkEcon = document.createElement("span");
+            linkEcon.innerHTML = "Unavailable";
+            economy.classList.add("unavailable");
+        }
+    } else {
+        linkEcon = document.createElement("a");
+        if(isChangeBooking)
+            linkEcon.href = "./priceReconcile.html";
+        else
+            linkEcon.href = "./price.html";
+        linkEcon.onclick = function() {pickFlight(data, "Economy", false);}
+        linkEcon.innerHTML = "$"+data.econPrice.toFixed(0);
+    }
     economy.appendChild(linkEcon);
 
     var economyPlus = row.insertCell();
-    economyPlus.setAttribute("id","ecoPlusCol");
-    var linkEconPlus = document.createElement("a");
-    if(isChangeBooking)
-        linkEconPlus.href = "./priceReconcile.html";
-    else
-        linkEconPlus.href = "./price.html";
-    linkEconPlus.onclick = function() {pickFlight(data, "Economy Plus")};
-    linkEconPlus.innerHTML = "$"+data.econPlusPrice.toFixed(0);
+    economyPlus.classList.add("ecoPlusCol");
+    var linkEconPlus;
+    if(data.economy_plus_available===0 || data.conn1_economy_plus_available===0) {
+        if(isChangeBooking) {
+            linkEconPlus = document.createElement("a");
+            linkEconPlus.href = "./priceReconcile.html";
+            linkEconPlus.innerHTML = "Standby";
+            linkEconPlus.onclick = function() {pickFlight(data, "Economy Plus", true);}
+        } else {
+            linkEconPlus = document.createElement("span");
+            linkEconPlus.innerHTML = "Unavailable";
+            economyPlus.classList.add("unavailable");
+        }
+    } else {
+        linkEconPlus = document.createElement("a");
+        if(isChangeBooking)
+            linkEconPlus.href = "./priceReconcile.html";
+        else
+            linkEconPlus.href = "./price.html";
+        linkEconPlus.onclick = function() {pickFlight(data, "Economy Plus", false)};
+        linkEconPlus.innerHTML = "$"+data.econPlusPrice.toFixed(0);
+    }
     economyPlus.appendChild(linkEconPlus);
 
     var business = row.insertCell();
-    business.setAttribute("id","businessCol");
-    var linkBusiness = document.createElement("a");
-    if(isChangeBooking)
-        linkBusiness.href = "./priceReconcile.html";
+    business.classList.add("businessCol");
+    var linkBusiness;
+    if(data.business_available===0 || data.conn1_business_available===0) {
+        if(isChangeBooking) {
+            linkBusiness = document.createElement("a");
+            linkBusiness.href = "./priceReconcile.html";
+            linkBusiness.innerHTML = "Standby";
+            linkBusiness.onclick = function() {pickFlight(data, "Business", true);}
+        } else {
+            linkBusiness = document.createElement("span");
+            linkBusiness.innerHTML = "Unavailable";
+            business.classList.add("unavailable");
+        }
+    }
     else
-        linkBusiness.href = "./price.html";
-    linkBusiness.onclick = function() {pickFlight(data, "Business")};
-    linkBusiness.innerHTML = "$"+data.businessPrice.toFixed(0);
+    {
+        linkBusiness = document.createElement("a");
+        if(isChangeBooking)
+            linkBusiness.href = "./priceReconcile.html";
+        else
+            linkBusiness.href = "./price.html";
+        linkBusiness.onclick = function() {pickFlight(data, "Business", false)};
+        linkBusiness.innerHTML = "$"+data.businessPrice.toFixed(0);
+    }
     business.appendChild(linkBusiness);
 
 
@@ -134,19 +183,27 @@ function noFlights() {
     document.getElementsByClassName("no-flights")[0].style.display = "block";
 }
 
-function pickFlight(flight, fare) {
+function pickFlight(flight, fare, isStandby) {
 
     var flight_picked = {flight: flight.id, fare: fare};
+    //If this is a new booking
     if(localStorage.getItem("changeInfo") === null)
     {
         flight_picked.travelers = travelers;
+        flight_picked.isStandby = false;
         if(flight.conn1_id !== undefined)
             flight_picked.flight2 = flight.conn1_id;
+
         localStorage.setItem("flight", JSON.stringify(flight_picked));
     }
+    //Otherwise, it's a change booking
     else
     {
         flight_picked.travelers = JSON.parse(localStorage.getItem("flight")).travelers;
+        if(isStandby)
+            flight_picked.isStandby=true;
+        else
+            flight_picked.isStandby=false;
         if(flight.conn1_id !== undefined)
             flight_picked.flight2 = flight.conn1_id;
         localStorage.setItem("newFlight", JSON.stringify(flight_picked));

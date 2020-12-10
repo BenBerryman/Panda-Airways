@@ -99,8 +99,9 @@ CREATE TABLE pilot(
 
 CREATE TABLE standby(
   flight_id INTEGER,
-  position SERIAL,
-  passenger_id INTEGER REFERENCES passenger(id) ON DELETE CASCADE NOT NULL,
+  position INTEGER,
+  fare_condition CHAR VARYING(20),
+  book_ref TEXT REFERENCES booking(book_ref) ON DELETE CASCADE NOT NULL,
   PRIMARY KEY(flight_id, position)
 );
 

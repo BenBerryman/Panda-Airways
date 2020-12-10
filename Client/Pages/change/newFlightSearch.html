@@ -58,9 +58,9 @@
                 <th>Arriving</th>
                 <th>Stops</th>
                 <th>Duration</th>
-                <th id="ecoCol">Economy</th>
-                <th id="ecoPlusCol">Economy Plus</th>
-                <th id="businessCol">Business</th>
+                <th class="ecoCol">Economy</th>
+                <th class="ecoPlusCol">Economy Plus</th>
+                <th class="businessCol">Business</th>
             </tr>
             </thead>
             <tbody>
@@ -99,11 +99,7 @@
 <script src="../booking/flightsAvailable.js"></script>
 <script>
     $(document).ready(function() {
-
-
         $('#header').load('../../Components/header.html');
-
-
         $('#changeStepProgressBar').load('../../Components/changeStepProgressBar.html', function () {
             var step = 2;
             var bullets = document.getElementsByClassName("bullet");

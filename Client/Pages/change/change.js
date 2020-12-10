@@ -4,13 +4,19 @@ const changeInfo = JSON.parse(localStorage.getItem("changeInfo"));
 async function getBooking(changeInfo, type) {
     try {
         const response = await fetch("http://localhost:5000/booking/?"+$.param({
-            firstName: changeInfo.firstName,
-            lastName: changeInfo.lastName,
             bookRef: changeInfo.bookRef,
             type: type
         }));
-        let resp = await response.json();
-        localStorage.setItem('flight', JSON.stringify(resp));
+
+        if(response.status === 200) {
+            let resp = await response.json();
+            localStorage.setItem('flight', JSON.stringify(resp));
+        }
+        else if(response.status === 404) {
+            bookingNotFound();
+        }
+        return response.status;
+
     }
     catch (err) {
         console.log(err.message);
@@ -29,6 +35,17 @@ function startDatepicker() {
         altField: "#alt-date"
 
     });
+}
+function bookingNotFound() {
+
+    document.getElementsByClassName("container")[0].innerHTML =
+        `<div class="container no-flights" style="display: block;">
+        <p>We're sorry, it looks like we can't find this booking.</p>
+        <p>Please make sure you have entered the booking number correctly (CASE SENSITIVE).</p>
+        </div>
+        <div id="nextPageHolder">
+            <a id="nextPage" onclick="clearLocalStorage()" href="../airlineweb.html" style="width: 173px;">Back to Homepage</a>
+        </div>`;
 }
 
 function displayPassengers() {

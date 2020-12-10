@@ -52,6 +52,24 @@ function fillOutResponseInfo(type) {
             if (document.getElementById("bookRef") !== null)
                 document.getElementById("bookRef").innerHTML = response.bookRef;
 
+            if(JSON.parse(localStorage.getItem("newFlight")) !== null)
+            {
+                if(JSON.parse(localStorage.getItem("newFlight")).isStandby)
+                {
+                    document.getElementsByClassName("block-text")[0].innerHTML =
+                        `<p>Thank you for flying Panda Airways. You have been placed on the standby list for the flight below.</p>
+                     <p class="indent">You will be notified if your party has been booked on the flight. Please plan to arrive at the airport <b>at least one hour</b> before your flight's
+                    departure time. This was allow ample time to check in to your flight, check any bags, and pass through security.</p>
+                    `;
+                }
+                else
+                {
+                    document.getElementsByClassName("block-text")[0].innerHTML =
+                        `<p>Thank you for flying Panda Airways. Your flight has been changed.</p>
+                    <p class="indent">Please plan to arrive at the airport <b>at least one hour</b> before your flight's
+                    departure time. This was allow ample time to check in to your flight, check any bags, and pass through security.</p>`;
+                }
+            }
             var passengers = response.travelers;
             passengers.forEach(function (pass) {
                 var dob = pass.date_of_birth.toString().substr(0, 10);
