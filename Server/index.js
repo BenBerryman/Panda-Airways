@@ -12,6 +12,7 @@ app.use(express.json());      //req.body
 //ROUTES
 app.get('/city', async(req, res)=>{
     try {
+        pool.query("SET SCHEMA 'mt77et';");
         const code = req.query.airport_code;
         const city = await queryBank.cities('one',code);
         res.json(city);
@@ -31,6 +32,7 @@ app.get('/fakeBookings', async(req, res)=> {
 
 app.get('/cities', async(req, res)=>{
     try {
+        pool.query("SET SCHEMA 'mt77et';");
         const allCities = await queryBank.cities('all');
         res.json(allCities);
     }
@@ -44,6 +46,7 @@ app.get('/cities', async(req, res)=>{
 app.get('/findFlights', async(req, res)=>{
     try{
         pool.connect(async(err, client, done) => {
+            client.query("SET SCHEMA 'mt77et';");
             const args = [req.query.from, req.query.to, req.query.date.toString(), req.query.travelers];
             const directFlights = await queryBank.directFlights(client, 'all',
                 {from: args[0], to: args[1], date: args[2], travelers: args[3]});
@@ -72,6 +75,7 @@ app.get('/getFlight', async(req, res)=> {
     try
     {
         pool.connect(async(err, client, done) => {
+            client.query("SET SCHEMA 'mt77et';");
             const flight = await processing.getFlight(client, req.query.id, req.query.id2);
             done();
             res.json(flight);
@@ -85,6 +89,7 @@ app.get('/getFlight', async(req, res)=> {
 app.get('/priceDiff', async(req, res)=> {
     try {
         pool.connect(async(err, client, done) => {
+            client.query("SET SCHEMA 'mt77et';");
             var priceDiff = await processing.priceDiff(client, req.query, req.query.type);
             done();
             res.json(priceDiff);
@@ -99,6 +104,7 @@ app.get('/booking', async(req, res)=> {
     try {
         let flight;
         pool.connect(async(err, client, done) => {
+            client.query("SET SCHEMA 'mt77et';");
             flight = await queryBank.getBooking(client, req.query.bookRef, req.query.type);
             done();
             if(flight === undefined)
@@ -116,6 +122,7 @@ app.post('/purchase', async(req, res)=>{
     try
     {
         pool.connect(async(err, client, done) => {
+            client.query("SET SCHEMA 'mt77et';");
             const flight = await processing.getFlight(client, req.body.flight.flight, req.body.flight.flight2);
 
             const passengerInfo = req.body.passengerInfo;
@@ -209,6 +216,7 @@ app.post('/purchase', async(req, res)=>{
 app.put('/purchase', async(req, res)=> {
     try {
         pool.connect(async(err, client, done) => {
+            client.query("SET SCHEMA 'mt77et';");
             const booking = await queryBank.getBooking(client, req.body.bookRef, 'all');
             const oldFlight = await processing.getFlight(client, req.body.oldFlight.flight, req.body.oldFlight.flight2);
             const newFlight = await processing.getFlight(client, req.body.newFlight.flight, req.body.newFlight.flight2);
@@ -285,6 +293,7 @@ app.delete('/purchase', async(req, res) => {
     try {
 
         pool.connect(async(err, client, done) => {
+            client.query("SET SCHEMA 'mt77et';");
             var booking = await queryBank.getBooking(client, req.body.bookRef, 'all');
             while (true) {
                 try {
@@ -349,6 +358,7 @@ app.delete('/purchase', async(req, res) => {
 app.put('/checkIn', async(req, res)=> {
     try {
         pool.connect(async(err, client, done) => {
+            client.query("SET SCHEMA 'mt77et';");
             var valid = await queryBank.validBookRef(client, req.body.bookRef);
             if (valid) {
                 await queryBank.checkIn(client, req.body.bookRef);

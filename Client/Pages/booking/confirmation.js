@@ -3,9 +3,10 @@
 function fillOutResponseInfo(type) {
     var amount;
     var perPassenger;
+    var resp = JSON.parse(localStorage.getItem("response"));
     switch(type) {
         case 'cancel':
-            var cancelType = JSON.parse(localStorage.getItem("response")).type;
+            var cancelType = resp.type;
             if (cancelType === 'partialDelete') {
                 document.getElementById("content-container").innerHTML =
                     `<div class="block-text" style="margin-bottom: 22px;">
@@ -48,9 +49,8 @@ function fillOutResponseInfo(type) {
                 break;
             }
         case 'change':
-            var response = JSON.parse(localStorage.getItem("response"));
             if (document.getElementById("bookRef") !== null)
-                document.getElementById("bookRef").innerHTML = response.bookRef;
+                document.getElementById("bookRef").innerHTML = resp.bookRef;
 
             if(JSON.parse(localStorage.getItem("newFlight")) !== null)
             {
@@ -70,7 +70,10 @@ function fillOutResponseInfo(type) {
                     departure time. This was allow ample time to check in to your flight, check any bags, and pass through security.</p>`;
                 }
             }
-            var passengers = response.travelers;
+        case 'book':
+            if (document.getElementById("bookRef") !== null)
+                document.getElementById("bookRef").innerHTML = resp.bookRef;
+            var passengers = resp.travelers;
             passengers.forEach(function (pass) {
                 var dob = pass.date_of_birth.toString().substr(0, 10);
                 dob = dob.split("-").reverse().join("/");
@@ -94,8 +97,8 @@ function fillOutResponseInfo(type) {
 
                 document.getElementsByClassName("passenger-info")[0].appendChild(parent);
             });
-            document.getElementById("cardNum").innerHTML += response.payment.cardLastFour;
-            document.getElementById("totalAmount").innerHTML = "$" + response.payment.amount;
+            document.getElementById("cardNum").innerHTML += resp.payment.cardLastFour;
+            document.getElementById("totalAmount").innerHTML = "$" + resp.payment.amount;
 
     }
 }

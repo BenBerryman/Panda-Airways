@@ -83,7 +83,7 @@
                 priceInfo(block, flight);
             });
         });
-        fillOutResponseInfo();
+        fillOutResponseInfo('book');
         $('#bookStepProgressBar').load('../../Components/bookStepProgressBar.html', function() {
             var step = 3;
             var bullets = document.getElementsByClassName("bullet");

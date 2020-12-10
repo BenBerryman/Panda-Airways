@@ -1,17 +1,16 @@
 
 const {Pool} = require('pg');
-const lineReader = require('line-reader');
 const fs = require('fs');
 var dedent = require('dedent-js');
 
 var file = fs.readFileSync('./password.txt', 'utf8');
-var arg = file.split('\r\n');
+var arg = file.split('\n');
 
 fs.writeFile('query.sql', '', function (err) {if (err) throw err;});
 fs.writeFile('transaction.sql', '', function (err) {if (err) throw err;});
 
 const pool = new Pool({
-    host: 'code.cs.uh.edu',
+    host: 'localhost',
     user: arg[0],
     password: arg[1],
     port: 5432,

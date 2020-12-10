@@ -46,7 +46,8 @@ async function findFlights() {
             from: from,
             to: to,
             date: date,
-            flightNum: flightNum
+            flightNum: flightNum,
+            travelers: 1
         }));
         let resp = await response.json();
         flights = resp;

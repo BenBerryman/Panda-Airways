@@ -573,9 +573,3 @@ module.exports = {transactionStatus, directFlights, connectionFlights, cities, g
     postCreditCard, postBooking, postPassenger, postTicket, putBookingAmount, updateTicket,
     deleteTicket, getAllTickets, deleteBooking, deletePassenger, checkBookRefUniqueness, postStandby,
     validBookRef, checkIn, addCargo};
-
-// try {
-//
-// } catch(err) {
-//     console.log(err.message);
-// }
