@@ -29,6 +29,8 @@ const pool = new Pool({
     port: 5432,
     database: 'COSC3380'
 });
+
+
 var isTransaction = false;
 const Query = require('pg').Query;
 const submit = Query.prototype.submit;
