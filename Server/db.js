@@ -10,7 +10,7 @@ fs.writeFile('query.sql', '', function (err) {if (err) throw err;});
 fs.writeFile('transaction.sql', '', function (err) {if (err) throw err;});
 
 const pool = new Pool({
-    host: 'localhost',
+    host: 'code.cs.uh.edu',
     user: arg[0],
     password: arg[1],
     port: 5432,
