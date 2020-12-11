@@ -4,6 +4,8 @@ const pool = require('./db');
 const cors = require('cors');
 const processing = require('./processing');
 const queryBank = require('./queryBank');
+const fakeBooking = require('./performBookings');
+
 
 // middleware
 app.use(cors());
@@ -21,10 +23,26 @@ app.get('/city', async(req, res)=>{
     }
 });
 
-app.get('/fakeBookings', async(req, res)=> {
+app.get('/admin/flightInfo', async(req, res)=> {
     try {
+        let info;
+        if(req.query.flightID !== '')
+             info = await queryBank.getStandby(req.query.flightID);
+        if(info===undefined)
+            res.sendStatus(404);
+        else
+            res.status(200).json(info);
 
+    } catch(err) {
+        console.log(err.message);
+    }
+})
 
+app.post('/fakeBookings', async(req, res)=> {
+    try {
+        let numOfBookings = req.body.numOfBookings;
+        let status = await fakeBooking.bookingStart(numOfBookings);
+        res.sendStatus(status);
     } catch(err) {
         console.log(err.message);
     }

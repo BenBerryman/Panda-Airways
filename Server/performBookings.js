@@ -3,7 +3,7 @@ var fakerator = require("fakerator")("en-EN");
 
 const fares = ["Economy", "Economy Plus", "Business"];
 let cities = [];
-async function getCities() {
+const getCities = async() =>{
     try {
         const response = await (await fetch('http://localhost:5000/cities')).json();
         cities = response.map(city=>{return city.airport_code});
@@ -26,9 +26,9 @@ function randomNumbers(length) {
     return result;
 }
 
-async function purchases() {
+async function purchases(numOfBookings) {
     try {
-        for(const i of Array(20).keys())
+        for(let i=0; i< numOfBookings; i++)
         {
             while(true)
             {
@@ -67,7 +67,7 @@ async function purchases() {
                     if(randomFlight.conn1_id !== undefined)
                         flight.flight2 = randomFlight.conn1_id;
 
-                    fetch("http://localhost:5000/purchase",
+                    await fetch("http://localhost:5000/purchase",
                         {method: "POST",
                             headers: {"Content-Type": "application/json"},
                             body: JSON.stringify({
@@ -88,13 +88,20 @@ async function purchases() {
                 }
             }
         }
-
+        return 200;
     } catch(err) {
         console.log(err.message);
     }
 }
 
-getCities().then(()=>{
-    purchases();
-});
+const bookingStart = async(numOfBookings) => {
+    try {
+        await getCities();
+        return await purchases(numOfBookings);
+    } catch(err) {
+        console.log(err.message);
+    }
+}
+
+module.exports = {bookingStart};
 

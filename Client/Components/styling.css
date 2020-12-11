@@ -112,37 +112,10 @@ form#book, form#status, form#change, form#checkIn {
 .arrow-up {
     width: 0;
     height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-bottom: 10px solid white;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 12px solid white;
     transition: 0.3s;
-}
-
-.arrow-down {
-    width: 0;
-    height: 0;
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
-
-    border-top: 20px solid #f00;
-}
-
-.arrow-right {
-    width: 0;
-    height: 0;
-    border-top: 60px solid transparent;
-    border-bottom: 60px solid transparent;
-
-    border-left: 60px solid green;
-}
-
-.arrow-left {
-    width: 0;
-    height: 0;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
-
-    border-right:10px solid blue;
 }
 
 input, label, select {
@@ -489,12 +462,14 @@ table tbody tr:last-of-type .businessCol {
     height: 100%;
     overflow: auto;
 }
-.no-flights {
+.error-text, .finishing-text {
     text-align: center;
     margin-top: 115px;
+}
+.error-text {
     display: none;
 }
-.no-flights p:first-of-type {
+.error-text p:first-of-type, .finishing-text p:first-of-type {
     font-size: 20pt;
     font-weight: bold;
     margin-bottom: 20px;
@@ -796,6 +771,9 @@ table tbody tr:last-of-type .businessCol {
     display: flex;
     align-items: center;
 }
+.hide {
+    display: none;
+}
 
 .touched:required:invalid {
     border-bottom-color: red;
@@ -805,7 +783,13 @@ button {
     cursor: pointer;
     border: none;
 }
-
+.status {
+    position: absolute;
+    right: 0;
+    margin-right: 62px;
+    transition: opacity 0.2s linear;
+    opacity: 0
+}
 .button-danger  {
     background-color: #8C1212;
     color: white;

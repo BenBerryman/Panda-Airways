@@ -13,40 +13,19 @@
     <div class="view-flight-info block">
         <span class="block-title">View Flight Information</span>
 
-        <div class="view-flight-info block-section">
-            <div class="block-content">
+        <div class="view-flight-info block-section" style="">
+            <div class="block-section block-content">
                 <div class="input-field small">
                     <label>Flight ID
-                        <input type="text">
+                        <input id="flightID" type="text">
                     </label>
                 </div>
-                <button class="button-small">View</button>
+                <button id="viewFlightInfo" class="button-small" onclick="viewFlightInfo(document.getElementById('flightID').value)">View</button>
+                <div class="status">
+                </div>
             </div>
         </div>
 
-        <div class="waitlist block-section">
-            <div class="subtitle">
-                <span>Standby</span>
-                <button class="button-small">View</button>
-            </div>
-
-            <div class="block-content">
-                <table class="waitlist-table">
-                    <thead>
-                    <tr>
-                        <th>Passenger ID</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr class="spacer"></tr>
-
-                    </tbody>
-
-                </table>
-            </div>
-        </div>
 
     </div>
 
@@ -56,10 +35,13 @@
             <div class="block-content">
 
                 <span>Add</span>
-                <div class="input-field" style="width: 74px">
-                    <input id="numOfBookings" type="number" min="1" max="100" onfocusout="">
+                <div class="input-field" style="width: 72px">
+                    <input id="numOfBookings" type="number" min="1" max="100" onfocusout="this.classList.add('touched')" required>
                 </div>
                 <span>random bookings to the database.</span>
+                <button class="button-small" onclick="return insertFakeStuff(document.getElementById('numOfBookings').value)">Submit</button>
+                <div class="status">
+                </div>
             </div>
         </div>
     </div>
@@ -72,17 +54,7 @@
 <script>
     $(function(){
         $('#header').load('../Components/header.html');
-    });
-    $(document).ready(function() {
-        $("#numOfBookings").focusout(function() {
-            if($(this).val()>100 || $this.val()<0) {
-                $(this).css('border', 'solid 2px red');
-            }
-            else {
-                // If it is not blank.
-                $(this).css('border', 'solid 2px green');
-            }
-        }) .trigger("focusout");
+
     });
 </script>
 <script src="admin.js"></script>

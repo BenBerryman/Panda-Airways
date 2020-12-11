@@ -151,6 +151,7 @@ const connectionFlights = async(client, type, args)  => {
 const cities = async(type, code=null) => {
     try
     {
+        await pool.query("SET SCHEMA 'mt77et';");
         var response;
         switch(type)
         {
@@ -161,6 +162,20 @@ const cities = async(type, code=null) => {
                 response = await pool.query('SELECT city FROM airport WHERE airport_code LIKE $1;', [code]);
                 return response.rows[0].city;
         }
+    } catch(err) {
+        console.log(err.message);
+    }
+}
+
+const getStandby = async(flightID) => {
+    try {
+        await pool.query("SET SCHEMA 'mt77et';");
+        let standby = await pool.query(
+            `SELECT * FROM standby
+            WHERE flight_id=$1
+            ORDER BY position;`,
+            [flightID]);
+        return standby.rows;
     } catch(err) {
         console.log(err.message);
     }
@@ -527,6 +542,7 @@ const deleteBooking = async(client, bookRef) => {
 }
 
 const checkBookRefUniqueness = async(bookRef) => {
+    await pool.query("SET SCHEMA 'mt77et';");
     const response = await pool.query(
         `SELECT COUNT(*)
             FROM booking
@@ -569,7 +585,7 @@ const addCargo = async(client, bookRef, numBag=0) => {
         [bookRef, numBag]);
 }
 
-module.exports = {transactionStatus, directFlights, connectionFlights, cities, getBooking, checkAvailability,
+module.exports = {getStandby, transactionStatus, directFlights, connectionFlights, cities, getBooking, checkAvailability,
     postCreditCard, postBooking, postPassenger, postTicket, putBookingAmount, updateTicket,
     deleteTicket, getAllTickets, deleteBooking, deletePassenger, checkBookRefUniqueness, postStandby,
     validBookRef, checkIn, addCargo};

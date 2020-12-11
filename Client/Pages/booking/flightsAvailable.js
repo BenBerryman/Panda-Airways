@@ -180,7 +180,7 @@ function insertInfo(row, data, isChangeBooking) {
 
 function noFlights() {
     document.getElementsByClassName("container")[1].style.display = "none";
-    document.getElementsByClassName("no-flights")[0].style.display = "block";
+    document.getElementsByClassName("error-text")[0].style.display = "block";
 }
 
 function pickFlight(flight, fare, isStandby) {
@@ -212,7 +212,7 @@ function pickFlight(flight, fare, isStandby) {
 
 function showFlights() {
     document.getElementsByClassName("container")[1].style.display = "block";
-    document.getElementsByClassName("no-flights")[0].style.display = "none";
+    document.getElementsByClassName("error-text")[0].style.display = "none";
     //Check if this is being called for changing a flight or booking a new one
     // (i.e. check if changeInfo exists in local storage
     var isChangeFlight = false;
