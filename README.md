@@ -29,7 +29,7 @@ npm install
 ```text
 runserver.bat
 ```
-+ If on Mac/Unix, start both the web and database servers by typing:
++ If on Mac/Linux, start both the web and database servers by typing:
 ```text
 ./runserver.sh
 ```
