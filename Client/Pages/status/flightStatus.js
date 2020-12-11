@@ -130,7 +130,7 @@ function insertInfo(row, data) {
 
 function noFlights() {
     document.getElementsByClassName("container")[1].style.display = "none";
-    document.getElementsByClassName("no-flights")[0].style.display = "block";
+    document.getElementsByClassName("error-text")[0].style.display = "block";
 }
 
 function pickFlight(flight, fare) {
@@ -142,7 +142,7 @@ function pickFlight(flight, fare) {
 
 function showFlights() {
     document.getElementsByClassName("container")[1].style.display = "block";
-    document.getElementsByClassName("no-flights")[0].style.display = "none";
+    document.getElementsByClassName("error-text")[0].style.display = "none";
     flights.forEach(function(type, i) {
         type.forEach(function(flight) {
             var row = table.insertRow();

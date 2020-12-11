@@ -39,7 +39,7 @@ function startDatepicker() {
 function bookingNotFound() {
 
     document.getElementsByClassName("container")[0].innerHTML =
-        `<div class="container no-flights" style="display: block;">
+        `<div class="container error-text" style="display: block;">
         <p>We're sorry, it looks like we can't find this booking.</p>
         <p>Please make sure you have entered the booking number correctly (CASE SENSITIVE).</p>
         </div>
