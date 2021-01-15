@@ -1,5 +1,5 @@
 # Panda Airways
-A web app for demonstrating database ER Design and normalization through an airline database system
+A web app for demonstrating database ER Design and normalization through an airline database system.
 
 ### Languages:
 
@@ -53,8 +53,8 @@ localhost:8000/Pages/airlineweb.html
 ```
   
 This is the main homepage for booking flights. Start by selecting the starting city/airport and destination.
-Flights are available from 12/10 to 12/19, and up to 5 ticket can be purchased at once.
-If there is any confusion, please watch our short video explaining setup and usage.
+Flights are available from 12/10 to 12/19 (currently working on making flight dates dynamic based on the time of database creation), and up to 5 ticket can be purchased at once.
+If there is any confusion, please watch our short video explaining setup and usage (*videoWalkthrough.mp4*).
 
 ## Outline
 ### The Client
