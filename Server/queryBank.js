@@ -151,7 +151,6 @@ const connectionFlights = async(client, type, args)  => {
 const cities = async(type, code=null) => {
     try
     {
-        await pool.query("SET SCHEMA 'mt77et';");
         var response;
         switch(type)
         {
@@ -169,7 +168,6 @@ const cities = async(type, code=null) => {
 
 const getStandby = async(flightID) => {
     try {
-        await pool.query("SET SCHEMA 'mt77et';");
         let standby = await pool.query(
             `SELECT * FROM standby
             WHERE flight_id=$1
@@ -542,7 +540,6 @@ const deleteBooking = async(client, bookRef) => {
 }
 
 const checkBookRefUniqueness = async(bookRef) => {
-    await pool.query("SET SCHEMA 'mt77et';");
     const response = await pool.query(
         `SELECT COUNT(*)
             FROM booking
